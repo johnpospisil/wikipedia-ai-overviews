@@ -1,6 +1,8 @@
 """`make progress [JOB=name] [WATCH=1]`: progress bar for a running download.
 
-Counts finished files against the expected number. Later downloads add themselves to JOBS.
+Progress is measured in bytes downloaded (finished files plus partial `.part` files) against the
+total listed size, so a few large files can't make the bar race ahead or stall. With WATCH=1 it
+also shows the current speed and an ETA. Later downloads add themselves to JOBS.
 """
 
 from __future__ import annotations
@@ -12,54 +14,89 @@ import time
 from collections.abc import Callable
 from pathlib import Path
 
+import pandas as pd
+
 from wao import config
 from wao.ingest import country
 
 
-def _country_expected() -> int:
-    return len(country.days(country.START, country.END))
+def _country_files() -> pd.DataFrame:
+    # sizes unknown up front: count files instead (bytes = 1 per file)
+    days = country.days(country.START, country.END)
+    d = config.COUNTRY_DIR / "country_project_page"
+    return pd.DataFrame({"path": [d / f"{x.isoformat()}.tsv" for x in days], "bytes": 1})
 
 
-def _clickstream_expected() -> int:
-    import pandas as pd
+def _clickstream_files() -> pd.DataFrame:
+    f = pd.read_csv(config.REFERENCE_DIR / "clickstream_files.csv")
+    f["path"] = [
+        config.CLICKSTREAM_DIR / lang / name for lang, name in zip(f.lang, f.file, strict=True)
+    ]
+    return f[["path", "bytes"]]
 
-    return len(pd.read_csv(config.REFERENCE_DIR / "clickstream_files.csv"))
 
-
-# name -> (directory, glob of finished files, expected count)
-JOBS: dict[str, tuple[Path, str, Callable[[], int]]] = {
-    "country": (config.COUNTRY_DIR / "country_project_page", "*.tsv", _country_expected),
-    # files converted to Parquet (done markers); the size shown is the markers' folder, so the
-    # bar uses the Parquet total instead (see line()).
-    "clickstream": (config.PARQUET_DIR / "clickstream_done", "*.json", _clickstream_expected),
+# name -> (expected files with sizes, whether `bytes` are real sizes)
+JOBS: dict[str, tuple[Callable[[], pd.DataFrame], bool]] = {
+    "country": (_country_files, False),
+    "clickstream": (_clickstream_files, True),
 }
-SIZE_DIR = {"clickstream": config.PARQUET_DIR / "clickstream"}
 
 
-def line(name: str) -> tuple[str, bool]:
-    d, pattern, expected = JOBS[name]
-    total = expected()
-    files = list(d.glob(pattern)) if d.is_dir() else []
-    n = len(files)
-    sd = SIZE_DIR.get(name, d)
-    size = sum(f.stat().st_size for f in sd.rglob("*") if f.is_file()) / 1e9 if sd.is_dir() else 0.0
-    width = max(10, min(50, shutil.get_terminal_size().columns - 45))
-    filled = int(width * n / total) if total else width
-    pct = 100 * n / total if total else 100
-    bar = "#" * filled + "-" * (width - filled)
-    return f"{name:<8} [{bar}] {pct:5.1f}%  {n}/{total} files  {size:.1f} GB", n >= total
+def measure(name: str) -> tuple[float, float, int, int]:
+    """(bytes done, bytes total, files done, files total)."""
+    expected, real_sizes = JOBS[name]
+    f = expected()
+    done_bytes, done_files = 0.0, 0
+    for p, b in zip(f.path, f.bytes, strict=True):
+        p = Path(p)
+        if p.exists():
+            done_files += 1
+            done_bytes += b
+        elif real_sizes:
+            part = p.with_suffix(p.suffix + ".part")
+            if part.exists():
+                done_bytes += min(part.stat().st_size, b)
+    return done_bytes, float(f.bytes.sum()), done_files, len(f)
+
+
+def fmt_eta(seconds: float) -> str:
+    if seconds <= 0 or seconds != seconds:
+        return "--"
+    h, rem = divmod(int(seconds), 3600)
+    return f"{h}h{rem // 60:02d}m" if h else f"{rem // 60}m{rem % 60:02d}s"
+
+
+def render(
+    name: str, done: float, total: float, nf: int, nt: int, rate: float | None, real_sizes: bool
+) -> str:
+    frac = done / total if total else 1.0
+    width = max(10, min(40, shutil.get_terminal_size().columns - 70))
+    filled = int(width * frac)
+    bar = "█" * filled + "░" * (width - filled)
+    size = f"{done / 1e9:5.1f}/{total / 1e9:.1f} GB" if real_sizes else ""
+    speed = ""
+    if rate is not None and real_sizes:
+        speed = f"  {rate / 1e6:4.1f} MB/s  ETA {fmt_eta((total - done) / rate if rate else 0)}"
+    return f"{name} [{bar}] {100 * frac:5.1f}%  {size}  {nf}/{nt} files{speed}"
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("job", nargs="?", default="country", choices=sorted(JOBS))
+    ap.add_argument("job", nargs="?", default="clickstream", choices=sorted(JOBS))
     ap.add_argument("--watch", action="store_true", help="redraw every 5 s until done")
     a = ap.parse_args()
+    real = JOBS[a.job][1]
+    history: list[tuple[float, float]] = []  # (time, bytes) over the last ~2 minutes
     while True:
-        text, done = line(a.job)
-        sys.stdout.write("\r" + text)
+        done, total, nf, nt = measure(a.job)
+        now = time.time()
+        history = [(t, b) for t, b in history if now - t <= 120] + [(now, done)]
+        rate = None
+        if len(history) > 1 and history[-1][0] > history[0][0]:
+            rate = (history[-1][1] - history[0][1]) / (history[-1][0] - history[0][0])
+        sys.stdout.write("\r\033[K" + render(a.job, done, total, nf, nt, rate, real))
         sys.stdout.flush()
-        if done or not a.watch:
+        if nf >= nt or not a.watch:
             print()
             return 0
         time.sleep(5)

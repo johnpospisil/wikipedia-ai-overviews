@@ -24,9 +24,9 @@ all: check-env ingest build models figures report
 check-env:
 	$(PY) -m wao.check_env
 
-# Progress bar for a running download: `make progress` (JOB=country, WATCH=1 to keep redrawing).
+# Progress bar for a running download: `make progress` (JOB=clickstream|country; WATCH=1 redraws with speed + ETA).
 progress:
-	@$(PY) -m wao.progress $(or $(JOB),country) $(if $(WATCH),--watch,)
+	@$(PY) -m wao.progress $(or $(JOB),clickstream) $(if $(WATCH),--watch,)
 
 # P01–P03: dump inventories, rollout (Google help page via Wayback), country shares, exposure.
 reference:
