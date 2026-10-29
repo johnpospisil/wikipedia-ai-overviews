@@ -61,7 +61,7 @@ def main() -> None:
         "Exposure = Σ country share of the edition's pageviews (2023-10..2024-04; AQS, with "
         "protected countries such as RU, IR estimated from the residual) × Google search share "
         "(StatCounter, same months) × AI Overviews live there in that language (Google's help "
-        "page). fa: Iran was listed only 2025-05..2025-09.",
+        "page). Iran (listed only 2025-05..09) is treated as never live, so fa stays low.",
         fontsize=7.5,
         color="#555",
         wrap=True,

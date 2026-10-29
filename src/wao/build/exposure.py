@@ -9,7 +9,8 @@ google[c]     pre-period mean Google search share in c (StatCounter), fixed so t
 available     1 if AI Overviews were live in c on day d AND language l was supported there
 
 Variants: `exposure_all_users` counts only days without the signed-in-18+ restriction;
-`exposure_listed` drops the Google weight. Cohort = first month with exposure >= 0.5.
+`exposure_listed` drops the Google weight;
+`exposure_as_listed` also counts countries in NEVER_LIVE (Iran) as the help page listed them. Cohort = first month with exposure >= 0.5.
 
 Writes data/reference/language_exposure.csv and data/reference/language_cohorts.csv.
 """
@@ -25,6 +26,10 @@ MONTHS = pd.period_range("2017-11", "2026-09", freq="M")
 PRE = ("2023-10", "2024-04")
 COHORT_THRESHOLD = 0.5
 FALLBACK_GOOGLE = 0.90  # countries StatCounter doesn't report (flagged in the output)
+# Primary spec treats these as never live despite the help-page listing (decided 2026-10-29):
+# Iran was listed only 2025-05-30..2025-09-01, likely in error given US sanctions.
+# `exposure_as_listed` follows the listing (robustness check).
+NEVER_LIVE = {"IR"}
 
 
 def load_inputs():
@@ -89,6 +94,7 @@ def build(min_share: float = 0.001) -> tuple[pd.DataFrame, pd.DataFrame]:
         tot = pd.Series(0.0, index=days)
         tot_all = pd.Series(0.0, index=days)
         tot_listed = pd.Series(0.0, index=days)
+        tot_as_listed = pd.Series(0.0, index=days)
         covered = sh.share.sum()
         fallback = 0.0
         for c, s in zip(sh.country_iso2, sh.share, strict=True):
@@ -96,12 +102,20 @@ def build(min_share: float = 0.001) -> tuple[pd.DataFrame, pd.DataFrame]:
             gc = g.get(c)
             if gc is None or pd.isna(gc):
                 gc, fallback = FALLBACK_GOOGLE, fallback + s
+            tot_as_listed += s * gc * any_
+            if c in NEVER_LIVE:
+                continue
             tot += s * gc * any_
             tot_all += s * gc * all_
             tot_listed += s * any_
         m = (
             pd.DataFrame(
-                {"exposure": tot, "exposure_all_users": tot_all, "exposure_listed": tot_listed}
+                {
+                    "exposure": tot,
+                    "exposure_all_users": tot_all,
+                    "exposure_listed": tot_listed,
+                    "exposure_as_listed": tot_as_listed,
+                }
             )
             .groupby(month)
             .mean()
@@ -143,7 +157,7 @@ ROLES = {
     "zh": "treated",
     "fr": "late_treated_control",  # cohort 2026-08; partial dose ~0.28 from 2025-05 (BE/CA/CH)
     "ru": "partial_dose",  # max ~0.46 (Yandex dominant); Yandex Neuro from 2024-04
-    "fa": "ambiguous",  # ~0.96 only while Iran was listed (2025-05..09), ~0.19 otherwise
+    "fa": "near_untreated_control",  # ~0.19 (diaspora); Iran treated as never live (NEVER_LIVE)
 }
 
 

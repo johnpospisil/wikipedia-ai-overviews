@@ -126,7 +126,7 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   - Residual-based share: ru 73%, fa 78%, es 6%, en 5%, others ≤2%.
   - The DP dataset on its own gave implausible shares (fa with no Iran; fr with Poland at 4%), so it is used only for the residual split.
 - **Google share:** `data/reference/search_share.csv` (StatCounter, all engines, monthly 2017-11..2026-09, by country). The exposure uses the pre-period mean (2023-10..2024-04), fixed so search behaviour changed by the treatment can't feed back into it.
-- **Exposure:** `data/reference/language_exposure.csv` (wiki × month): `exposure`, `exposure_all_users` (no signed-in-adult restriction), `exposure_listed` (no Google weight). `language_cohorts.csv` gives the cohort (first month ≥ 0.5) and design role.
+- **Exposure:** `data/reference/language_exposure.csv` (wiki × month): `exposure`, `exposure_all_users` (no signed-in-adult restriction), `exposure_listed` (no Google weight), `exposure_as_listed` (counts Iran's 2025-05..09 help-page listing; the primary spec treats Iran as never live, decided 2026-10-29). `language_cohorts.csv` gives the cohort (first month ≥ 0.5) and design role.
 - **Caveats:**
   - VPN users count where their IP is located. That's also where Google decides whether to show AI Overviews, so it's consistent.
   - The hidden `ZZ` share is treated as unexposed, a mild understatement for en and es.
