@@ -1,0 +1,118 @@
+{
+ "entities": {
+  "Q937": {
+   "type": "item",
+   "id": "Q937",
+   "claims": {
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "id": "Q5"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "id": "Q99999"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "rank": "deprecated"
+     }
+    ]
+   },
+   "sitelinks": {
+    "enwiki": {
+     "site": "enwiki",
+     "title": "Albert Einstein"
+    },
+    "dewiki": {
+     "site": "dewiki",
+     "title": "Albert Einstein"
+    },
+    "enwikiquote": {
+     "site": "enwikiquote",
+     "title": "Albert Einstein"
+    },
+    "zh_yuewiki": {
+     "site": "zh_yuewiki",
+     "title": "愛因斯坦"
+    }
+   }
+  },
+  "Q90": {
+   "type": "item",
+   "id": "Q90",
+   "claims": {
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "id": "Q515"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "rank": "preferred"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "novalue",
+       "property": "P31"
+      },
+      "rank": "normal"
+     }
+    ]
+   },
+   "sitelinks": {
+    "frwiki": {
+     "site": "frwiki",
+     "title": "Paris"
+    }
+   }
+  },
+  "Q123": {
+   "type": "item",
+   "id": "Q123",
+   "claims": {},
+   "sitelinks": {}
+  },
+  "Q404": {
+   "id": "Q404",
+   "missing": ""
+  },
+  "Q1000": {
+   "type": "item",
+   "id": "Q2000",
+   "redirects": {
+    "from": "Q1000",
+    "to": "Q2000"
+   },
+   "claims": {},
+   "sitelinks": {
+    "enwiki": {
+     "site": "enwiki",
+     "title": "Target"
+    }
+   }
+  }
+ }
+}

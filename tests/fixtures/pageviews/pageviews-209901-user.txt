@@ -1,0 +1,11 @@
+en.wikipedia Albert_Einstein 736 desktop 300 A100B100_100
+en.wikipedia Albert_Einstein 736 mobile-web 450 A150O150^150
+en.wikipedia Albert_Einstein 736 mobile-app 7 C7
+en.wikipedia Zürich 34076 desktop 20 [10\10
+en.wikipedia Some_Redirect null desktop 3 B3
+en.wikipedia No_Page_Id_Five_Cols desktop 5 A2C3
+en.wiktionary dog 123 desktop 9 A9
+de.wikipedia Albert_Einstein 1278360 desktop 40 E40
+ja.wikipedia 東京都 1590 mobile-web 12 ]12
+en.wikipedia Bad_Total 99 desktop 10 A3
+en.wikipedia
