@@ -1,0 +1,58 @@
+[project]
+name = "wao"
+version = "0.1.0"
+description = "Did Google's AI Overviews hurt Wikipedia? Measuring search-referred traffic with Wikimedia pageview and clickstream data."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # ingest + storage
+    "pyarrow>=18",
+    "duckdb>=1.1",
+    "polars>=1.12",
+    "pandas>=2.2",
+    "numpy>=2.0",
+    "requests>=2.32",
+    "requests-cache>=1.2",
+    "tqdm>=4.66",
+    # models
+    "statsmodels>=0.14",
+    "scipy>=1.14",
+    "pyfixest>=0.28",
+    "differences>=0.2",
+    "bambi>=0.15",
+    "pymc>=5.19",
+    "arviz>=0.20",
+    # viz
+    "matplotlib>=3.9",
+    "wildboottest>=0.3.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.8",
+    "jupyterlab>=4.3",
+    "ipykernel>=6.29",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wao"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "data: needs the real dumps on the external drive (skipped if not mounted)",
+    "network: calls a live Wikimedia endpoint (skipped unless WAO_NETWORK_TESTS=1)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

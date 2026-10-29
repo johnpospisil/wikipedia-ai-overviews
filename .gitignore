@@ -1,0 +1,36 @@
+# Data never goes in git (only small reference CSVs in data/reference/)
+data/*
+!data/reference/
+*.parquet
+*.duckdb
+*.duckdb.wal
+*.sqlite
+*.gz
+*.bz2
+!tests/fixtures/**
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# Quarto / app build output
+report/_site/
+report/.quarto/
+app/dist/
+app/node_modules/
+
+# Local env
+.env
+.DS_Store
+
+# make all SAMPLE=1 output
+.sample/
+
+# Rendered article (rebuild with make report)
+report/index.html
+report/index_files/

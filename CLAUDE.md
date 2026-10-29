@@ -1,0 +1,124 @@
+# CLAUDE.md: Wikipedia AI Overviews project
+
+Project plan: [05-wikipedia-ai-overviews.md](05-wikipedia-ai-overviews.md). Data provenance: [DATA.md](DATA.md) (created in P01). Sister project: `../stackoverflow-decline` (Project 4). Reuse its conventions, Makefile pattern, viz theme and pre-registration style wherever they fit.
+
+## How we work
+
+1. The project is built by running the numbered prompts below **one at a time, in order**. The user starts each one by saying "Run P05" (or similar).
+2. Act as an expert data scientist: think about identification, measurement error and alternative explanations, not just code. Treat every number as suspect until it reconciles with something independent.
+3. Run only the prompt asked for. If a prompt turns up something that changes later prompts, say so in the findings and propose an edit to this file. Don't edit the prompt list unless asked.
+4. **After each prompt, stop and report findings** in this format:
+   - **Done:** what was built or run (files with links)
+   - **Key results:** the numbers that matter, with units and dates
+   - **Figures:** paths to any charts made, with one line on what each shows
+   - **Data issues / surprises:** anything odd, and how it was handled
+   - **Decisions for you:** choices that need the user's input (keep it to 0–3)
+   - **Next:** the next prompt ID and anything to check before running it
+5. When a prompt is finished and its findings are approved, tick its box in the list below and add a one-line result next to it. When every prompt in a phase is ticked, add "✅ DONE" to the phase heading.
+6. **Blinding rule:** until pre-registration (P15) is locked, no prompt may compare treated with untreated languages (or quick-answer with long-read articles) after a launch date. Data-quality work may look at totals over the full period; analytical contrasts may use only the pre-period (before 2024-05). Later changes go in a dated "Deviations" section of `PREREGISTRATION.md`, never as silent edits.
+7. Commit at the end of each prompt with a message starting with the prompt ID (e.g. `P05: clickstream ingest`).
+
+## Project facts
+
+- **Raw data (read-only once downloaded):** `/Volumes/Drive3/data/wikimedia/` (`clickstream/`, `pageview_complete/`, `wikidata/`, `country/`). **Processed data:** `/Volumes/Drive3/wao/` (Parquet, DuckDB). Paths come from env vars `WAO_RAW_DIR` and `WAO_DATA_DIR`. Never hard-code them. The external drive must be mounted.
+- **Never commit data.** Only small reference CSVs in `data/reference/` go in git.
+- **API etiquette:** every Wikimedia request sends a descriptive `User-Agent` built from the env var `WAO_CONTACT` (the user sets it; never hard-code an email). Follow the rate limits, cache every response on disk, and make every downloader resumable and checksum-verified (the dumps publish `md5sums`/`sha1sums`).
+- **Stack:** Python 3.12 with `uv`, PyArrow/Parquet, DuckDB, polars, pandas, statsmodels, `differences` or `csdid` (Callaway–Sant'Anna), pyfixest (high-dimensional FE, wild cluster bootstrap), PyMC/bambi if needed, matplotlib, Quarto. Package name `wao`.
+- **Big files:** English clickstream is about 1 GB/month gzip, and a `pageview_complete` monthly file is several GB of bz2. Stream them, filter early, write Parquet in row-group batches, and never load a whole file.
+- **Licence:** Wikimedia pageview, clickstream and Wikidata data are CC0. Article text is CC BY-SA, so publish only derived metrics and never article text.
+- **Dates:** all UTC. The analysis grain is the calendar month (clickstream is monthly). Pre-period for the headline = up to and including 2024-04. Key global dates (verify in P02): ChatGPT 2022-11-30; Google SGE Labs (US, opt-in) 2023-05; AI Overviews US GA 2024-05-14.
+- **Language set (provisional, finalised in P03):** clickstream languages en, de, fr, es, it, pl, pt, ja, ru, zh, fa. Markets concentrated in one country are the cleanest (ja, de, pl, it). en, es and pt span many markets with different launch dates, so their treatment is a dose, not a switch. Negative-control candidates need care: ru has Yandex with its own AI answers ("Neuro"), zh readers sit mostly outside mainland China, and fa traffic is Google-dominated despite sanctions. P03 decides.
+- **Measurement traps to keep in mind everywhere:**
+  - `other-search` in clickstream is *all* search engines (Google, Bing, Yandex, DuckDuckGo…), not Google alone.
+  - Clickstream drops (referrer, article) pairs with fewer than 10 views a month. As traffic falls, more pairs fall under the threshold, so long-tail declines are **mechanically exaggerated**. Quantify this (P11) before interpreting any long-tail result.
+  - Clickstream covers desktop and mobile web, not the apps. ChatGPT and Perplexity referrals land in `other-external` and can't be split out.
+  - Wikimedia's 2025 bot-detection change reclassified traffic as automated. Check whether it was retroactive and whether clickstream uses the same filter. Don't assume clickstream is immune.
+  - Languages ≠ countries. Exposure comes from where a language's readers actually are (P03).
+
+## Prompt list
+
+### Phase 0: Setup and guardrails
+
+- [ ] **P00: Repo scaffold.** Set up the project: `git init`, `pyproject.toml` with `uv` and pinned dependencies, `Makefile` with targets `ingest build models figures report all test check-env`, the `src/wao/` layout from the plan (plus `config.py`, `http.py` for a cached, rate-limited, User-Agent-stamped session, and `db.py` for DuckDB helpers), `tests/`, `notebooks/`, `report/`, `app/`, and a `.gitignore` that excludes data. `config.py` reads `WAO_RAW_DIR`, `WAO_DATA_DIR` and `WAO_CONTACT`. `make check-env` confirms the drive is mounted, the env vars are set, and reports free space. Create a **private** GitHub repo with `gh` and push to it; it becomes public at launch (P34). **Findings:** environment versions, disk space, and anything that failed to install.
+
+- [ ] **P01: Access check and data inventory.** Run the plan's day-one checks: the Pageviews REST API per-article call with `agent=user`, a clickstream file download and parse, and a `pageview_complete` file download and parse. Also confirm: the Wikimedia pageviews-by-country dataset (analytics.wikimedia.org published datasets; note its differential-privacy noise, thresholds and start date), the AQS aggregate, editors and edits endpoints, the current Lift Wing `articletopic` endpoint, and the Wikidata SPARQL endpoint and JSON dump. Build an availability matrix of clickstream months × languages (first and last month, gaps) and a download-size estimate for the full plan against free space on Drive3. Start `DATA.md` with source, URL, licence, coverage, grain and known methodology changes for each dataset. **Findings:** pass or fail for each source, the availability matrix, total download size, and any gaps that limit the design.
+
+- [ ] **P02: Rollout and event timeline.** Build `data/reference/aio_rollout.csv` (`country_iso2, market_name, language_codes, product, launch_date, date_precision, source_url, notes`) for AI Overviews from the US launch through 2026, including SGE Labs (opt-in) and AI Mode launches as separate `product` values. Every row needs a primary source (Google blog or Search Central; reputable press only where Google is vague). Separately, build `data/reference/events.csv` (`date, event, category, scope, source_url`): ChatGPT, GPT-4, Bing Chat/Copilot, Gemini, ChatGPT search, Perplexity, Yandex Neuro, Naver/Baidu AI answers if relevant, Google core updates (Search Status Dashboard), Wikimedia bot-detection and pageview-definition changes, clickstream methodology changes, and major Wikipedia UI changes (e.g. Vector 2022 rollouts by language, which changed internal navigation). **Findings:** both tables, disputed or fuzzy dates, and countries where AI Overviews was paused, restricted or delayed (e.g. by EU regulation).
+
+- [ ] **P03: Exposure measure and language set.** Download pageviews-by-country and Google search-engine share by country and month (StatCounter, cited). For each language edition × month, compute `exposure = Σ_country (share of the language's pageviews from that country) × (Google share in that country) × 1[AI Overviews live in that country and language]`, using pre-period (2023) country shares, fixed so traffic shifts caused by treatment can't feed back into exposure. Derive a binary cohort (first month with exposure ≥ 0.5) for Callaway–Sant'Anna and keep the continuous dose. Use this to finalise the language set, the never-treated or late-treated controls, and the negative controls. Save `data/reference/language_exposure.csv`. **Findings:** the exposure curves (one chart), each language's cohort month, how many clean not-yet-treated control months exist after each launch, and a recommended language set with reasons.
+
+### Phase 1: Ingest
+
+- [ ] **P04: Parser tests first.** Create small fixture files for clickstream TSV (all four `other-*` types, `link`, `external`, unicode titles, titles with tabs or quotes), `pageview_complete` (the compact hourly-encoded daily field, multiple access types, `user` and `automated` agents, missing `page_id`) and Wikidata JSON entities. Write failing pytest tests for streaming parsers, and implement until they pass. Check them against one real file of each. **Findings:** test count, and edge cases found in the real files.
+
+- [ ] **P05: Clickstream ingest.** Stream every available month for every language in the set into Parquet partitioned by `lang=` and `month=` (`prev, curr, type, n`). Also write `clickstream_lang_month.parquet` with totals by referrer type, and `clickstream_article_month.parquet` with per-article arrivals by type plus outgoing internal clicks (for P23). Make it resumable, and log rows/sec and peak memory. **Findings:** rows and sizes by language, months covered, run time, and the English referral mix by year as a sanity check (descriptive totals only).
+
+- [ ] **P06: Sampling frame and article sample.** Using **pre-period popularity only** (2023 `user` pageviews, so the sample isn't selected on the outcome), build the frame of main-namespace, non-redirect articles per language. Join Wikidata QIDs through sitelinks and `instance of` (P31). Draw a stratified sample of about 200k articles in total: strata = language × popularity decile × coarse Wikidata type, with oversampling of (a) items that exist in all core languages (the within-concept panel) and (b) small strata. Store sampling weights. Save `sample.parquet` with `lang, page_id, title, qid, stratum, weight`. **Findings:** sample sizes by stratum, the number of cross-language matched items, and how many articles had no QID.
+
+- [ ] **P07: Pageviews ingest.** Stream `pageview_complete` monthly files (2016-01 to the latest month) and keep only sample articles (match on `page_id`, with title as a fallback). Write article × day × access (desktop, mobile-web, mobile-app) × agent (`user`, `automated`, `spider`) to Parquet. Resolve redirects and page moves so that views of old titles count toward the canonical page. Make it resumable. **Findings:** coverage (share of sample articles found each month), redirect and move cases resolved, run time, and size.
+
+- [ ] **P08: Article features.** For each sample article, using a fixed **2023-12-31 revision** rather than the live one: length, number of sections, infobox presence, number of references, lead-section length, article age, Wikidata type (P31, with P279 rolled up to about 20 coarse classes), and Lift Wing `articletopic` (top topic and probabilities). Cache all responses. **Findings:** feature distributions by language, missing rates, and API failures.
+
+- [ ] **P09: Editors and edits.** From AQS: monthly edits and active editors (5+ and 100+ edits) per language, split into registered users and anonymous editors, with bots excluded. Per-article monthly edit counts and distinct editors for the sample. **Findings:** editor trends by language (descriptive, with no post-launch contrasts), and data gaps.
+
+- [ ] **P10: Search-engine context.** Build monthly `search_share.parquet` (Google, Bing, Yandex, Baidu, Naver, others) by country from StatCounter, plus the Google core update dates from P02 as a monthly indicator. Add the Google Trends series only as context, and note its sampling noise. **Findings:** Google share by key market, and the markets where a non-Google engine is large enough to matter for `other-search`.
+
+- [ ] **P11: Data quality and reconciliation.** Checks, each written into `tests/test_data_quality.py`: clickstream totals vs AQS `user` pageviews (desktop + mobile web) per language-month, and the gap over time; sample pageviews vs AQS per-article values for 200 random articles; no duplicate article-days; redirect handling; the 2025 bot-reclassification window flagged in both sources; methodology breaks from P02 marked. **Threshold-truncation check:** use the full pageviews to estimate the share of each language's search arrivals hidden by the <10 rule, by popularity decile and over time, and simulate how much decline truncation alone would create. **Findings:** a pass/fail checklist, the truncation bias by decile, the flagged months, and the reconciliation chart.
+
+### Phase 2: Measures and pre-registration
+
+- [ ] **P12: Quick-answer label.** Write a rubric in `docs/quick_answer_rubric.md`: an article is "quick-answer" if a typical search query landing on it is answered by one fact or a short definition (a person's age or birth date, a capital, a unit conversion, a chemical element's properties, a film's release year, a term definition). Build the rule-based label from Wikidata type + features. Draw a stratified validation set of 300 articles (English plus 2 other languages) in `data/reference/quick_answer_labels.csv`. Claude pre-labels them from the rubric **without seeing the rule's output**; the user then audits a random 100. Report rule precision, recall and F1 against the audited labels, and Claude–user agreement (Cohen's κ). **Findings:** the metrics, the confusion cases, and a decision on whether the rule is good enough or needs a second version.
+
+- [ ] **P13: Analysis panels.** Build and save in Parquet + CSV: (1) language × month: search arrivals, total arrivals, search share, internal share, `user` views by access, editors, exposure, cohort; (2) article × month: views by access and agent, search arrivals (where above the threshold), features, label, weights; (3) item × language × month for the matched-concept panel. Zero-fill properly (an absent clickstream pair means "<10", not 0; code it as censored). Flag the incomplete latest month. **Findings:** panel sizes, coverage, censoring rates, and totals that reconcile with P11.
+
+- [ ] **P14: Exploratory analysis (blinded).** In `notebooks/01_eda.ipynb`: long-run trends indexed to 2019 = 100 for each language, seasonality (weekday from daily views; academic calendars differ by language), pre-period slopes and how parallel the languages were before 2024-05, the English referral mix 2018–today (descriptive), and the effect of the ChatGPT era on pre-period trends. Make no post-launch treated-vs-control contrasts. **Findings:** 4–6 charts, the pre-trend picture, and whether each control language looks usable.
+
+- [ ] **P15: Pre-registration and power.** Write `PREREGISTRATION.md`: the primary estimand (ATT on log monthly search arrivals at language level, Callaway–Sant'Anna with not-yet-treated controls, the window ending when the last control is treated), the primary inference method (few clusters, so wild cluster bootstrap and randomization inference over cohort assignments), the secondary hypotheses (H2 quick-answer triple difference, H3 mobile > desktop, H4 head vs tail with truncation correction, H5 referral mix and internal-navigation depth, H6 editors), the multiple-comparison plan (Holm across H2–H6), what counts as a null or a refutation, the smallest effect of interest, and the robustness list. **Power:** simulate placebo launches on pre-period data with the real cohort structure, and report the minimum detectable effect. Lock with git tag `prereg-v1`. **Findings:** a one-paragraph summary, the MDE, and the judgement calls left for the user.
+
+### Phase 3: Headline effect
+
+- [ ] **P16: English ITS.** Segmented regression of log monthly English search arrivals (and search share) with trend, month-of-year seasonality, the ChatGPT break, and a level + slope break at 2024-05, using HAC errors. Report yearly gaps vs the counterfactual with intervals and a pre-period holdout error (as in Project 4: lead with gaps, not with level/slope terms). Make clear that English is only partly treated at first (US-only). **Findings:** the estimates table, fitted vs actual chart, diagnostics, and holdout error.
+
+- [ ] **P17: Staggered DiD.** Callaway–Sant'Anna on the language × month panel: group-time ATTs, the event-study aggregation with pre-trend leads, and the overall ATT. Cross-check with Sun–Abraham and Borusyak–Jaravel–Spiess imputation. Inference: wild cluster bootstrap plus randomization inference. **Findings:** the ATT with intervals from each method, the event-study chart (hero v0), and the pre-trend test.
+
+- [ ] **P18: Dose–response.** Use the continuous exposure from P03: a TWFE with language and month FE plus a modern continuous-treatment check (e.g. binned dose event study), and show how the effect scales with exposure. Explain how this handles en, es and pt, which are partly treated. **Findings:** the slope with its interval, a dose–response chart, and whether it agrees with P17.
+
+- [ ] **P19: Within-concept design.** On the item × language × month panel: `log(views or search arrivals) ~ exposure_lm + item×month FE + item×language FE`, clustering by language (wild bootstrap). This identifies the effect from the same concept read in different languages in the same month. Weight by sampling weights and report unweighted too. **Findings:** the estimate, how it compares with P17, and the sample of items behind it.
+
+- [ ] **P20: Robustness.** All pre-registered variants: with and without the bot-reclassification months; placebo launch dates (12 months earlier); ±1-month launch shifts; dropping 2022-11 to 2023-06; leave-one-language-out; adding core-update indicators; total `user` views instead of clickstream; negative-control languages; the truncation-corrected outcome. **Findings:** a forest plot of every estimate, and which conclusions hold up.
+
+### Phase 4: Who and what lost traffic
+
+- [ ] **P21: Quick-answer vs long-read.** Triple difference (label × exposure × post) on the article panel with article and language×month FE. Repeat by Wikidata coarse type and by article topic, partially pooled (bambi) to keep small types honest. **Findings:** the triple-difference estimate, the dot plot by type (chart 5), the slope chart (chart 2), and whether H2 survives Holm.
+
+- [ ] **P22: Mobile vs desktop, head vs tail.** Effects by access type (pageviews, since clickstream isn't split) and by pre-period popularity decile. Use the P11 truncation correction for tail deciles, and guard against regression to the mean by using decile membership from 2023. **Findings:** the effects by group with intervals, and whether the tail result survives the truncation correction.
+
+- [ ] **P23: Referral mix and reader behaviour.** Did search's share fall while internal navigation held up? Per-arrival depth: outgoing internal clicks ÷ arrivals per article, before and after, treated vs control. Are the readers who still arrive from search more engaged (a selection story)? **Findings:** the stacked-area referral mix (chart 3), the change in depth, and how to interpret it.
+
+- [ ] **P24: Editors vs readers.** Do active editors and edits follow readership? Use a language-level DiD on editors with lags of 6–18 months, plus article-level edits on the panel. Be explicit that there is less power and longer lags here. **Findings:** chart 6, the estimates, and what can and can't be said.
+
+- [ ] **P25: AI Overviews vs chatbots.** Separate the ChatGPT-era decline (global, absorbed by month FE in DiD; visible in ITS) from AI Overviews (staggered). Decompose the total English search decline since 2022-11 into the pre-trend, the ChatGPT era, and post-AIO components, with intervals. Note what `other-external` growth shows about chatbot referrals and what it can't show. **Findings:** the decomposition chart and the honest share attributable to AI Overviews.
+
+### Phase 5: Figures and reproducibility
+
+- [ ] **P26: Visual theme and hero chart.** Port Project 4's `viz/theme.py` (validated light/dark, colour-blind safe) into `src/wao/viz/theme.py`. Hero chart: search-referred traffic indexed to the launch month, treated vs not-yet-treated, event-study style with a confidence band. Export SVG + PNG in light and dark. **Findings:** the chart, plus 2–3 alternatives for the user to choose from.
+
+- [ ] **P27: Remaining figures.** Charts 2–6 from the plan plus the small multiples (chart 4: one language per panel with its launch marked) and the robustness forest plot. Each comes with the one-sentence takeaway it supports. **Findings:** all the charts with their takeaways.
+
+- [ ] **P28: Reproducibility.** Get `make all` running end to end from raw dumps, plus `make all SAMPLE=1` on a synthetic mini-dump that finishes in minutes. Add tests that pin the headline estimates within a tolerance, and set up CI on the sample path. **Findings:** total run time, the pinned values, and CI status.
+
+- [ ] **P29: Analysis validation.** Review the work as an independent reviewer would: identification (do exposure and timing really vary independently of other shocks?), post-period leakage into exposure or the sample, few-cluster inference, truncation and bot artefacts, Holm results, and whether every claim in the draft has the estimate behind it. Write `report/validation.md`. **Findings:** issues by severity, with fixes applied or proposed.
+
+### Phase 6: Deliverables
+
+- [ ] **P30: Quarto article.** Write `report/index.qmd`: the headline finding first, then the method in plain English, results, the "what we won't claim" section (lost clicks ≠ harmed readers), and robustness. Read every number from the pipeline outputs, never type it in by hand. Cite Wikimedia's 2025 traffic statement and the relevant zero-click/AI-search literature, and link Project 4. Render to self-contained HTML. **Findings:** the article link, word count, and claims that are still weak.
+
+- [ ] **P31: Article lookup app.** A static `app/index.html` with precomputed JSON: type an article title (sample articles only; say so) and see its monthly traffic, its counterfactual from the within-concept model, its referral mix over time, and the same concept in other languages. Keep the bundle small (lazy-load by language). **Findings:** the app, bundle size, coverage, and any caveats shown to users.
+
+- [ ] **P32: Published dataset.** `make release`: the language × month and article × month panels plus the exposure table (Parquet + CSV), a column dictionary, checksums, and a Hugging Face data card (CC0 for derived counts; attribute Wikimedia; list the known limitations: truncation, bot reclassification, sample design). Nothing is uploaded without the user. **Findings:** files, sizes, and the draft data card.
+
+- [ ] **P33: README.** Hero chart (light/dark), three findings, one "what this doesn't show" line, a read-more table, how to reproduce, and an MIT licence. Test the README's numbers against the pipeline. **Findings:** the README.
+
+- [ ] **P34: Launch kit.** Drafts for an HN title and first comment, r/wikipedia and r/dataisbeautiful, the Wikimedia Research mailing list (wiki-research-l) and a Research Showcase pitch, a pitch to Press Gazette / Nieman Lab / Search Engine Land, and a LinkedIn/Bluesky/X thread. Add the likely reviewer questions with answers, and a launch checklist (make the repo public, GitHub Pages for the article and app). Nothing is posted without the user. **Findings:** the drafts and the checklist.
+
+Out of scope (can be added later): the joint Stack Overflow + Wikipedia "knowledge commons" post, logging AI Overviews citations, and a monthly-updating tracker.
