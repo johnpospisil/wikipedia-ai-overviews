@@ -39,6 +39,7 @@ def google_pre(countries: list[str]) -> pd.DataFrame:
     path = config.REFERENCE_DIR / "search_share.csv"
     if path.exists():
         ss = pd.read_csv(path, keep_default_na=False)
+        ss["share"] = pd.to_numeric(ss.share, errors="coerce")
         missing = sorted(set(countries) - set(ss.country_iso2))
         if missing:
             ss = pd.concat([ss, search_share.fetch_all(missing)], ignore_index=True)

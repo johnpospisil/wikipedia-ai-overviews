@@ -10,7 +10,7 @@ import io
 
 import pandas as pd
 
-from wao import config, http
+from wao import http
 
 URL = "https://gs.statcounter.com/search-engine-market-share/all/chart.php"
 FROM, TO = "2017-11", "2026-09"
