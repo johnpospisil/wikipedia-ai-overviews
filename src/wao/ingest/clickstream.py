@@ -65,7 +65,7 @@ def read(path: Path, con: duckdb.DuckDBPyConnection | None = None) -> tuple[pa.T
         """,
         params=[str(path)],
     ).to_arrow_table()
-    rejected = con.execute("SELECT count(DISTINCT line) FROM reject_errors").fetchone()[0]
+    rejected = con.execute("SELECT count(DISTINCT line) FROM reject_errors").fetchall()[0][0]
     n = tbl.column("n")
     stats = {
         "rows": tbl.num_rows,

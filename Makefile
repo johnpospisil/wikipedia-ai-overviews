@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference ingest build models figures report test test-network lint
+.PHONY: all check-env progress reference ingest ingest-clickstream build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -39,8 +39,11 @@ reference:
 
 # Stages are filled in by later prompts (ingest P04–P10, build P11–P13, models P16–P25,
 # figures P26–P27, report P30).
-ingest: check-env
-	@echo "ingest: nothing yet (P04–P10)"
+ingest: check-env ingest-clickstream
+
+# P05: all clickstream files -> Parquet pairs + per-article aggregates (resumable).
+ingest-clickstream: check-env
+	$(PY) -m wao.ingest.clickstream_ingest
 
 build:
 	@echo "build: nothing yet (P11–P13)"
