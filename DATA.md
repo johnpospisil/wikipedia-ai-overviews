@@ -116,3 +116,18 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   - The bracket logic assumes the page was updated within about 2 weeks of an announcement.
   - Month resolution is used in the models.
 - **Other events:** `data/reference/events.csv` (sourced): chatbot launches, competing AI search (Bing Chat, ChatGPT search, Yandex Neuro 2024-04-16), Google AI Mode, Google ranking updates 2022–2026 (Search Status Dashboard), and Wikimedia measurement changes (bot reclassification of Mar–Aug 2025 traffic; the US gap in the country data). Vector 2022 skin rollout dates by language are **not yet included** because no primary source was found.
+
+## 10. Country shares and exposure (P03)
+
+- **Country shares** (`data/reference/country_shares.csv`, built by `python -m wao.ingest.country`): each edition's `user` pageviews by country, 2023-10..2024-04.
+  - Source: AQS `pageviews/top-by-country/<wiki>.wikipedia.org/all-access/<y>/<m>`. Note the `.org`; without it the call 404s. Counts are rounded up to the next 1,000.
+  - Some edition-months are missing (fr 2024-03, pl 2024-03, ja 2024-02). Those months are dropped from both the country list and the total.
+  - **Protected countries are withheld** (missing ranks): Iran, mainland China, and Russia/Belarus/Kazakhstan among others. The withheld mass is the residual: AQS `user` total minus published countries. It is split across withheld countries in proportion to the DP dataset (§4, which publishes RU/BY/KZ from 2024-02-15), scaled to AQS through countries both sources publish. Whatever remains goes to IR (fa), CN (zh), or `ZZ` (unknown, treated as unexposed).
+  - Residual-based share: ru 73%, fa 78%, es 6%, en 5%, others ≤2%.
+  - The DP dataset on its own gave implausible shares (fa with no Iran; fr with Poland at 4%), so it is used only for the residual split.
+- **Google share:** `data/reference/search_share.csv` (StatCounter, all engines, monthly 2017-11..2026-09, by country). The exposure uses the pre-period mean (2023-10..2024-04), fixed so search behaviour changed by the treatment can't feed back into it.
+- **Exposure:** `data/reference/language_exposure.csv` (wiki × month): `exposure`, `exposure_all_users` (no signed-in-adult restriction), `exposure_listed` (no Google weight). `language_cohorts.csv` gives the cohort (first month ≥ 0.5) and design role.
+- **Caveats:**
+  - VPN users count where their IP is located. That's also where Google decides whether to show AI Overviews, so it's consistent.
+  - The hidden `ZZ` share is treated as unexposed, a mild understatement for en and es.
+  - Availability ≠ how often AI Overviews appear on Wikipedia-type queries.

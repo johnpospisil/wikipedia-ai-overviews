@@ -17,18 +17,25 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env reference ingest build models figures report test test-network lint
+.PHONY: all check-env progress reference ingest build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
 check-env:
 	$(PY) -m wao.check_env
 
-# P01–P02: dump inventories, AI Overviews rollout from Google's help page (Wayback), figure.
+# Progress bar for a running download: `make progress` (JOB=country, WATCH=1 to keep redrawing).
+progress:
+	@$(PY) -m wao.progress $(or $(JOB),country) $(if $(WATCH),--watch,)
+
+# P01–P03: dump inventories, rollout (Google help page via Wayback), country shares, exposure.
 reference:
 	$(PY) -m wao.ingest.inventory
 	$(PY) -m wao.build.rollout
 	$(PY) -m wao.viz.rollout_timeline
+	$(PY) -m wao.ingest.country
+	$(PY) -m wao.build.exposure
+	$(PY) -m wao.viz.exposure_curves
 
 # Stages are filled in by later prompts (ingest P04–P10, build P11–P13, models P16–P25,
 # figures P26–P27, report P30).
