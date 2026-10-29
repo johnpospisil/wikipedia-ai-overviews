@@ -17,6 +17,7 @@ Project plan: [05-wikipedia-ai-overviews.md](05-wikipedia-ai-overviews.md). Data
 5. When a prompt is finished and its findings are approved, tick its box, put "✅ DONE!" right after the box, and add a one-line result next to it (e.g. `- [x] ✅ DONE! **P00: …** _Done 2026-10-29: …_`). When every prompt in a phase is ticked, add "✅ DONE" to the phase heading.
 6. **Blinding rule:** until pre-registration (P15) is locked, no prompt may compare treated with untreated languages (or quick-answer with long-read articles) after a launch date. Data-quality work may look at totals over the full period; analytical contrasts may use only the pre-period (before 2024-05). Later changes go in a dated "Deviations" section of `PREREGISTRATION.md`, never as silent edits.
 7. Commit at the end of each prompt with a message starting with the prompt ID (e.g. `P05: clickstream ingest`).
+8. **When a prompt is completely done** (committed, pushed, box ticked), play a sound as the last step before the report: `afplay /System/Library/Sounds/Glass.aiff`. Not for intermediate steps or questions.
 
 ## Project facts
 
@@ -49,7 +50,7 @@ Project plan: [05-wikipedia-ai-overviews.md](05-wikipedia-ai-overviews.md). Data
 
 ### Phase 1: Ingest
 
-- [ ] **P04: Parser tests first.** Create small fixture files for clickstream TSV (all four `other-*` types, `link`, `external`, unicode titles, titles with tabs or quotes), `pageview_complete` (the compact hourly-encoded daily field, multiple access types, `user` and `automated` agents, missing `page_id`) and Wikidata JSON entities. Write failing pytest tests for streaming parsers, and implement until they pass. Check them against one real file of each. **Findings:** test count, and edge cases found in the real files.
+- [x] ✅ DONE! **P04: Parser tests first.** _Done 2026-10-29: 20 parser tests (fixtures + real); real files: clickstream quote-wrapped titles found and decoded; pageview 2024-03 totals = AQS exactly for all 11 editions, 0 malformed rows, null page_id 1–7% of views; 11 min/file single-threaded._ Create small fixture files for clickstream TSV (all four `other-*` types, `link`, `external`, unicode titles, titles with tabs or quotes), `pageview_complete` (the compact hourly-encoded daily field, multiple access types, `user` and `automated` agents, missing `page_id`) and Wikidata JSON entities. Write failing pytest tests for streaming parsers, and implement until they pass. Check them against one real file of each. **Findings:** test count, and edge cases found in the real files.
 
 - [ ] **P05: Clickstream ingest.** Stream every available month for every language in the set into Parquet partitioned by `lang=` and `month=` (`prev, curr, type, n`). Also write `clickstream_lang_month.parquet` with totals by referrer type, and `clickstream_article_month.parquet` with per-article arrivals by type plus outgoing internal clicks (for P23). Make it resumable, and log rows/sec and peak memory. **Findings:** rows and sizes by language, months covered, run time, and the English referral mix by year as a sanity check (descriptive totals only).
 

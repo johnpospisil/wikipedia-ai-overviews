@@ -131,3 +131,12 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   - VPN users count where their IP is located. That's also where Google decides whether to show AI Overviews, so it's consistent.
   - The hidden `ZZ` share is treated as unexposed, a mild understatement for en and es.
   - Availability ≠ how often AI Overviews appear on Wikipedia-type queries.
+
+## 11. Parser checks on real files (P04)
+
+- **Clickstream en 2026-09:** 33,553,254 rows, 0 rejected, min n = 10. Titles containing `"` (13,521 rows) are written quote-wrapped with `\"` escapes and are now decoded. 18 genuine titles contain a backslash (e.g. `A\J:_Alternatives_Journal`). There were no unknown `other-*` referrers. Type `other` (780k rows) = a link no longer present in the page.
+- **pageview_complete monthly user 2024-03** (3.28 GB bz2, size matches the listing): 242.7 M lines; the 11 core editions are 107.7 M rows. 0 malformed, 0 five-column, 0 rows whose daily counts don't sum to the monthly total; max day 31. **Totals equal AQS `user` all-access monthly views exactly for all 11 editions.**
+  - `null` page_id: 1.3–6.8% of views, so P07 needs a title fallback.
+  - mobile-app: 0.6–5.0% of views.
+  - Speed: 11.0 min per file at 367k lines/s with Python's single-threaded bz2, 42 MB RAM. 129 user months + 77 automated months ≈ 38 h serial. A parallel bz2 decoder (e.g. `lbzip2`) or several files at once would cut this (decided in P07).
+- **Wikidata API:** entities parse as expected. Missing items come back as `missing` and are dropped. A single malformed ID fails the whole `wbgetentities` batch (`no-such-entity`); the parser raises rather than returning nothing.
