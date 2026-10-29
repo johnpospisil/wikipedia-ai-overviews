@@ -10,7 +10,8 @@ available     1 if AI Overviews were live in c on day d AND language l was suppo
 
 Variants: `exposure_all_users` counts only days without the signed-in-18+ restriction;
 `exposure_listed` drops the Google weight;
-`exposure_as_listed` also counts countries in NEVER_LIVE (Iran) as the help page listed them. Cohort = first month with exposure >= 0.5.
+`exposure_as_listed` also counts countries in NEVER_LIVE (Iran) as the help page listed them.
+Cohort = first month with exposure >= 0.5.
 
 Writes data/reference/language_exposure.csv and data/reference/language_cohorts.csv.
 """
