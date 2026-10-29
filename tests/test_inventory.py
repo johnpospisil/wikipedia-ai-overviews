@@ -2,10 +2,13 @@ import pandas as pd
 
 from wao.ingest import inventory
 
-LISTING = """<html><body><pre><a href="../">../</a>
-<a href="2017-11/">2017-11/</a>     05-Dec-2017 10:00     -
-<a href="clickstream-enwiki-2026-09.tsv.gz">clickstream-enwiki-2026-09…</a> 03-Oct-2026 08:26 479161129
-</pre></body></html>"""
+CS_FILE = "clickstream-enwiki-2026-09.tsv.gz"
+LISTING = (
+    '<html><body><pre><a href="../">../</a>\n'
+    '<a href="2017-11/">2017-11/</a>     05-Dec-2017 10:00     -\n'
+    f'<a href="{CS_FILE}">{CS_FILE}</a>     03-Oct-2026 08:26     479161129\n'
+    "</pre></body></html>"
+)
 
 
 def test_parse_listing_skips_parent_and_reads_sizes():
