@@ -26,6 +26,7 @@ dependencies = [
     # viz
     "matplotlib>=3.9",
     "wildboottest>=0.3.2",
+    "pycountry>=26.2.16",
 ]
 
 [dependency-groups]

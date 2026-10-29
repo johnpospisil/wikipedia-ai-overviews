@@ -1,0 +1,347 @@
+kind,name,iso2,first_seen,last_absent,first_tier,first_all_users,last_seen,n_snapshots
+country,Brazil,BR,2024-08-27,2024-08-15,adult_signed_in,2025-03-29,2026-10-29,106
+country,India,IN,2024-08-27,2024-08-15,adult_signed_in,2025-03-29,2026-10-29,106
+country,Indonesia,ID,2024-08-27,2024-08-15,adult_signed_in,2025-03-29,2026-10-29,106
+country,Japan,JP,2024-08-27,2024-08-15,adult_signed_in,2025-03-29,2026-10-29,106
+country,Mexico,MX,2024-08-27,2024-08-15,adult_signed_in,2025-03-29,2026-10-29,106
+country,United Kingdom,GB,2024-08-27,2024-08-15,adult_signed_in,2025-05-30,2026-10-29,106
+country,United States,US,2024-08-27,2024-08-15,us_all,2024-08-27,2026-10-29,106
+country,American Samoa,AS,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Angola,AO,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Antarctica,AQ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Antigua and Barbuda,AG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Argentina,AR,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Australia,AU,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Bahamas,BS,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Bangladesh,BD,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Barbados,BB,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Belize,BZ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Benin,BJ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Bhutan,BT,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Bolivia,BO,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Botswana,BW,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Brunei,BN,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Burkina Faso,BF,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Burundi,BI,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Cambodia,KH,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Cameroon,CM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Canada,CA,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Cape Verde,CV,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Central African Republic,CF,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Chad,TD,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Chile,CL,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Colombia,CO,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Comoros,KM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Congo (DRC),CD,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Congo (Republic),CG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Cook Islands,CK,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Costa Rica,CR,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Côte d'Ivoire,CI,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Dominica,DM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Dominican Republic,DO,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Ecuador,EC,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,El Salvador,SV,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Equatorial Guinea,GQ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Eritrea,ER,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Eswatini,SZ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Ethiopia,ET,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Fiji,FJ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Gabon,GA,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Gambia,GM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Ghana,GH,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Grenada,GD,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Guam,GU,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Guatemala,GT,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Guinea,GN,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Guinea-Bissau,GW,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Guyana,GY,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Haiti,HT,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Honduras,HN,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Jamaica,JM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Kenya,KE,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Kiribati,KI,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Kyrgyzstan,KG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Laos,LA,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Lesotho,LS,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Liberia,LR,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Madagascar,MG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Malawi,MW,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Malaysia,MY,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Maldives,MV,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Mali,ML,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Marshall Islands,MH,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Mauritius,MU,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Micronesia,FM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Mongolia,MN,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Mozambique,MZ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Myanmar,MM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Namibia,NA,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Nauru,NR,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Nepal,NP,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,New Zealand,NZ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Nicaragua,NI,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Niger,NE,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Nigeria,NG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Niue,NU,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Northern Mariana Islands,MP,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Pakistan,PK,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Palau,PW,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Panama,PA,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Papua New Guinea,PG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Paraguay,PY,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Peru,PE,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Philippines,PH,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Puerto Rico,PR,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Rwanda,RW,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Saint Kitts and Nevis,KN,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Saint Lucia,LC,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Saint Vincent and the Grenadines,VC,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Samoa,WS,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Senegal,SN,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Seychelles,SC,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Sierra Leone,SL,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Singapore,SG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Solomon Islands,SB,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Somalia,SO,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,South Africa,ZA,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,South Sudan,SS,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Sri Lanka,LK,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Suriname,SR,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Taiwan,TW,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Tajikistan,TJ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Tanzania,TZ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Thailand,TH,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Timor-Leste,TL,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Togo,TG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Tokelau,TK,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Tonga,TO,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Trinidad and Tobago,TT,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Turkmenistan,TM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Tuvalu,TV,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,U.S. Virgin Islands,VI,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Uganda,UG,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,United States Minor Outlying Islands,UM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Uruguay,UY,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Uzbekistan,UZ,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Vanuatu,VU,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Venezuela,VE,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Vietnam,VN,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Western Sahara,EH,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Zambia,ZM,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Zimbabwe,ZW,2024-11-02,2024-10-03,adult_signed_in,2025-03-29,2026-10-29,103
+country,Korea,KR,2024-12-22,2024-12-19,adult_signed_in,2025-03-29,2026-10-29,98
+country,Austria,AT,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Belgium,BE,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Germany,DE,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Ireland,IE,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Italy,IT,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Poland,PL,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Portugal,PT,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Spain,ES,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Switzerland,CH,2025-03-29,2025-03-20,adult_signed_in,2025-05-30,2026-10-29,87
+country,Afghanistan,AF,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Albania,AL,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Algeria,DZ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Andorra,AD,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Anguilla,AI,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Armenia,AM,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Aruba,AW,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Azerbaijan,AZ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Bahrain,BH,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Belarus,BY,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Bermuda,BM,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Bosnia and Herzegovina,BA,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Bouvet Island,BV,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,British Indian Ocean Territory,IO,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,British Virgin Islands,VG,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Bulgaria,BG,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Canary Islands,IC,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Caribbean Netherlands,BQ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Cayman Islands,KY,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Ceuta & Melilla,EA,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Christmas Island,CX,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Cocos (Keeling) Islands,CC,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Croatia,HR,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Curaçao,CW,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Cyprus,CY,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Czechia,CZ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Denmark,DK,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Djibouti,DJ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Egypt,EG,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Estonia,EE,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Eurozone,,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Falkland Islands (Islas Malvinas),FK,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Faroe Islands,FO,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Finland,FI,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Georgia,GE,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Gibraltar,GI,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Greece,GR,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Greenland,GL,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Guernsey,GG,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Heard Island and McDonald Islands,HM,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Hong Kong,HK,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Hungary,HU,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Iceland,IS,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Iran,IR,2025-05-30,2025-04-27,all,2025-05-30,2025-09-01,17
+country,Iraq,IQ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Isle of Man,IM,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Israel,IL,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Jersey,JE,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Jordan,JO,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Kazakhstan,KZ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Kosovo,XK,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Kuwait,KW,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Latvia,LV,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Lebanon,LB,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Libya,LY,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Liechtenstein,LI,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Lithuania,LT,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Luxembourg,LU,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Macao,MO,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Malta,MT,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Mauritania,MR,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Moldova,MD,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Monaco,MC,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Montenegro,ME,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Montserrat,MS,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Morocco,MA,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Netherlands,NL,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Norfolk Island,NF,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,North Macedonia,MK,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Norway,NO,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Oman,OM,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Palestine,PS,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Pitcairn Islands,PN,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Qatar,QA,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Romania,RO,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Russia,RU,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Saint Maarten,SX,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,San Marino,SM,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Saudi Arabia,SA,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Serbia,RS,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Slovakia,SK,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Slovenia,SI,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,South Georgia and the South Sandwich Islands,GS,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,"St. Helena, Ascension and Tristan da Cunha",SH,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Sudan,SD,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Svalbard and Jan Mayen,SJ,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Sweden,SE,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Syria,SY,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Tunisia,TN,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Turks and Caicos Islands,TC,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Ukraine,UA,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,United Arab Emirates,AE,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Vatican City,VA,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Yemen,YE,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Åland Islands,AX,2025-05-30,2025-04-27,all,2025-05-30,2026-10-29,85
+country,Türkiye,TR,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+country,France,FR,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,French Guiana,GF,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,French Polynesia,PF,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Guadeloupe,GP,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Martinique,MQ,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Mayotte,YT,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,New Caledonia,NC,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Réunion,RE,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Saint Barthélemy,BL,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Saint Martin,MF,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Saint Pierre and Miquelon,PM,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+country,Wallis and Futuna,WF,2026-07-30,2026-07-22,all,2026-07-30,2026-10-29,20
+language,Arabic,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Azerbaijani,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Bengali,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Bulgarian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Chinese (Simplified),,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Chinese (Traditional),,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Croatian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Czech,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Danish,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Dutch,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,English,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Finnish,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,French,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,German,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Greek,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Hebrew,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Hindi,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Hungarian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Indonesian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Italian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Japanese,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Kannada,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Korean,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Lithuanian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Malay,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Malayalam,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Marathi,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Norwegian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Persian (Farsi),,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Polish,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Portuguese,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Romanian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Russian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Serbian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Slovak,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Spanish,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Swedish,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Tamil,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Telugu,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Thai,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Turkish,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Ukrainian,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Urdu,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Uzbek,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Vietnamese,,2025-05-30,,all,2025-05-30,2026-10-29,85
+language,Afrikaans,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Akan,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Albanian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Amharic,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Armenian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Basque,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Belarusian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Bosnian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Burmese,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Catalan,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Cebuano,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Estonian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Faroese,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Filipino,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Galician,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Georgian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Gujarati,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Hausa,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Icelandic,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Irish,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Kazakh,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Khmer,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Kinyarwanda,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Kurdish,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Kyrgyz,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Lao,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Latvian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Macedonian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Maltese,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Maori,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Mongolian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Nepali,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Odia,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Oromo,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Pashto,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Punjabi,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Quechua,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Romansh,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Serbian (Latin),,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Sindhi,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Sinhala,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Slovenian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Somali,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Southern Sotho,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Swahili,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Tajik,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Tswana,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Turkmen,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Welsh,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Western Frisian,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Wolof,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Yoruba,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44
+language,Zulu,,2026-02-21,2026-01-30,all,2026-02-21,2026-10-29,44

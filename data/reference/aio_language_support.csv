@@ -1,0 +1,39 @@
+wiki,language,supported_from,scope,date_precision,source_url,notes
+en,English,2024-05-14,US,day,https://blog.google/products/search/generative-ai-google-search-may-2024/,US only at launch
+en,English,2024-08-15,all_live_countries,day,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/,English in every launched market from the Aug 2024 wave
+hi,Hindi,2024-08-15,IN,day,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/,launch-market languages of the six-market wave
+ja,Japanese,2024-08-15,JP,day,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/,
+pt,Portuguese,2024-08-15,BR,day,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/,Brazilian Portuguese
+es,Spanish,2024-08-15,MX,day,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/,Latin American Spanish
+id,Indonesian,2024-08-15,ID,day,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/,
+hi,Hindi,2024-10-28,all_live_countries,day,https://blog.google/products/search/ai-overviews-search-october-2024/,"""any of the currently supported languages, including English, Hindi, Indonesian, Japanese, Portuguese, and Spanish"" in any launched country"
+ja,Japanese,2024-10-28,all_live_countries,day,https://blog.google/products/search/ai-overviews-search-october-2024/,
+pt,Portuguese,2024-10-28,all_live_countries,day,https://blog.google/products/search/ai-overviews-search-october-2024/,
+es,Spanish,2024-10-28,all_live_countries,day,https://blog.google/products/search/ai-overviews-search-october-2024/,
+id,Indonesian,2024-10-28,all_live_countries,day,https://blog.google/products/search/ai-overviews-search-october-2024/,
+ko,Korean,2024-12-20,KR,bracket 2024-12-19..2024-12-22,https://web.archive.org/web/*/support.google.com/websearch/answer/14901683,Korea first listed on the help page; Korean assumed supported with it (no Google announcement found)
+de,German,2025-03-25,all_live_countries,day,https://blog.google/feed/were-bringing-the-helpfulness-of-ai-overviews-to-more-countries-in-europe/,"launched for AT, DE, CH"
+it,Italian,2025-03-25,all_live_countries,day,https://blog.google/feed/were-bringing-the-helpfulness-of-ai-overviews-to-more-countries-in-europe/,"launched for IT, CH"
+pl,Polish,2025-03-25,all_live_countries,day,https://blog.google/feed/were-bringing-the-helpfulness-of-ai-overviews-to-more-countries-in-europe/,
+fr,French,2025-03-25,CH,day,https://blog.google/feed/were-bringing-the-helpfulness-of-ai-overviews-to-more-countries-in-europe/,French only in Switzerland in the Europe wave (Belgium got English only)
+fr,French,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,"in the 40+ language list first seen 2025-05-30; France itself not live until 2026-07-22"
+ru,Russian,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,language list first seen 2025-05-30
+zh,Chinese (Simplified/Traditional),2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,Chinese named in the announcement; mainland China never listed
+fa,Persian (Farsi),2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,Iran listed only 2025-05-30..2025-09-01; Afghanistan listed from 2025-05-30
+ar,Arabic,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+nl,Dutch,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+tr,Turkish,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,Türkiye itself not listed until 2026-02 (bracket 2026-01-30..2026-02-21)
+uk,Ukrainian,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+cs,Czech,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+sv,Swedish,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+he,Hebrew,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+fi,Finnish,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+hu,Hungarian,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+vi,Vietnamese,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+th,Thai,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+el,Greek,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+sr,Serbian,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+ro,Romanian,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+no,Norwegian,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+bg,Bulgarian,2025-05-20,all_live_countries,day,https://blog.google/products/search/ai-overview-expansion-may-2025-update/,
+ca,Catalan,2026-02-10,all_live_countries,bracket 2026-01-30..2026-02-21,https://web.archive.org/web/*/support.google.com/websearch/answer/14901683,second language batch (53 languages) first seen 2026-02-21

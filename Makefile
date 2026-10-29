@@ -17,12 +17,18 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env ingest build models figures report test test-network lint
+.PHONY: all check-env reference ingest build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
 check-env:
 	$(PY) -m wao.check_env
+
+# P01–P02: dump inventories, AI Overviews rollout from Google's help page (Wayback), figure.
+reference:
+	$(PY) -m wao.ingest.inventory
+	$(PY) -m wao.build.rollout
+	$(PY) -m wao.viz.rollout_timeline
 
 # Stages are filled in by later prompts (ingest P04–P10, build P11–P13, models P16–P25,
 # figures P26–P27, report P30).

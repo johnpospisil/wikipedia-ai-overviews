@@ -93,3 +93,26 @@ All Wikimedia requests send `User-Agent: wao/<version> (<WAO_CONTACT>) python-re
 | Processed Parquet + DuckDB (estimate) | 30–60 GB |
 
 At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a day to download. Wikimedia asks for no more than 2–3 parallel connections to dumps.
+
+## 9. AI Overviews rollout (treatment variable, P02)
+
+- **Country dates:** `data/reference/aio_rollout.csv` is built by `python -m wao.build.rollout` from 142 Wayback Machine snapshots (2024-05-16 to 2026-10-29) of Google's help page [support.google.com/websearch/answer/14901683](https://support.google.com/websearch/answer/14901683). Each country's first appearance is bracketed by the last snapshot without it and the first one with it. Where an official Google announcement falls in that bracket, its date is used (`wave`, `source_url`); otherwise the bracket midpoint (`date_precision` gives the bracket). `all_users_from` marks the end of the "signed-in 18+" restriction. Raw parses are in `aio_help_snapshots.csv` and `aio_country_first_seen.csv`.
+- **Waves:**
+  - US 2024-05-14.
+  - UK, IN, JP, ID, MX, BR 2024-08-15.
+  - 123 countries 2024-10-28 (signed-in 18+ until about 2025-03-25).
+  - Korea about 2024-12-20 (bracket).
+  - AT, BE, DE, IE, IT, PL, PT, ES, CH 2025-03-25 (adults only until 2025-05-20).
+  - 95 countries 2025-05-20, including RU, UA, BY, KZ, NL, SE, HK, AF, IR.
+  - Türkiye about 2026-02-10 (bracket).
+  - France and its overseas territories 2026-07-22.
+- **Never listed:** mainland China. **Removed:** Iran was listed only from 2025-05-30 to 2025-09-01.
+- **Languages:** `aio_language_support.csv`, hand-built from the announcements. The help page only lists languages from 2025-05-30.
+  - French was available only in Switzerland from 2025-03-25, elsewhere from 2025-05-20, and in France from 2026-07-22.
+  - Chinese, Russian and Persian from 2025-05-20.
+  - Korean is assumed to arrive with Korea; no announcement was found.
+- **Caveats:**
+  - Google rolls out gradually and runs A/B tests, so "listed" ≠ "shown on every query". AI Overviews appear only on some queries, and the share varies by market and over time.
+  - The bracket logic assumes the page was updated within about 2 weeks of an announcement.
+  - Month resolution is used in the models.
+- **Other events:** `data/reference/events.csv` (sourced): chatbot launches, competing AI search (Bing Chat, ChatGPT search, Yandex Neuro 2024-04-16), Google AI Mode, Google ranking updates 2022–2026 (Search Status Dashboard), and Wikimedia measurement changes (bot reclassification of Mar–Aug 2025 traffic; the US gap in the country data). Vector 2022 skin rollout dates by language are **not yet included** because no primary source was found.
