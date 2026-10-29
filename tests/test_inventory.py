@@ -4,7 +4,7 @@ from wao.ingest import inventory
 
 LISTING = """<html><body><pre><a href="../">../</a>
 <a href="2017-11/">2017-11/</a>     05-Dec-2017 10:00     -
-<a href="clickstream-enwiki-2026-09.tsv.gz">clickstream-enwiki-2026-09.tsv.gz</a>  03-Oct-2026 08:26  479161129
+<a href="clickstream-enwiki-2026-09.tsv.gz">clickstream-enwiki-2026-09…</a> 03-Oct-2026 08:26 479161129
 </pre></body></html>"""
 
 
