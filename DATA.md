@@ -140,3 +140,16 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   - mobile-app: 0.6–5.0% of views.
   - Speed: 11.0 min per file at 367k lines/s with Python's single-threaded bz2, 42 MB RAM. 129 user months + 77 automated months ≈ 38 h serial. A parallel bz2 decoder (e.g. `lbzip2`) or several files at once would cut this (decided in P07).
 - **Wikidata API:** entities parse as expected. Missing items come back as `missing` and are dropped. A single malformed ID fails the whole `wbgetentities` batch (`no-such-entity`); the parser raises rather than returning nothing.
+
+## 12. Clickstream ingest (P05)
+
+- **Run:** `make ingest-clickstream` (`src/wao/ingest/clickstream_ingest.py`); 2026-10-29, about 3 h wall time for 1,917 files (97 GB gzip), almost all of it download at ~10 MB/s. Conversion took 50 min in total at ~705k rows/s overall; peak RSS 7.0 GB. Resumable: one done marker per file in `clickstream_done/`, partial downloads resume from `.part`.
+- **Outputs (under `WAO_DATA_DIR/parquet/`):**
+  - `clickstream/lang=/month=/pairs.parquet` (`prev, curr, referrer, n`): 7.42 bn rows, 84 GB (en alone 41 GB, 3.46 bn rows).
+  - `clickstream_article/lang=/month=/part.parquet`: per-article arrivals by referrer class, `arr_total`, `out_links` (clicks to other articles, for P23); 25 GB.
+  - `clickstream_lang_month.parquet`: 40 languages × months = 1,917 rows of totals by referrer plus the number of articles with any published arrival.
+- **Checks:** 0 rejected lines in every file; no published count below 10 (the threshold holds); pairs total = article total = lang-month total (unit test). No gaps inside any language's range: en, de, es, ja, ru 2017-11 → 2026-09; fr, it, pl, pt, zh 2018-01 →; fa 2018-03 →; the other 29 languages 2024-08 →.
+- **English referral mix (share of arrivals, descriptive):** search 43–46% every year 2018–2026 (2023 45.4%, 2024 46.2%, 2025 43.6%); links between articles rose from 23% (2018) to 36% (2026); no-referrer fell from 29% to 18%.
+- **Breaks to handle in P11** (visible in `p05_clickstream_coverage.png` / `p05_referral_mix_en.png`):
+  - **2020-06, en:** no-referrer share falls from 23% to 16%, search rises from 44% to 49%, and articles with any arrival drop from 4.8 M to 4.1 M. Consistent with the `automated` agent class Wikimedia introduced in spring 2020 removing bot traffic that had mostly arrived with no referrer. Check against events.csv.
+  - **2025-03, en (and zh in 2025–26):** articles with any arrival jump from 5.6 M to 6.6 M for one month, with no-referrer up to 20%. Looks like undetected automated traffic, around the 2025 bot-detection change. zh shows several similar bright months.
