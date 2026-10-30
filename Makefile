@@ -17,14 +17,14 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference ingest ingest-clickstream build models figures report test test-network lint
+.PHONY: all check-env progress reference ingest ingest-clickstream sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
 check-env:
 	$(PY) -m wao.check_env
 
-# Progress bar for a running download: `make progress` (JOB=clickstream|country; WATCH=1 redraws with speed + ETA).
+# Progress bar for a running download: `make progress` (JOB=clickstream|country|sql|pageviews2023; WATCH=1 redraws with speed + ETA).
 progress:
 	@$(PY) -m wao.progress $(or $(JOB),clickstream) $(if $(WATCH),--watch,)
 
@@ -45,8 +45,13 @@ ingest: check-env ingest-clickstream
 ingest-clickstream: check-env
 	$(PY) -m wao.ingest.clickstream_ingest
 
-build:
-	@echo "build: nothing yet (P11–P13)"
+# P06: SQL table dumps + 2023 pageview totals -> frame and stratified sample (resumable).
+sample: check-env
+	$(PY) -m wao.ingest.sql_dumps
+	$(PY) -m wao.ingest.pageview_months
+	$(PY) -m wao.build.sample
+
+build: sample
 
 models:
 	@echo "models: nothing yet (P16–P25)"

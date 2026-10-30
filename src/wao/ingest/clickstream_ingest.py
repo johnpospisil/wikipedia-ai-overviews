@@ -20,7 +20,6 @@ from __future__ import annotations
 import argparse
 import json
 import resource
-import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -30,9 +29,10 @@ import pandas as pd
 
 from wao import config, http
 from wao.ingest import clickstream
+from wao.ingest.download import WORKERS as DOWNLOAD_WORKERS
+from wao.ingest.download import fetch
 
 REFERRERS = ["search", "empty", "internal_other", "external", "other", "link", "link_other"]
-DOWNLOAD_WORKERS = 2
 
 
 def files(langs: list[str] | None = None, months: list[str] | None = None) -> pd.DataFrame:
@@ -57,24 +57,7 @@ def done_marker(lang: str, month: str) -> Path:
 
 
 def download(row, ua: str) -> Path:
-    p = raw_path(row.lang, row.file)
-    if p.exists() and p.stat().st_size == row.bytes:
-        return p
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_suffix(p.suffix + ".part")
-    for attempt in range(3):
-        # -C - resumes a partial download
-        subprocess.run(
-            ["curl", "-sfL", "--retry", "5", "-C", "-", "-A", ua, "-o", str(tmp), row.url],
-            check=False,
-        )
-        if tmp.exists() and tmp.stat().st_size == row.bytes:
-            break
-        if attempt == 2:
-            raise RuntimeError(f"size mismatch for {row.file}")
-    subprocess.run(["gzip", "-t", str(tmp)], check=True)
-    tmp.rename(p)
-    return p
+    return fetch(row.url, raw_path(row.lang, row.file), row.bytes, test=["gzip", "-t"], ua=ua)
 
 
 def convert(lang: str, month: str, path: Path, con: duckdb.DuckDBPyConnection) -> dict:
