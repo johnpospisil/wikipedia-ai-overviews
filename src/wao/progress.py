@@ -17,7 +17,7 @@ from pathlib import Path
 import pandas as pd
 
 from wao import config
-from wao.ingest import country, pageview_months, sql_dumps
+from wao.ingest import country, pageview_months, pageviews, sql_dumps
 
 
 def _country_files() -> pd.DataFrame:
@@ -50,12 +50,19 @@ def _pageview_2023_files() -> pd.DataFrame:
     return pd.DataFrame({"path": [pageview_months.raw_path(n) for n in f.file], "bytes": f.bytes})
 
 
+def _pageview_files() -> pd.DataFrame:
+    f = pd.read_csv(config.REFERENCE_DIR / "pageview_monthly_files.csv")
+    f = f[f.agent.isin(list(pageviews.FIRST)) & (f.month >= f.agent.map(pageviews.FIRST))]
+    return pd.DataFrame({"path": [pageview_months.raw_path(n) for n in f.file], "bytes": f.bytes})
+
+
 # name -> (expected files with sizes, whether `bytes` are real sizes)
 JOBS: dict[str, tuple[Callable[[], pd.DataFrame], bool]] = {
     "country": (_country_files, False),
     "clickstream": (_clickstream_files, True),
     "sql": (_sql_files, True),
     "pageviews2023": (_pageview_2023_files, True),
+    "pageviews": (_pageview_files, True),
 }
 
 

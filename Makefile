@@ -17,14 +17,14 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference ingest ingest-clickstream sample build models figures report test test-network lint
+.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
 check-env:
 	$(PY) -m wao.check_env
 
-# Progress bar for a running download: `make progress` (JOB=clickstream|country|sql|pageviews2023; WATCH=1 redraws with speed + ETA).
+# Progress bar for a running download: `make progress` (JOB=clickstream|country|sql|pageviews2023|pageviews; WATCH=1 redraws with speed + ETA).
 progress:
 	@$(PY) -m wao.progress $(or $(JOB),clickstream) $(if $(WATCH),--watch,)
 
@@ -39,11 +39,15 @@ reference:
 
 # Stages are filled in by later prompts (ingest P04–P10, build P11–P13, models P16–P25,
 # figures P26–P27, report P30).
-ingest: check-env ingest-clickstream
+ingest: check-env ingest-clickstream ingest-pageviews
 
 # P05: all clickstream files -> Parquet pairs + per-article aggregates (resumable).
 ingest-clickstream: check-env
 	$(PY) -m wao.ingest.clickstream_ingest
+
+# P07: daily pageviews (user 2016-01.., automated 2020-05..) for the P06 sample (resumable, ~10 h).
+ingest-pageviews: check-env
+	$(PY) -m wao.ingest.pageviews --procs 2
 
 # P06: SQL table dumps + 2023 pageview totals -> frame and stratified sample (resumable).
 sample: check-env
