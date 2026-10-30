@@ -56,73 +56,103 @@ def main_pages() -> dict[str, str]:
 
 
 def build_frame(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
-    """Creates table `frame` in con; returns the view-resolution accounting."""
+    """Writes PARQUET_DIR/frame.parquet, one edition at a time (memory stays small); returns
+    the accounting of 2023 views by how they were resolved."""
     pq = config.PARQUET_DIR
     sql = pq / "wiki_sql"
-    mp = pd.DataFrame(list(main_pages().items()), columns=["lang", "title"])
-    con.register("main_pages", mp)
-    con.execute(f"""
-        CREATE OR REPLACE TABLE page AS SELECT * FROM read_parquet('{sql}/page/*/*.parquet',
-            hive_partitioning=true);
-        CREATE OR REPLACE TABLE props AS SELECT * FROM read_parquet(
-            '{sql}/page_props/*/*.parquet', hive_partitioning=true);
-        CREATE OR REPLACE TABLE redir AS SELECT * FROM read_parquet(
-            '{sql}/redirect/*/*.parquet', hive_partitioning=true);
-        CREATE OR REPLACE TABLE pv AS
-          SELECT lang, title, page_id, sum(views) AS views, count(DISTINCT month) AS months
-          FROM read_parquet('{pq}/pageview_month/*/*.parquet', hive_partitioning=true)
-          WHERE month BETWEEN '2023-01' AND '2023-12'
-          GROUP BY ALL;
-        CREATE OR REPLACE TABLE pv_resolved AS
-        WITH r1 AS (
-          SELECT pv.*, coalesce(pv.page_id, t.page_id) AS pid
-          FROM pv LEFT JOIN page t
-            ON pv.page_id IS NULL AND t.lang = pv.lang AND t.namespace = 0 AND t.title = pv.title
-        ), r2 AS (
-          SELECT r1.*, p.namespace, p.is_redirect, t2.page_id AS target_id,
-                 t2.is_redirect AS target_is_redirect
-          FROM r1
-          LEFT JOIN page p ON p.lang = r1.lang AND p.page_id = r1.pid
-          LEFT JOIN redir rd ON p.is_redirect AND rd.lang = r1.lang AND rd.page_id = r1.pid
-          LEFT JOIN page t2 ON t2.lang = r1.lang AND t2.namespace = 0 AND t2.title = rd.target
-        )
-        SELECT lang, views, months, page_id IS NULL AS no_page_id,
-          CASE WHEN pid IS NULL OR namespace IS NULL THEN 'not_in_dump'
-               WHEN namespace <> 0 THEN 'other_namespace'
-               WHEN NOT is_redirect THEN 'article'
-               WHEN target_id IS NOT NULL AND NOT target_is_redirect THEN 'redirect_resolved'
-               ELSE 'redirect_unresolved' END AS status,
-          CASE WHEN namespace = 0 AND NOT is_redirect THEN pid
-               WHEN namespace = 0 AND NOT target_is_redirect THEN target_id END AS article_id
-        FROM r2;
-        CREATE OR REPLACE TABLE frame AS
-        WITH v AS (
-          SELECT lang, article_id AS page_id, sum(views) AS views_2023, max(months) AS months_2023
-          FROM pv_resolved WHERE article_id IS NOT NULL GROUP BY ALL
-        )
-        SELECT v.lang, v.page_id, p.title, pp.qid, v.views_2023, v.months_2023,
-               ntile(10) OVER (PARTITION BY v.lang
-                               ORDER BY v.views_2023, hash(v.page_id, {SEED})) AS decile
-        FROM v JOIN page p ON p.lang = v.lang AND p.page_id = v.page_id
-        LEFT JOIN props pp ON pp.lang = v.lang AND pp.page_id = v.page_id
-        WHERE NOT coalesce(pp.is_disambiguation, false)
-          AND NOT EXISTS (SELECT 1 FROM main_pages m WHERE m.lang = v.lang AND m.title = p.title);
-    """)
-    acct = con.execute("""
-        WITH s AS (
-          SELECT lang, status, no_page_id, sum(views) AS views FROM pv_resolved GROUP BY ALL
-        )
-        SELECT lang, status, no_page_id, views,
-               views / sum(views) OVER (PARTITION BY lang) AS share
-        FROM s ORDER BY lang, views DESC
-    """).df()
-    excluded = con.execute("""
-        SELECT r.lang, sum(r.views) AS views,
-          sum(r.views) FILTER (WHERE pp.is_disambiguation) AS disambiguation_views
-        FROM pv_resolved r LEFT JOIN props pp ON pp.lang = r.lang AND pp.page_id = r.article_id
-        GROUP BY ALL
-    """).df()
-    return acct.merge(excluded[["lang", "disambiguation_views"]], on="lang", how="left")
+    pv = f"read_parquet('{pq}/pageview_month/*/*.parquet', hive_partitioning=true)"
+    parts = pq / "frame_parts"
+    parts.mkdir(parents=True, exist_ok=True)
+    acct = []
+    for lang, main_page in main_pages().items():
+        con.execute(f"""
+            CREATE OR REPLACE TEMP TABLE page AS SELECT page_id, title, is_redirect
+              FROM '{sql}/page/lang={lang}/part.parquet' WHERE namespace = 0;
+            CREATE OR REPLACE TEMP TABLE props AS
+              SELECT * FROM '{sql}/page_props/lang={lang}/part.parquet';
+            CREATE OR REPLACE TEMP TABLE redir AS
+              SELECT * FROM '{sql}/redirect/lang={lang}/part.parquet';
+            -- 2023 views: by page_id where the dump has one, else by title (matched to ns 0)
+            CREATE OR REPLACE TEMP TABLE pv AS
+            WITH by_id AS (
+              SELECT page_id AS pid, false AS no_page_id, sum(views) AS views,
+                     count(DISTINCT month) AS months
+              FROM {pv} WHERE lang = '{lang}' AND month BETWEEN '2023-01' AND '2023-12'
+                AND page_id IS NOT NULL GROUP BY page_id
+            ), by_title AS (
+              -- rows without a page_id are mostly titles that don't exist (red links, typos,
+              -- junk requests): join the ones naming a current ns-0 page, total the rest.
+              -- Two streaming scans; a shared CTE would be materialised (hundreds of M rows).
+              SELECT t.page_id AS pid, true AS no_page_id, sum(views) AS views,
+                     count(DISTINCT month) AS months
+              FROM {pv} AS m JOIN page t USING (title)
+              WHERE lang = '{lang}' AND month BETWEEN '2023-01' AND '2023-12'
+                AND m.page_id IS NULL
+              GROUP BY t.page_id
+            )
+            SELECT * FROM by_id
+            UNION ALL
+            SELECT * FROM by_title
+            UNION ALL
+            SELECT NULL, true, sum(views), NULL FROM {pv}
+              WHERE lang = '{lang}' AND month BETWEEN '2023-01' AND '2023-12'
+                AND page_id IS NULL AND title NOT IN (SELECT title FROM page);
+            CREATE OR REPLACE TEMP TABLE resolved AS
+            WITH r AS (
+              SELECT pv.*, p.page_id IS NOT NULL AS in_ns0, p.is_redirect,
+                     t.page_id AS target_id, t.is_redirect AS target_is_redirect,
+                     o.page_id IS NOT NULL AS other_namespace
+              FROM pv
+              LEFT JOIN page p ON p.page_id = pv.pid
+              LEFT JOIN redir rd ON p.is_redirect AND rd.page_id = pv.pid
+              LEFT JOIN page t ON t.title = rd.target
+              LEFT JOIN (SELECT page_id FROM '{sql}/page/lang={lang}/part.parquet'
+                         WHERE namespace <> 0) o ON o.page_id = pv.pid
+            )
+            SELECT views, months, no_page_id,
+              CASE WHEN in_ns0 AND NOT is_redirect THEN 'article'
+                   WHEN in_ns0 AND target_id IS NOT NULL AND NOT target_is_redirect
+                     THEN 'redirect_resolved'
+                   WHEN in_ns0 THEN 'redirect_unresolved'
+                   WHEN other_namespace THEN 'other_namespace'
+                   ELSE 'not_in_dump' END AS status,
+              CASE WHEN in_ns0 AND NOT is_redirect THEN pid
+                   WHEN in_ns0 AND NOT target_is_redirect THEN target_id END AS article_id
+            FROM r;
+            CREATE OR REPLACE TEMP TABLE v AS
+              SELECT r.article_id AS page_id, sum(views) AS views_2023,
+                     max(months) AS months_2023,
+                     bool_or(pp.is_disambiguation) AS disambiguation,
+                     any_value(p.title) = '{main_page.replace("'", "''")}' AS main_page
+              FROM resolved r JOIN page p ON p.page_id = r.article_id
+              LEFT JOIN props pp ON pp.page_id = r.article_id
+              GROUP BY 1;
+            COPY (
+              SELECT '{lang}' AS lang, v.page_id, p.title, pp.qid, v.views_2023, v.months_2023,
+                     ntile(10) OVER (ORDER BY v.views_2023, hash(v.page_id, {SEED})) AS decile
+              FROM v JOIN page p USING (page_id) LEFT JOIN props pp USING (page_id)
+              WHERE NOT coalesce(v.disambiguation, false) AND NOT v.main_page
+            ) TO '{parts}/{lang}.parquet' (FORMAT parquet);
+        """)
+        a = con.execute(f"""
+            SELECT '{lang}' AS lang, status, no_page_id, sum(views) AS views FROM resolved
+            GROUP BY ALL
+            UNION ALL
+            SELECT '{lang}', 'excluded_disambiguation', NULL, sum(views_2023) FROM v
+            WHERE disambiguation
+            UNION ALL
+            SELECT '{lang}', 'excluded_main_page', NULL, sum(views_2023) FROM v WHERE main_page
+        """).df()
+        a["share"] = a.views / a[a.status.isin(STATUSES)].views.sum()
+        acct.append(a)
+        print(f"frame {lang}: done", flush=True)
+    con.execute(
+        f"COPY (SELECT * FROM '{parts}/*.parquet') TO '{pq / 'frame.parquet'}' (FORMAT parquet)"
+    )
+    return pd.concat(acct, ignore_index=True)
+
+
+STATUSES = ["article", "redirect_resolved", "redirect_unresolved", "other_namespace", "not_in_dump"]
 
 
 def _key(df: pd.DataFrame, salt: str) -> np.ndarray:
@@ -217,16 +247,16 @@ def draw(frame: pd.DataFrame, types: pd.Series) -> pd.DataFrame:
     return s[cols].sort_values(["lang", "page_id"], ignore_index=True), p1, items
 
 
-def main() -> None:
+def main(rebuild_frame: bool = False) -> None:
     config.PANEL_DIR.mkdir(parents=True, exist_ok=True)
     qa = config.REPORT_DIR / "qa"
     qa.mkdir(parents=True, exist_ok=True)
-    con = duckdb.connect(str(config.DATA_DIR / "p06.duckdb"))
-    con.execute("SET memory_limit = '10GB'; SET preserve_insertion_order = false")
-    con.execute(f"SET temp_directory = '{config.DATA_DIR / 'tmp'}'")
-    build_frame(con).to_csv(qa / "p06_view_resolution.csv", index=False)
-    con.execute(f"COPY frame TO '{config.PARQUET_DIR / 'frame.parquet'}' (FORMAT parquet)")
-    frame = con.execute("SELECT * FROM frame").df()
+    con = duckdb.connect()
+    con.execute("SET memory_limit = '6GB'; SET preserve_insertion_order = false")
+    con.execute(f"SET temp_directory = '{config.TMP_DIR}'")
+    if rebuild_frame or not (config.PARQUET_DIR / "frame.parquet").exists():
+        build_frame(con).to_csv(qa / "p06_view_resolution.csv", index=False)
+    frame = pd.read_parquet(config.PARQUET_DIR / "frame.parquet")
     print(f"frame: {len(frame):,} articles", flush=True)
 
     # QIDs needing a type: phase-1 candidates and the all-edition items (cheap superset: draw
@@ -274,4 +304,6 @@ def summarise(frame, sample, items, qa) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(rebuild_frame="--rebuild-frame" in sys.argv)

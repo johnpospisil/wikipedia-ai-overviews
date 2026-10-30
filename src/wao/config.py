@@ -28,6 +28,8 @@ PANEL_DIR = DATA_DIR / "panels"
 MODEL_DIR = DATA_DIR / "models"
 CACHE_DIR = DATA_DIR / "cache"
 DUCKDB_PATH = DATA_DIR / "wao.duckdb"
+# DuckDB spill space: point WAO_TMP_DIR at a fast internal disk for the big joins.
+TMP_DIR = Path(os.environ.get("WAO_TMP_DIR", DATA_DIR / "tmp"))
 
 # Overridable so the sample pipeline (make all SAMPLE=1) never touches the real outputs.
 REFERENCE_DIR = Path(os.environ.get("WAO_REFERENCE_DIR", REPO_ROOT / "data" / "reference"))

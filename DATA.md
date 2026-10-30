@@ -153,3 +153,45 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
 - **Breaks to handle in P11** (visible in `p05_clickstream_coverage.png` / `p05_referral_mix_en.png`):
   - **2020-06, en:** no-referrer share falls from 23% to 16%, search rises from 44% to 49%, and articles with any arrival drop from 4.8 M to 4.1 M. Consistent with the `automated` agent class Wikimedia introduced in spring 2020 removing bot traffic that had mostly arrived with no referrer. Check against events.csv.
   - **2025-03, en (and zh in 2025–26):** articles with any arrival jump from 5.6 M to 6.6 M for one month, with no-referrer up to 20%. Looks like undetected automated traffic, around the 2025 bot-detection change. zh shows several similar bright months.
+
+## 13. Sampling frame and article sample (P06)
+
+- **Inputs:**
+  - **SQL table dumps 2026-10-01** (`page`, `page_props`, `redirect`) for the 11 editions: 6.7 GB, each file md5-checked against `dumpstatus.json` (`python -m wao.ingest.sql_dumps` → `parquet/wiki_sql/`). Namespace-0 non-redirect pages: en 7.25 M (0.38 M of them disambiguation) down to fa 1.09 M; Wikidata QIDs on 97.6–99.9% of them.
+  - **pageview_complete monthly `user` files for 2023** (35 GB raw, kept for P07) → `parquet/pageview_month/month=2023-MM/` (`lang, title, page_id, access, views`; all namespaces of the 11 editions; 11 GB). 0 unparseable rows. **Totals equal the AQS `user` all-access monthly aggregate exactly** (all 11 editions, 2023-01).
+- **Frame** (`parquet/frame.parquet`, 22.7 M articles; `python -m wao.build.sample`):
+  - Definition: namespace-0, non-redirect, non-disambiguation pages with any 2023 `user` view; main page excluded.
+  - How views are assigned to pages:
+    - By `page_id`.
+    - Rows without one (1.5–6.8% of views) by title.
+    - Views of redirects go to the redirect's target.
+  - **The frame holds 92–96% of each edition's 2023 user views.** The rest:
+    - other namespaces 0.9–4.9% (de and es highest: their main pages are in the Wikipedia: namespace)
+    - main page 0–1.9%
+    - disambiguation pages 0.4–1.6%
+    - pages missing from the 2026 dump 0.8–1.9% (deleted since 2023, or titles that never existed)
+    - Full table: `report/qa/p06_view_resolution.csv`.
+  - Using the 2026 page table rather than a 2023 one therefore drops at most ~2% of 2023 views, and those are mostly junk titles.
+  - Articles created after 2023 are excluded by construction. The sample is a closed 2023 cohort, so composition can't change with the treatment.
+  - **Popularity decile:** within each edition by total 2023 views, ties broken at random. en deciles run from 1–79 views (decile 1) to ≥17,168 (decile 10).
+  - Partial-year articles (fewer than 12 months with views) are 7% of en and 42% of fa; they're mostly low-traffic months with zero views, not new pages.
+- **Wikidata types** (`wao.ingest.wikidata_types`, cached SPARQL):
+  - Truthy P31 for 361,539 QIDs (phase 1 plus all 111,247 items with an article in all 11 editions), and the P279 graph above them (about 50k edges).
+  - Rolled up to 19 ordered coarse classes plus `other`, `no_p31` and `no_qid`.
+  - Items with no P31 (concepts modelled as classes) use their own P279.
+  - Weighted frame composition: human 30%, settlement 9%, other 9%, admin region 7%, organization 7%, taxon 6%, structure 5%, … chemical 0.8%, health 0.3%, country <0.1%. `other` is a long tail (largest class 0.4%: chemical-entity types, stations, family names, car models).
+  - **Articles without a QID: 42,672 in the frame (0.2%)**, mostly zh, ja, pl, it.
+- **Sample** (`panels/sample.parquet`, 197,453 articles; `report/qa/p06_sample_by_{lang,stratum,type}.csv`):
+  - **A. Language sample, two-phase, 12,000 per edition:**
+    - Phase 1: 2,500 random articles per edition × decile.
+    - Phase 2: strata are edition × decile × coarse type, allocated proportionally with a floor of 30 per stratum (all if fewer), so small types are oversampled.
+    - 2,262 strata.
+  - **B. Concept panel:**
+    - 6,000 of the 111,247 items with an article in all 11 editions, stratified by type × item decile (2023 views summed over editions), with a floor of 15.
+    - Each selected item brings all 11 articles (66,000 articles).
+    - It includes 1,338 humans, 66 countries, 140 chemicals and 116 health items.
+  - **Weights:** π_A = (n1/N) × (n2/n1) and π_B = m/M. The two draws are independent, so π = π_A + π_B − π_A·π_B and `weight` = 1/π (Horvitz–Thompson). `w_concept` = 1/π_B is for the item panel (P19). 562 articles are in both samples.
+  - **Checks:**
+    - The weight sums reproduce each edition's frame size within 0.3%.
+    - A 30-replicate simulation (`tests/test_sample.py`) gives unbiased totals (count ratio 1.000, views 0.995, rare-type count 1.007).
+- **Performance:** about 25 min for the frame (en 5 min) when DuckDB spills to the internal SSD (`WAO_TMP_DIR`, default `$WAO_DATA_DIR/tmp`). Spilling to the external drive that also holds the input was more than 4× slower. About 45 min for the SPARQL type lookups, cached after the first run.

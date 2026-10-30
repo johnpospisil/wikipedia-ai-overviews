@@ -7,8 +7,9 @@
 3. Each class gets the set of coarse roots it reaches (cycle-safe); an item's coarse type is the
    FIRST entry of COARSE reached by any of its P31 classes. Order matters: Wikidata's upper
    ontology makes e.g. cities reach "organization" and many things reach "occurrence", so specific
-   classes come first. Items without P31 are `no_p31`; anything else that matches nothing is
-   `other`. Articles without a QID get `no_qid` downstream.
+   classes come first. Items with no P31 are usually concepts modelled as classes (e.g. "stele",
+   "power series"); they are rolled up through their own P279. Items with neither are `no_p31`;
+   anything that matches nothing is `other`. Articles without a QID get `no_qid` downstream.
 
 Outputs (PARQUET_DIR/wikidata/): p31.parquet (qid, class), p279.parquet (class, parent).
 """
@@ -28,11 +29,14 @@ COARSE: list[tuple[str, tuple[str, ...]]] = [
     ("human", ("Q5",)),
     ("list", ("Q13406463",)),  # Wikimedia list article
     ("taxon", ("Q16521",)),
-    ("chemical", ("Q11344", "Q11173", "Q43460564")),  # element, compound, chemical entity
-    ("health", ("Q12136", "Q12140")),  # disease, medication
+    # element, compound, chemical entity, type of chemical entity
+    ("chemical", ("Q11344", "Q11173", "Q43460564", "Q113145171")),
+    # disease, medication, type of disease, class of anatomical entity
+    ("health", ("Q12136", "Q12140", "Q112193867", "Q112826905")),
     ("film", ("Q11424",)),
-    ("tv", ("Q5398426", "Q15416")),  # television series, television program
-    ("music", ("Q482994", "Q105543609", "Q134556", "Q7366")),  # album, musical work, single, song
+    ("tv", ("Q5398426", "Q15416", "Q3464665")),  # TV series, TV program, TV season
+    # album, musical work, single, song, EP
+    ("music", ("Q482994", "Q105543609", "Q134556", "Q7366", "Q169930")),
     ("video_game", ("Q7889",)),
     ("written_work", ("Q47461344", "Q7725634")),  # written work, literary work
     ("sports_event", ("Q27020041", "Q16510064", "Q13406554")),  # season, event, competition
@@ -42,7 +46,8 @@ COARSE: list[tuple[str, tuple[str, ...]]] = [
     ("astronomical", ("Q6999",)),
     # natural geographic object, body of water, mountain, island, river
     ("nature_place", ("Q35145263", "Q15324", "Q8502", "Q23442", "Q4022")),
-    ("structure", ("Q811979", "Q41176", "Q83620")),  # architectural structure, building, road
+    # architectural structure, building, road, station
+    ("structure", ("Q811979", "Q41176", "Q83620", "Q12819564")),
     ("organization", ("Q43229",)),
     ("event", ("Q1190554", "Q1656682")),  # occurrence, event
 ]
@@ -124,8 +129,11 @@ def coarse_types(qids: Iterable[str], p31: pd.DataFrame, p279: pd.DataFrame) -> 
     hits: dict[str, set[str]] = {}
     for q, c in p31.itertuples(index=False):
         hits.setdefault(q, set()).update(roots.get(c, frozenset({ROOT_TO_TYPE.get(c)}) - {None}))
+    as_class = set(p279["class"])
     out = {}
     for q in qids:
+        if q not in hits and q in as_class:  # no P31: use the item's own P279
+            hits[q] = set(roots.get(q, frozenset()))
         if q not in hits:
             out[q] = "no_p31"
         else:
@@ -137,7 +145,10 @@ def lookup(qids: Iterable[str]) -> pd.DataFrame:
     """Fetch (cached) and roll up; also saves p31/p279 Parquet. Returns qid, coarse_type."""
     qids = sorted(set(qids))
     p31 = fetch_p31(qids)
-    p279 = fetch_p279(set(p31["class"]))
+    no_p31 = sorted(set(qids) - set(p31["qid"]))
+    own = pd.DataFrame(_pairs(_session(), no_p31, "P279"), columns=["class", "parent"])
+    p279 = pd.concat([own, fetch_p279(set(p31["class"]) | set(own["parent"]))])
+    p279 = p279.drop_duplicates(ignore_index=True)
     d = config.PARQUET_DIR / "wikidata"
     d.mkdir(parents=True, exist_ok=True)
     p31.to_parquet(d / "p31.parquet")
