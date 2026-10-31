@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 import time
@@ -221,25 +222,43 @@ def resolve_and_decode(
     return daily, match, bad
 
 
-def convert(agent: str, month: str, path: Path) -> dict:
-    t0 = time.time()
-    ids, titles, canon_title = _dicts(pd.read_parquet(lookup_path()))
+def _scan(path: Path, dicts: tuple[dict, dict, dict], day: int | None = None):
+    """Stream one bz2 file -> (matched rows as an Arrow table, lines read, bad lines).
+
+    For a daily file pass `day`: its packed field holds hours, so it is replaced by that day's
+    total in the monthly encoding and the rest of the pipeline is unchanged.
+    """
     proc = subprocess.Popen(["bzip2", "-dc", str(path)], stdout=subprocess.PIPE, bufsize=1 << 24)
     tables, buf, lines, bad = [], [], 0, 0
+
+    def flush():
+        rows, b = match_lines(buf, *dicts)
+        if day is not None:
+            rows = [(*r[:5], f"{chr(64 + day)}{r[6]}", r[6]) for r in rows]
+        tables.append(_table(rows))
+        return len(buf), b
+
     for raw in proc.stdout:
         buf.append(raw.decode("utf-8", "replace"))
         if len(buf) >= BATCH:
-            rows, b = match_lines(buf, ids, titles, canon_title)
-            tables.append(_table(rows))
-            lines, bad, buf = lines + len(buf), bad + b, []
-    rows, b = match_lines(buf, ids, titles, canon_title)
-    tables.append(_table(rows))
-    lines, bad = lines + len(buf), bad + b
+            n, b = flush()
+            lines, bad, buf = lines + n, bad + b, []
+    n, b = flush()
     if proc.wait() != 0:
         raise RuntimeError(f"bzip2 failed on {path}")
+    return pa.concat_tables(tables), lines + n, bad + b
+
+
+def _connect() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect()
     con.execute(f"set memory_limit='3GB'; set threads=2; set temp_directory='{config.TMP_DIR}'")
-    daily, match, inconsistent = resolve_and_decode(con, pa.concat_tables(tables), month)
+    return con
+
+
+def convert(agent: str, month: str, path: Path) -> dict:
+    t0 = time.time()
+    table, lines, bad = _scan(path, _dicts(pd.read_parquet(lookup_path())))
+    daily, match, inconsistent = resolve_and_decode(_connect(), table, month)
     for kind, df in (("pageview_match", match), ("pageview_daily", daily)):  # daily last
         out = out_path(kind, agent, month)
         out.parent.mkdir(parents=True, exist_ok=True)
@@ -254,6 +273,62 @@ def convert(agent: str, month: str, path: Path) -> dict:
         "articles": int(daily.page_id.groupby(daily.lang).nunique().sum()),
         "views": int(daily.views.sum()),
         "bad": bad,
+        "inconsistent": int(inconsistent),
+        "s": round(time.time() - t0),
+    }
+
+
+def repairs() -> pd.DataFrame:
+    return pd.read_csv(config.REFERENCE_DIR / "pageview_repairs.csv", dtype=str)
+
+
+def daily_files(agent: str, month: str) -> list[dict]:
+    """The daily pageview_complete files of one month, with sizes from the directory index."""
+    url = f"https://dumps.wikimedia.org/other/pageview_complete/{month[:4]}/{month}/"
+    html = http.session("dumps", min_interval=1.0).get(url, timeout=60).text
+    pat = re.compile(rf'href="(pageviews-(\d{{8}})-{agent}\.bz2)".*?(\d+)\s*$', re.M)
+    return [
+        {"url": url + name, "day": int(ymd[6:]), "bytes": int(size), "name": name}
+        for name, ymd, size in pat.findall(html)
+    ]
+
+
+def repair(lang: str, agent: str, month: str, procs: int = 2) -> dict:
+    """Rebuild one edition-month from the daily files and replace its rows in both outputs."""
+    t0 = time.time()
+    lk = pd.read_parquet(lookup_path())
+    dicts = _dicts(lk[lk.lang == lang])
+    files = daily_files(agent, month)
+    if len(files) != pd.Period(month).days_in_month:
+        raise RuntimeError(f"{month} {agent}: {len(files)} daily files listed")
+    ua = http.user_agent()
+    raw = config.PAGEVIEW_DIR / "daily" / month
+
+    def get(f):
+        return f["day"], fetch(f["url"], raw / f["name"], f["bytes"], ua=ua)
+
+    with ThreadPoolExecutor(WORKERS) as dl, ProcessPoolExecutor(procs) as cpu:
+        jobs = [cpu.submit(_scan, p, dicts, d) for d, p in dl.map(get, files)]
+        scans = [j.result() for j in jobs]
+    table = pa.concat_tables([t for t, _, _ in scans])
+    daily, match, inconsistent = resolve_and_decode(_connect(), table, month)
+    for kind, df in (("pageview_match", match), ("pageview_daily", daily)):
+        out = out_path(kind, agent, month)
+        old = pd.read_parquet(out)
+        new = pd.concat([old[old.lang != lang], df], ignore_index=True)
+        new = new.sort_values(list(new.columns[:4]), ignore_index=True)
+        tmp = out.with_suffix(".tmp")
+        new.to_parquet(tmp, compression="zstd", index=False)
+        tmp.rename(out)
+    return {
+        "agent": agent,
+        "month": month,
+        "repair": lang,
+        "lines": sum(n for _, n, _ in scans),
+        "matched_rows": int(match.rows.sum()),
+        "articles": int(daily.page_id.nunique()),
+        "views": int(daily.views.sum()),
+        "bad": sum(b for _, _, b in scans),
         "inconsistent": int(inconsistent),
         "s": round(time.time() - t0),
     }
@@ -276,17 +351,25 @@ def main() -> None:
     ap.add_argument("--agents", nargs="+", default=["user", "automated"])
     ap.add_argument("--procs", type=int, default=2)
     ap.add_argument("--rebuild-lookup", action="store_true")
+    ap.add_argument("--repair", action="store_true", help="only rerun pageview_repairs.csv")
     a = ap.parse_args()
     if a.rebuild_lookup or not lookup_path().exists():
         lk = build_lookup(duckdb.connect())
         lk.to_parquet(lookup_path(), index=False)
         print(lk.groupby(["lang", "match"]).size().unstack(), flush=True)
+    log = config.DATA_DIR / "logs" / "pageviews.jsonl"
+    log.parent.mkdir(exist_ok=True)
+    if a.repair:
+        for r in repairs().itertuples():
+            res = repair(r.lang, r.agent, r.month, a.procs)
+            print(res, flush=True)
+            with open(log, "a") as fh:
+                fh.write(json.dumps(res) + "\n")
+        return
     f = todo(a.agents)
     remote = f.loc[~f.local, "bytes"].sum()
     print(f"{len(f)} files to do; {remote / 1e9:.0f} GB to download", flush=True)
     ua = http.user_agent()
-    log = config.DATA_DIR / "logs" / "pageviews.jsonl"
-    log.parent.mkdir(exist_ok=True)
 
     def get(r):
         if not r.local and shutil.disk_usage(config.RAW_DIR).free < r.bytes + FREE_MARGIN:

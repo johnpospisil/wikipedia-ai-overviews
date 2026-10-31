@@ -56,6 +56,15 @@ def _pageview_files() -> pd.DataFrame:
     return pd.DataFrame({"path": [pageview_months.raw_path(n) for n in f.file], "bytes": f.bytes})
 
 
+def _repair_files() -> pd.DataFrame:
+    rows = [
+        {"path": config.PAGEVIEW_DIR / "daily" / r.month / f["name"], "bytes": f["bytes"]}
+        for r in pageviews.repairs().itertuples()
+        for f in pageviews.daily_files(r.agent, r.month)
+    ]
+    return pd.DataFrame(rows)
+
+
 # name -> (expected files with sizes, whether `bytes` are real sizes)
 JOBS: dict[str, tuple[Callable[[], pd.DataFrame], bool]] = {
     "country": (_country_files, False),
@@ -63,6 +72,7 @@ JOBS: dict[str, tuple[Callable[[], pd.DataFrame], bool]] = {
     "sql": (_sql_files, True),
     "pageviews2023": (_pageview_2023_files, True),
     "pageviews": (_pageview_files, True),
+    "repair": (_repair_files, True),
 }
 
 

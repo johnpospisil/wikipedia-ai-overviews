@@ -1,0 +1,3 @@
+lang,agent,month,reason
+zh,user,2022-10,"monthly dump file lacks ~85% of zh rows for titles sorting after ~塔尔 (sample articles found 6,271 vs ~15,000 in neighbouring months; AQS shows a normal month); rebuilt from the 31 daily files"
+zh,automated,2022-10,"same defect in the automated monthly file; rebuilt from the daily files"

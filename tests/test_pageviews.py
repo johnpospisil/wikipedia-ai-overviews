@@ -90,3 +90,17 @@ def test_inconsistent_counted(page_table):
         duckdb.connect(), pageviews._table(rows), "2024-02"
     )
     assert inconsistent == 1
+
+
+def test_daily_file_scan(tmp_path, page_table):
+    """A daily file's hourly field becomes that day's total in the monthly encoding."""
+    import bz2
+
+    path = tmp_path / "pageviews-20240305-user.bz2"
+    path.write_bytes(bz2.compress(b"en.wikipedia Paris 10 desktop 7 A3X4\n"))
+    table, lines, bad = pageviews._scan(path, pageviews._dicts(LOOKUP), day=5)
+    assert (lines, bad) == (1, 0)
+    daily, _, inconsistent = pageviews.resolve_and_decode(duckdb.connect(), table, "2024-03")
+    assert inconsistent == 0
+    assert daily.date.tolist() == [pd.Timestamp(2024, 3, 5)]
+    assert daily.views.tolist() == [7]

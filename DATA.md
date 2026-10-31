@@ -195,3 +195,28 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
     - The weight sums reproduce each edition's frame size within 0.3%.
     - A 30-replicate simulation (`tests/test_sample.py`) gives unbiased totals (count ratio 1.000, views 0.995, rare-type count 1.007).
 - **Performance:** about 25 min for the frame (en 5 min) when DuckDB spills to the internal SSD (`WAO_TMP_DIR`, default `$WAO_DATA_DIR/tmp`). Spilling to the external drive that also holds the input was more than 4× slower. About 45 min for the SPARQL type lookups, cached after the first run.
+
+## 14. Daily pageviews for the sample (P07)
+
+- **Inputs:** pageview_complete monthly files, `user` 2016-01..2026-09 (129 files) and `automated` 2020-05..2026-09 (77; the agent class only exists from 2020-05, so before that automated traffic is inside `user`). 593 GB raw, kept. `spider` files stop at 2023-02 and would add 512 GB, so they're not used. The dumps publish no checksums: each file is checked by its listed size and by `bzip2 -dc` exiting cleanly.
+- **Outputs** (`python -m wao.ingest.pageviews`, resumable; `make ingest-pageviews`):
+  - `parquet/pageview_daily/agent=/month=/`: `lang, page_id, date, access, views` for the 197,453 sample articles (1.5 GB).
+  - `parquet/pageview_match/agent=/month=/`: the same views split by how they were matched (0.4 GB; for P11 and P13).
+  - `parquet/pageview_lookup.parquet`: sample ids and titles plus every redirect (up to 2 hops) pointing at them: 332k redirects, en 83k.
+- **Matching:**
+  - By `page_id` first. Page moves keep the id, and views of a redirect title usually carry the target's id.
+  - Then the redirect page's own id, then the title or a redirect title when `page_id` is null or belongs to a since-deleted page.
+  - Rows whose title matches but whose id is another live page are dropped (0.03–0.4% of views).
+  - Over 2016–2026, 9.1% of matched user views came from something other than "page_id plus current title". That share falls from 12.5% in 2016 to 4–5% in 2026: mostly older titles and redirects (`id_alt_title`), plus 0.2–2.5% with no page_id.
+  - Check: for 2023-01, the id-matched totals equal P06's monthly totals exactly (182,620 articles, 307,549,484 views).
+- **Coverage** (share of sample articles with any `user` view in the month; `report/qa/p07_coverage.csv`):
+  - 74% in 2016, rising to 94% (2023) and 98% (2025–26). The early gap is articles not yet created.
+  - Among articles already seen in that or an earlier month, coverage is 95–98% throughout. The rest are low-traffic articles with zero views that month.
+- **File checks** (`report/qa/p07_files.csv`):
+  - 0 rows whose daily counts don't sum to the monthly total.
+  - 7,593 malformed lines in 53 billion. All are junk like `de.wikipedia \r\n` with no title, 99% of them in 2016–2019.
+- **Defective dump: zh 2022-10.** The monthly `user` and `automated` files are missing about 85% of zh rows for titles sorting after about "塔尔". Only 6,271 sample articles were found, against about 15,000 in the neighbouring months, while AQS shows a normal month (407.7 M views). The daily files for that month are complete, so zh 2022-10 is rebuilt from the 62 daily files (20 GB raw under `pageview_complete/daily/`; `data/reference/pageview_repairs.csv`, `--repair`). After the repair it has 14,972 articles and 8.97 M views, against 9.18 M in 2022-09 and 9.22 M in 2022-11. A rolling-median scan of every edition-month found no other defect.
+- **Flags for P11:**
+  - The share of views with a null `page_id` almost vanishes in 2020-06 (0.16% vs about 1%), and falls from 2.5% to 0.4% across 2026-03..04. These are methodology changes upstream. Matching by title absorbs both, so totals are unaffected, but they mark possible breaks.
+  - fa coverage dips to 81–87% in 2025-12 and 2026-03..04 (99% otherwise). Possibly Iranian internet disruptions. fa is a control language, so check this against AQS fa totals.
+- **Run time:** about 17 h of processing across 2 workers, limited by downloads (about 10 MB/s, with a slow spell on 2026-10-30), roughly 4–13 min per file.
