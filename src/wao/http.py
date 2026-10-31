@@ -68,3 +68,35 @@ def session(
     )
     s.mount("https://", HTTPAdapter(max_retries=retry))
     return s
+
+
+def login(s: PoliteSession, api: str) -> str:
+    """Log `s` in to one wiki's api.php with the bot password; returns the user name.
+
+    Logged-in clients get per-account limits (200/min or more) instead of the IP's. Each
+    edition is its own domain, so log in once per edition. Login calls bypass the cache, and
+    the password is never logged.
+    """
+    if not (config.BOT_USER and config.BOT_PASS):
+        raise RuntimeError("WAO_BOT_USER / WAO_BOT_PASS are not set (Special:BotPasswords)")
+    q = {"format": "json", "formatversion": 2}
+    with s.cache_disabled():
+        for attempt in range(8):
+            r = s.get(api, params=q | {"action": "query", "meta": "tokens", "type": "login"},
+                      timeout=60)  # fmt: skip
+            if r.status_code == 429:
+                time.sleep(float(r.headers.get("retry-after", 5)) + 5 * attempt)
+                continue
+            token = r.json()["query"]["tokens"]["logintoken"]
+            r = s.post(api, data=q | {"action": "login", "lgname": config.BOT_USER,
+                                      "lgpassword": config.BOT_PASS, "lgtoken": token},
+                       timeout=60)  # fmt: skip
+            if r.status_code == 429:
+                time.sleep(float(r.headers.get("retry-after", 5)) + 5 * attempt)
+                continue
+            res = r.json().get("login", {})
+            if res.get("result") != "Success":
+                why = f"{res.get('result')} {res.get('reason')}"
+                raise RuntimeError(f"login to {api} failed: {why}")
+            return res["lgusername"]
+    raise RuntimeError(f"login to {api}: still rate-limited")

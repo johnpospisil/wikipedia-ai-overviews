@@ -2,9 +2,11 @@
 
 A template counts as an infobox if any of:
   1. it is sitelinked from a Wikidata item that is an instance of Q19887878 (Wikimedia infobox
-     template), e.g. it: "Divisione amministrativa", ru: "Персона";
+     template) or of a subclass of it (no subclass adds templates as of 2026-10), e.g.
+     it: "Divisione amministrativa", ru: "Персона";
   2. its name starts with one of the edition's infobox prefixes below, or ends in " infobox"
-     (pl names them "Miasto infobox");
+     (pl names them "Miasto infobox"), except the few helpers in NOT_INFOBOX; pt subpages such
+     as "Info/Biografia/Wikidata" are real infoboxes;
   3. it is a redirect to a template in 1 or 2 (current redirects, via the API).
 Rule 2 is applied again at match time (wao.build.features.is_infobox), so templates that no
 longer exist still count. Checked against rendered HTML in P08 (report/qa/p08_infobox_check.csv).
@@ -15,7 +17,7 @@ Run: python -m wao.ingest.infobox_templates
 
 from __future__ import annotations
 
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 
 import pandas as pd
 
@@ -38,10 +40,14 @@ PREFIXES: dict[str, tuple[str, ...]] = {
     "fa": ("جعبه اطلاعات", "Infobox", "Taxobox"),
 }  # fmt: skip
 SUFFIX = " infobox"
+# prefix matches that render no infobox (checked against HTML in P08): pt seat-chart helper
+NOT_INFOBOX = {"pt": {"Info/Partido político/lugares"}}
 SPARQL = "https://query.wikidata.org/sparql"
 
 
 def by_rule(lang: str, name: str) -> bool:
+    if name in NOT_INFOBOX.get(lang, ()):
+        return False
     low = name.lower()
     return low.startswith(tuple(p.lower() for p in PREFIXES[lang])) or low.endswith(SUFFIX)
 
@@ -58,8 +64,23 @@ def _api(s, lang: str, params: dict):
         cont = j["continue"]
 
 
+def _batches(titles: list[str], n: int = 50, max_url: int = 5000):
+    """Up to `n` titles per request, fewer when percent-encoding would make the URL too long
+    (fa titles triple in length and hit the 8 KB request limit)."""
+    batch, size = [], 0
+    for t in titles:
+        k = len(quote(t)) + 3
+        if batch and (len(batch) == n or size + k > max_url):
+            yield batch
+            batch, size = [], 0
+        batch.append(t)
+        size += k
+    if batch:
+        yield batch
+
+
 def wikidata_templates(lang: str) -> list[str]:
-    q = f"""SELECT ?a WHERE {{ ?i wdt:P31 wd:Q19887878 . ?a schema:about ?i ;
+    q = f"""SELECT ?a WHERE {{ ?i wdt:P31/wdt:P279* wd:Q19887878 . ?a schema:about ?i ;
             schema:isPartOf <https://{lang}.wikipedia.org/> }}"""
     s = http.session("wdqs", min_interval=1.0)
     rows = s.get(SPARQL, params={"query": q, "format": "json"}, timeout=120).json()
@@ -67,7 +88,9 @@ def wikidata_templates(lang: str) -> list[str]:
 
 
 def build_lang(lang: str) -> pd.DataFrame:
-    s = http.session(f"mw_meta_{lang}", min_interval=0.05)  # not mw_<lang>: in use by P08 fetch
+    s = http.session(f"mw_meta_{lang}", min_interval=0.35)  # <= 170/min, logged in
+    if config.BOT_USER:
+        http.login(s, f"https://{lang}.wikipedia.org/w/api.php")
     pre = ns_prefixes(s, lang)
     rows = [(n, "wikidata") for n in (norm_template(t, pre) for t in wikidata_templates(lang))]
     for p in PREFIXES[lang]:
@@ -76,8 +99,8 @@ def build_lang(lang: str) -> pd.DataFrame:
             rows += [(norm_template(x["title"], pre), "prefix") for x in q.get("allpages", [])]
     rows = [(n, src) for n, src in rows if "/" not in n]  # drop /doc, /sandbox subpages
     targets = sorted({n for n, _ in rows})
-    for i in range(0, len(targets), 50):
-        titles = "|".join(f"Template:{t}" for t in targets[i : i + 50])
+    for batch in _batches([f"Template:{t}" for t in targets]):
+        titles = "|".join(batch)
         for q in _api(s, lang, {"titles": titles, "prop": "redirects", "rdnamespace": 10,
                                 "rdlimit": "max"}):  # fmt: skip
             for page in q.get("pages", []):

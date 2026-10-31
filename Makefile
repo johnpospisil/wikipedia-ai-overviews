@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews sample build models figures report test test-network lint
+.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews ingest-features sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -25,7 +25,7 @@ check-env:
 	$(PY) -m wao.check_env
 
 # Progress bar: `make progress JOB=<name> WATCH=1` (speed + ETA). Downloads: clickstream country sql
-# pageviews2023 pageviews repair stubs; API jobs (counted in cached responses): topics.
+# pageviews2023 pageviews repair stubs; API jobs: topics (cached responses), revisions (log).
 progress:
 	@$(PY) -m wao.progress $(or $(JOB),clickstream) $(if $(WATCH),--watch,)
 
@@ -40,7 +40,7 @@ reference:
 
 # Stages are filled in by later prompts (ingest P04–P10, build P11–P13, models P16–P25,
 # figures P26–P27, report P30).
-ingest: check-env ingest-clickstream ingest-pageviews
+ingest: check-env ingest-clickstream ingest-pageviews ingest-features
 
 # P05: all clickstream files -> Parquet pairs + per-article aggregates (resumable).
 ingest-clickstream: check-env
@@ -49,6 +49,17 @@ ingest-clickstream: check-env
 # P07: daily pageviews (user 2016-01.., automated 2020-05..) for the P06 sample (resumable, ~10 h).
 ingest-pageviews: check-env
 	$(PY) -m wao.ingest.pageviews --procs 2
+
+# P08: revision histories (stub dumps, 246 GB), the 2023-12-31 text features (API, needs the bot
+# password WAO_BOT_USER/WAO_BOT_PASS), Lift Wing topics, infobox lists, HTML check, QA + figure.
+ingest-features: check-env
+	$(PY) -m wao.ingest.stub_history --procs 4
+	$(PY) -m wao.ingest.revisions --procs 4 --interval 0.35
+	$(PY) -m wao.ingest.topics
+	$(PY) -m wao.ingest.infobox_templates
+	$(PY) -m wao.build.features
+	$(PY) -m wao.build.infobox_check
+	$(PY) -m wao.viz.article_features
 
 # P06: SQL table dumps + 2023 pageview totals -> frame and stratified sample (resumable).
 sample: check-env

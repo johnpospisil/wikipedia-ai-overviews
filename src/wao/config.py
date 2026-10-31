@@ -17,6 +17,9 @@ DATA_DIR = Path(os.environ.get("WAO_DATA_DIR", "/Volumes/Drive3/wao"))
 
 # Contact info for the Wikimedia User-Agent (email or URL). No default on purpose.
 CONTACT = os.environ.get("WAO_CONTACT", "").strip()
+# Wikimedia bot password (Special:BotPasswords): logged-in API limits are per account, not per IP
+BOT_USER = os.environ.get("WAO_BOT_USER", "").strip()
+BOT_PASS = os.environ.get("WAO_BOT_PASS", "").strip()
 
 CLICKSTREAM_DIR = RAW_DIR / "clickstream"
 PAGEVIEW_DIR = RAW_DIR / "pageview_complete"

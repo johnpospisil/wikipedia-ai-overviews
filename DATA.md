@@ -220,3 +220,36 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   - The share of views with a null `page_id` almost vanishes in 2020-06 (0.16% vs about 1%), and falls from 2.5% to 0.4% across 2026-03..04. These are methodology changes upstream. Matching by title absorbs both, so totals are unaffected, but they mark possible breaks.
   - fa coverage dips to 81–87% in 2025-12 and 2026-03..04 (99% otherwise). Possibly Iranian internet disruptions. fa is a control language, so check this against AQS fa totals.
 - **Run time:** about 17 h of processing across 2 workers, limited by downloads (about 10 MB/s, with a slow spell on 2026-10-30), roughly 4–13 min per file.
+
+## 15. Article features at 2023-12-31 (P08)
+
+- **Revision histories:** stub-meta-history dumps of 2026-10-01 (82 files, 246 GB raw, md5-checked) → `parquet/stub_history/lang=/` (420 MB): every revision of every sample article (27.7 M revisions; id, time, size, minor flag, editor). Editors are stored only as a 64-bit hash; IPs never leave the parser. They also feed P09's per-article edits. All 197,453 sample articles are found.
+- **Which revision:** the last revision at or before 2023-12-31 23:59:59 UTC. 99.85% of articles have one. The 289 that don't (en 66, it 44, pt 35…) had their history merged or re-imported after 2023. `created` is the first revision in the dump.
+- **Text:** fetched by revision id in batches of 50 (`wao.ingest.revisions`). Only derived numbers are kept, never the text. Statuses: ok 197,111 · no_rev_2023 289 · text_hidden 39 · badrevid 14 (deleted revisions). The wikitext size equals the dump's recorded size for every ok revision.
+- **API access (important for reruns):**
+  - Wikimedia's 2026 rate limits allow 200 requests/min for a bot with a compliant User-Agent and 10/min for a client identified by IP alone.
+  - From 2026-10-30 this IP was held to the IP tier and then blocked, despite the User-Agent.
+  - Logged-in requests are counted per account. `http.login` uses a bot password (`WAO_BOT_USER`, `WAO_BOT_PASS` from Special:BotPasswords), and with it the fetch ran at about 40 articles/s with no 429s (about 70 min).
+- **Features** (`panels/article_features.parquet`, one row per sample article; `wao.build.wikitext`, `wao.build.features`):
+  - bytes, prose_chars, lead_chars, n_sections (level 2), n_headings, n_refs (`<ref>` with content), n_templates, has_infobox, is_redirect;
+  - rev_id, rev_ts, created, age_years at 2023-12-31, n_rev_2023;
+  - coarse_type (Wikidata P31 rolled up, P06);
+  - topic, topic_score, topic_group, topic_confident (score ≥ 0.5).
+  - Character counts are comparable within an edition, not across scripts.
+- **Infobox:** a template counts if it's sitelinked from a Wikidata "Wikimedia infobox template" item (Q19887878), matches the edition's name prefix (Infobox, Ficha, Info/, Карточка, 基礎情報, جعبه اطلاعات…), or redirects to one of these (`features/infobox_templates.parquet`, 23k names).
+  - **Check against HTML** (20 flagged + 20 unflagged per edition, the 2023 revision rendered; `report/qa/p08_infobox_check.csv`): precision 1.00 in every edition, recall 0.92–1.00, weighted agreement 95–100%.
+  - Most misses are year-page calendar and navigation boxes that use the `infobox` CSS class, plus a few templates with no infobox-type Wikidata item (it "Album", ja "大学", zh "PBB").
+  - One pt helper ("Info/Partido político/lugares", a seat chart) is excluded.
+  - Shares by edition: 48% for de (its articles use fewer infoboxes) to 84% for fr and ru.
+- **Topics:** Lift Wing `outlink-topic-model` (64 ORES topics, threshold 0.01), all 197,453 returned ok (`features/topics.parquet`, long format).
+  - The model reads the **current (2026) outlinks**, not the 2023 revision, so topic is treated as a stable property of the article.
+  - 98.5–99.2% have a top topic with score ≥ 0.5.
+  - Top groups: Culture 29–50%, Geography 28–44%, STEM 15–20%, History and Society 6–9%.
+- **Missing:** text features 0.05–0.42% by edition; creation date and topic 0%. Distributions: `report/qa/p08_feature_summary.csv`, `p08_status.csv`, `p08_topics.csv`; figure `report/figures/p08_article_features.png`.
+- **Medians** (unweighted sample):
+
+  | | prose chars | references | age (years) |
+  |---|---|---|---|
+  | Lowest | fa 552, zh 457 | 1 in fa, it, pl | 8.8 (fa) |
+  | Highest | de 3,136, en 3,050 | 6 in en | 15.8 (en) |
+

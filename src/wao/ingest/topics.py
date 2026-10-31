@@ -8,7 +8,7 @@ topic is treated as a stable property of the article. Responses are cached (POST
 of the cache key); a few workers share the load, each with its own cache file.
 
 Output: PARQUET_DIR/features/topics.parquet  lang, page_id, topic, score  (+ status rows)
-Run: python -m wao.ingest.topics [--workers 4]
+Run: python -m wao.ingest.topics [--workers 2] [--shards 4]
 """
 
 from __future__ import annotations
@@ -64,17 +64,18 @@ def run_shard(shard: int, rows: list[tuple[str, int, str]]) -> pd.DataFrame:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--workers", type=int, default=2)
+    ap.add_argument("--shards", type=int, default=4, help="cache files; keep fixed across runs")
     a = ap.parse_args()
     s = pd.read_parquet(config.PANEL_DIR / "sample.parquet", columns=["lang", "page_id", "title"])
     rows = list(s.itertuples(index=False, name=None))
     # stable sharding, so a rerun hits the same cache files
     shards = [
-        [r for r in rows if zlib.crc32(f"{r[0]}{r[1]}".encode()) % a.workers == k]
-        for k in range(a.workers)
+        [r for r in rows if zlib.crc32(f"{r[0]}{r[1]}".encode()) % a.shards == k]
+        for k in range(a.shards)
     ]
     with ProcessPoolExecutor(a.workers) as pool:
-        df = pd.concat(pool.map(run_shard, range(a.workers), shards), ignore_index=True)
+        df = pd.concat(pool.map(run_shard, range(a.shards), shards), ignore_index=True)
     out_path().parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(out_path(), index=False)
     print(df.drop_duplicates(["lang", "page_id"]).status.value_counts(), flush=True)

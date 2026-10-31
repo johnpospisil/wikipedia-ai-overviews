@@ -8,6 +8,7 @@ also shows the current speed and an ETA. Later downloads add themselves to JOBS.
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import sqlite3
 import sys
@@ -101,9 +102,24 @@ def _sample_size() -> int:
     return len(pd.read_parquet(config.PANEL_DIR / "sample.parquet", columns=["page_id"]))
 
 
+def _logged_revisions() -> int:
+    """Articles fetched so far by wao.ingest.revisions, from its log lines `xx: done/total`
+    (and `xx: done N` once an edition is finished)."""
+    log = config.DATA_DIR / "logs" / "revisions.log"
+    best: dict[str, int] = {}
+    if log.exists():
+        text = log.read_text()
+        for m in re.finditer(r"^(\w+): ([\d,]+)/", text, re.M):
+            best[m[1]] = max(best.get(m[1], 0), int(m[2].replace(",", "")))
+        for m in re.finditer(r"^(\w+): done ([\d,]+)", text, re.M):
+            best[m[1]] = int(m[2].replace(",", ""))
+    return sum(best.values())
+
+
 # name -> (items done, items total): API jobs counted in cached responses
 COUNTS: dict[str, Callable[[], tuple[int, int]]] = {
     "topics": lambda: (_cached("liftwing_"), _sample_size()),
+    "revisions": lambda: (_logged_revisions(), _sample_size()),
 }
 
 
