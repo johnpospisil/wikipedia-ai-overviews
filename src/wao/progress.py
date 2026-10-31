@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import sqlite3
 import sys
 import time
 from collections.abc import Callable
@@ -17,7 +18,7 @@ from pathlib import Path
 import pandas as pd
 
 from wao import config
-from wao.ingest import country, pageview_months, pageviews, sql_dumps
+from wao.ingest import country, pageview_months, pageviews, sql_dumps, stub_history
 
 
 def _country_files() -> pd.DataFrame:
@@ -65,6 +66,16 @@ def _repair_files() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _stub_files() -> pd.DataFrame:
+    rows = stub_history.file_list()
+    return pd.DataFrame(
+        {
+            "path": [stub_history.raw_path(r["name"]) for r in rows],
+            "bytes": [r["bytes"] for r in rows],
+        }
+    )
+
+
 # name -> (expected files with sizes, whether `bytes` are real sizes)
 JOBS: dict[str, tuple[Callable[[], pd.DataFrame], bool]] = {
     "country": (_country_files, False),
@@ -73,11 +84,34 @@ JOBS: dict[str, tuple[Callable[[], pd.DataFrame], bool]] = {
     "pageviews2023": (_pageview_2023_files, True),
     "pageviews": (_pageview_files, True),
     "repair": (_repair_files, True),
+    "stubs": (_stub_files, True),
+}
+
+
+def _cached(prefix: str) -> int:
+    """Responses stored in the HTTP caches whose names start with `prefix`."""
+    n = 0
+    for f in config.CACHE_DIR.glob(f"{prefix}*.sqlite"):
+        with sqlite3.connect(f"file:{f}?mode=ro", uri=True, timeout=30) as con:
+            n += con.execute("select count(*) from responses").fetchone()[0]
+    return n
+
+
+def _sample_size() -> int:
+    return len(pd.read_parquet(config.PANEL_DIR / "sample.parquet", columns=["page_id"]))
+
+
+# name -> (items done, items total): API jobs counted in cached responses
+COUNTS: dict[str, Callable[[], tuple[int, int]]] = {
+    "topics": lambda: (_cached("liftwing_"), _sample_size()),
 }
 
 
 def measure(name: str) -> tuple[float, float, int, int]:
     """(bytes done, bytes total, files done, files total)."""
+    if name in COUNTS:
+        done, total = COUNTS[name]()
+        return float(done), float(total), done, total
     expected, real_sizes = JOBS[name]
     f = expected()
     done_bytes, done_files = 0.0, 0
@@ -107,19 +141,21 @@ def render(
     width = max(10, min(40, shutil.get_terminal_size().columns - 70))
     filled = int(width * frac)
     bar = "█" * filled + "░" * (width - filled)
+    eta = f"ETA {fmt_eta((total - done) / rate if rate else 0)}" if rate is not None else ""
+    if name in COUNTS:
+        speed = f"  {rate * 60:,.0f}/min  {eta}" if rate is not None else ""
+        return f"{name} [{bar}] {100 * frac:5.1f}%  {nf:,}/{nt:,} articles{speed}"
     size = f"{done / 1e9:5.1f}/{total / 1e9:.1f} GB" if real_sizes else ""
-    speed = ""
-    if rate is not None and real_sizes:
-        speed = f"  {rate / 1e6:4.1f} MB/s  ETA {fmt_eta((total - done) / rate if rate else 0)}"
+    speed = f"  {rate / 1e6:4.1f} MB/s  {eta}" if rate is not None and real_sizes else ""
     return f"{name} [{bar}] {100 * frac:5.1f}%  {size}  {nf}/{nt} files{speed}"
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("job", nargs="?", default="clickstream", choices=sorted(JOBS))
+    ap.add_argument("job", nargs="?", default="clickstream", choices=sorted(JOBS | COUNTS))
     ap.add_argument("--watch", action="store_true", help="redraw every 5 s until done")
     a = ap.parse_args()
-    real = JOBS[a.job][1]
+    real = JOBS[a.job][1] if a.job in JOBS else True
     history: list[tuple[float, float]] = []  # (time, bytes) over the last ~2 minutes
     while True:
         done, total, nf, nt = measure(a.job)

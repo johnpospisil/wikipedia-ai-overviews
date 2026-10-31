@@ -32,7 +32,8 @@ class PoliteSession(requests_cache.CachedSession):
     """Cached session that sleeps between uncached requests."""
 
     def __init__(self, cache_path: Path, min_interval: float, **kwargs):
-        super().__init__(str(cache_path), backend="sqlite", allowable_codes=(200, 404), **kwargs)
+        kwargs.setdefault("allowable_codes", (200, 404))
+        super().__init__(str(cache_path), backend="sqlite", **kwargs)
         self.min_interval = min_interval
         self._last = 0.0
 
@@ -50,17 +51,20 @@ def session(
     name: str = "wikimedia",
     min_interval: float = DEFAULT_MIN_INTERVAL,
     cache_dir: Path | None = None,
+    post: bool = False,
 ) -> PoliteSession:
+    """`post=True` also caches POST responses (keyed on the body), e.g. for Lift Wing."""
     cache_dir = config.CACHE_DIR if cache_dir is None else cache_dir
     cache_dir.mkdir(parents=True, exist_ok=True)
-    s = PoliteSession(cache_dir / f"{name}.sqlite", min_interval)
+    methods = ("GET", "HEAD", "POST") if post else ("GET", "HEAD")
+    s = PoliteSession(cache_dir / f"{name}.sqlite", min_interval, allowable_methods=methods)
     s.headers["User-Agent"] = user_agent()
     retry = Retry(
         total=6,
         backoff_factor=1.0,
         status_forcelist=(429, 500, 502, 503, 504),
         respect_retry_after_header=True,
-        allowed_methods=("GET", "HEAD"),
+        allowed_methods=methods,
     )
     s.mount("https://", HTTPAdapter(max_retries=retry))
     return s

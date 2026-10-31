@@ -24,7 +24,8 @@ all: check-env ingest build models figures report
 check-env:
 	$(PY) -m wao.check_env
 
-# Progress bar for a running download: `make progress` (JOB=clickstream|country|sql|pageviews2023|pageviews; WATCH=1 redraws with speed + ETA).
+# Progress bar: `make progress JOB=<name> WATCH=1` (speed + ETA). Downloads: clickstream country sql
+# pageviews2023 pageviews repair stubs; API jobs (counted in cached responses): topics.
 progress:
 	@$(PY) -m wao.progress $(or $(JOB),clickstream) $(if $(WATCH),--watch,)
 
