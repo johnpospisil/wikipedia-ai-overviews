@@ -105,6 +105,11 @@ qa: check-env
 	$(PY) -m wao.viz.reconcile
 	uv run pytest -q tests/test_data_quality.py
 
+# P14 exploratory analysis (blinded: per-edition series stop at 2024-04).
+eda: check-env
+	$(PY) -m wao.viz.eda
+	uv run jupyter nbconvert --to notebook --execute --inplace notebooks/01_eda.ipynb
+
 models:
 	@echo "models: nothing yet (P16–P25)"
 
