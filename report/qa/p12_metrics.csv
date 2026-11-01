@@ -1,0 +1,9 @@
+,labels,scope,weighted,precision,recall,f1,accuracy,n,share_qa_labels
+0,claude,all,False,0.966,0.89,0.927,0.88,299,0.853
+1,claude,all,True,0.99,0.922,0.954,0.921,299,0.902
+2,claude,en,False,0.962,0.893,0.926,0.88,100,0.84
+3,claude,en,True,0.989,0.945,0.966,0.941,100,0.905
+4,claude,de,False,0.962,0.882,0.92,0.87,100,0.85
+5,claude,de,True,0.99,0.894,0.939,0.897,100,0.889
+6,claude,ja,False,0.975,0.895,0.933,0.889,99,0.869
+7,claude,ja,True,0.995,0.841,0.912,0.852,99,0.911
