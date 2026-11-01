@@ -114,8 +114,8 @@ eda: check-env
 power: check-env
 	$(PY) -m wao.models.power
 
-models:
-	@echo "models: nothing yet (P16–P25)"
+models: check-env
+	$(PY) -m wao.models.its
 
 figures:
 	@echo "figures: nothing yet (P26–P27)"

@@ -222,3 +222,9 @@ Any check that flips the H1 conclusion must be reported in the main text.
 ## 11. Deviations
 
 *(Append dated entries here. Each entry: what changed, why, and whether it was decided before or after seeing post-launch contrasts.)*
+
+### 2026-11-01: English ITS nuisance terms and sensitivity specifications (clarification and addition)
+
+- **Clarification:** the section 5.1 ITS (spec A) also includes the nuisance terms of the P14 trend model: COVID dummies for 2020-03..05 and an English clickstream step from 2020-05 (automated class introduced, `data_breaks.csv`). 2025-04 is missing, as in section 2.
+- **Addition (sensitivity, labelled exploratory):** B, no ChatGPT slope change (one trend 2019-04..2024-04 extrapolated); C, A plus a step from 2025-04 (bot reclassification); D, the AIO level and slope replaced by the continuous P03 exposure; E, 2025-04 rescaled instead of missing. Period gaps are mean(actual) − mean(counterfactual), with SEs that include the trend-extrapolation uncertainty (HAC, 6 lags).
+- **When:** written into the code **before the ITS was first fitted**. No post-launch English model had been run.
