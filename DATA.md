@@ -316,3 +316,53 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   - Both pulls were on the same day and may share Google's sample, so treat this as a lower bound on the noise.
   - Trends measures searches about Wikipedia, not traffic to it.
 
+## 18. Data quality and reconciliation (P11)
+
+Run with `make qa`. Checks are in `tests/test_data_quality.py`, tables in `report/qa/p11_*.csv`, the figure in `report/figures/p11_reconciliation.png`, and every known break in `data/reference/data_breaks.csv`, which P13 and P20 read.
+
+- **AQS reference series** (`wao.ingest.aqs_checks`):
+  - Monthly totals per edition: user desktop, mobile-web and mobile-app, automated and spider (2016-01..2026-09).
+  - Per-article user views for 200 random sample articles.
+- **Checklist** (`p11_checklist.csv`):
+  - PASS: P07 views by current title equal AQS per-article exactly in 99.3% of 23,114 article-months. Redirect-resolved totals are ≥ AQS for all 200 articles (1% tolerance, two zh articles off by a few views), with a median of +0.8% and p90 +38% from redirects and old titles.
+  - PASS: no duplicate article × day × access × agent rows.
+  - PASS: the weighted sample vs AQS `user`, 2023: de 0.87, en 0.97, es 0.90, fa 0.89, fr 0.83, it 0.97, ja 0.97, pl 0.94, pt 0.94, ru 0.93, zh 0.93. AQS also counts the Main Page and non-article pages, which are large in fr and de.
+  - FAIL: clickstream 2025-04 is incomplete (see below).
+- **Clickstream vs AQS web views** (desktop + mobile web, `user`):
+  - After 2019-04 the ratio is stable at 0.82–0.95 by edition. It is below 1 because the <10 pairs are dropped and because of request-vs-pageview differences.
+  - **Method change 2019-04:** the ratio steps up in every edition at once: ja +35%, ru +27%, fa +23%, zh +16%, fr and pl +8%, pt +7%, es +6%, de +5%, it +3%, en +2%. Non-Latin scripts gain most, consistent with a fix to percent-encoded titles. **Clickstream outcomes should start at 2019-04,** which leaves 61 pre-period months.
+  - **2025-04 incomplete:** the month is 0.81–0.86 of its neighbours in every edition, and per article the clickstream/pageview ratio drops by the same factor (median 0.83 vs 0.98). AQS is smooth. About 5 days are missing.
+  - Other flagged months: en 2020-05 +8% (automated agent class introduced); pl and zh 2018-07 (before 2019-04); fr 2024-08 −8%; fa 2026-04..05 (outage).
+- **2025 bot reclassification:**
+  - AQS automated share of views, 2024-09..2025-02 vs 2025-05..12:
+
+    | Edition | Before | After |
+    |---|---|---|
+    | en | 10.7% | 22.3% |
+    | pt | 10.3% | 33.6% |
+    | zh | 12.9% | 32.9% |
+    | pl | 7.3% | 15.5% |
+    | fr | 25.1% | 17.3% |
+
+    The rise starts in 2025-04 and persists into 2026.
+  - P07 dump views equal AQS per-article in 2025-03..08 (gap 0.0%), so the dumps downloaded in 2026-10 carry the same classification.
+  - The clickstream/AQS ratio is flat across the window in every edition, pt included, so clickstream uses the same `user` filter.
+  - Nothing before 2025-03 was reclassified: the automated share is unchanged up to 2025-03.
+  - Result: a level break in `user` traffic from 2025-04 in both outcome sources. Its size differs by edition, so month fixed effects don't absorb it.
+- **Truncation (<10 rule):** `wao.build.truncation`. A censored article-month gets E[X | X ≤ 9] with X ~ Binomial(web views, p̂), where p̂ = search arrivals / web views of uncensored articles in the same edition × 2023 decile × month. The bounds are 0 and min(9, views).
+  - Hidden share of search arrivals per edition: 0.4–3.1% in 2023 (upper bound 0.6–3.9%), rising to 0.6–5.3% in 2026 (upper 0.8–7.7%, highest fa, pl and zh) as traffic falls.
+  - By 2023 popularity decile: deciles 1–2 are 80–100% hidden; deciles 5–6 hide 3–97% depending on the edition (ja least, fa and pl most); decile 10 hides 0%.
+  - Simulation on 2023 (uniform true decline, then re-censor): at the edition level the bias is ≤0.6 pp even for a 50% decline. A true 20% decline is overstated by:
+
+    | Decile | Bias |
+    |---|---|
+    | 1 | up to +80 pp (noisy: few uncensored articles) |
+    | 2–5 | typically +5–40 pp |
+    | 6 | +1–24 pp |
+    | 7 | 0–14 pp |
+    | 8 | 0–4 pp |
+    | 9–10 | under 1 pp |
+
+    ja and en are affected least.
+  - **Implication:** edition-level search outcomes are safe. Tail and head-vs-tail results must use pageviews or `parquet/qa/search_imputed.parquet` (per article × month: observed, hidden, upper).
+

@@ -1,0 +1,9 @@
+check,status,detail
+"clickstream / AQS web views, range 2018-01..2024-04",info,0.64-1.02 (median 0.88); flagged months 17
+"sample (weighted) / AQS user, 2023 (AQS also counts the Main Page and other namespaces)",pass,de 0.87 en 0.97 es 0.90 fa 0.89 fr 0.83 it 0.97 ja 0.97 pl 0.94 pt 0.94 ru 0.93 zh 0.93
+sample / AQS month-to-month stability (months >8% off the 13-month median),info,87 of 1418 edition-months
+per-article: P07 current-title views == AQS (share of article-months),pass,"0.9930 of 23114 article-months, 200 articles"
+"redirect-resolved views >= AQS title views (per article, 1% tolerance)",pass,"median resolved/AQS 1.008, p90 1.379"
+duplicate article-day-access rows in pageview_daily,pass,0
+clickstream 2025-04 complete (ratio vs mean of 2025-03 and 2025-05),fail,0.807-0.856 of neighbouring months in every edition; consistent with ~5 missing days
+2025 bot window: per-article P07/AQS gap 2025-03..08,info,"mean -0.000, max |gap| 0.002"

@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
+.PHONY: all check-env progress reference qa ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -82,7 +82,16 @@ sample: check-env
 	$(PY) -m wao.ingest.pageview_months
 	$(PY) -m wao.build.sample
 
-build: sample
+build: sample qa
+
+# P11: AQS reference series (~30 min at 1 request / 7 s), article x month QA table, truncation,
+# reconciliation; checks in tests/test_data_quality.py.
+qa: check-env
+	$(PY) -m wao.ingest.aqs_checks
+	$(PY) -m wao.build.qa_article_month
+	$(PY) -m wao.build.truncation
+	$(PY) -m wao.viz.reconcile
+	uv run pytest -q tests/test_data_quality.py
 
 models:
 	@echo "models: nothing yet (P16–P25)"
