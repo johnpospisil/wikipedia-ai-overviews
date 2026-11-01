@@ -1,40 +1,56 @@
 date,end_date,event,category,scope,source_url
-2022-11-30,,ChatGPT released,chatbot,global,https://openai.com/index/chatgpt/
-2023-02-07,,Bing Chat (Copilot) in Bing search,ai_search_competitor,global,https://blogs.microsoft.com/blog/2023/02/07/reinventing-search-with-a-new-ai-powered-microsoft-bing-and-edge-your-copilot-for-the-web/
-2023-03-14,,GPT-4 released,chatbot,global,https://openai.com/index/gpt-4-research/
-2023-03-21,,Google Bard opens (US/UK),chatbot,US;GB,https://blog.google/technology/ai/try-bard/
-2023-05-10,,Google SGE in Search Labs (US opt-in),google_ai_search,US,https://blog.google/products/search/generative-ai-search/
-2024-02-08,,Bard renamed Gemini; Gemini app,chatbot,global,https://blog.google/products/gemini/bard-gemini-advanced-app/
-2024-04-16,,Yandex Neuro (AI answers in Yandex search),ai_search_competitor,RU,https://yandex.com/company/news/16-04-2024
-2024-05-14,,AI Overviews launch (US),google_ai_search,US,https://blog.google/products/search/generative-ai-google-search-may-2024/
-2024-08-15,,AI Overviews: UK; IN; JP; ID; MX; BR (signed-in 18+),google_ai_search,GB;IN;JP;ID;MX;BR,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/
-2024-10-28,,AI Overviews: 100+ countries (signed-in 18+); 6 languages anywhere,google_ai_search,multi,https://blog.google/products/search/ai-overviews-search-october-2024/
-2024-10-31,,ChatGPT search launched,ai_search_competitor,global,https://openai.com/index/introducing-chatgpt-search/
-2025-03-05,,AI Mode in Search Labs (US opt-in),google_ai_search,US,https://blog.google/products/search/ai-mode-search/
-2025-03-25,,AI Overviews: AT; BE; DE; IE; IT; PL; PT; ES; CH (signed-in 18+),google_ai_search,AT;BE;DE;IE;IT;PL;PT;ES;CH,https://blog.google/feed/were-bringing-the-helpfulness-of-ai-overviews-to-more-countries-in-europe/
-2025-03-01,2025-08-31,Wikimedia reclassifies Mar–Aug 2025 traffic after bot-detection update (evasive bots; mostly Brazil),wikimedia_measurement,global,https://diff.wikimedia.org/2025/10/17/new-user-trends-on-wikipedia/
-2025-05-20,,AI Overviews: 200+ countries; 40+ languages; AI Mode announced for all US users,google_ai_search,multi,https://blog.google/products/search/ai-overview-expansion-may-2025-update/
-2025-05-20,,AI Mode rolls out to all US users (announced at I/O),google_ai_search,US,https://blog.google/products/search/google-search-ai-mode-update/
-2025-08-21,,AI Mode: 180+ countries (English),google_ai_search,multi,https://searchengineland.com/google-launches-ai-mode-in-180-countries-and-territories-461040
-2025-09-08,,AI Mode adds Hindi; Indonesian; Japanese; Korean; Brazilian Portuguese (approx. date),google_ai_search,multi,https://searchengineland.com/google-expands-ai-mode-beyond-english-461680
-2026-07-22,,AI Overviews and AI Mode launch in France,google_ai_search,FR,https://blog.google/intl/fr-fr/nouveautes-produits/explorez-obtenez-des-reponses/recherche-ia-apercus-mode/
+2018-03-07,,March 2018 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2018-04-16,,April 2018 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2018-08-01,,August 2018 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2019-03-12,,March 2019 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2019-06-03,2019-06-08,June 2019 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2019-09-24,,September 2019 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2020-01-13,,January 2020 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2020-05-04,2020-05-18,May 2020 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2020-12-03,2020-12-16,December 2020 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2021-06-02,2021-06-12,June 2021 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2021-07-01,2021-07-12,July 2021 core update (press-dated; announced by Google on X),google_ranking_update,global,https://www.seroundtable.com/category/google-updates
+2021-11-03,2021-11-11,November 2021 spam update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2021-11-17,2021-11-30,November 2021 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2021-12-01,2021-12-21,December 2021 product reviews update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2022-02-22,2022-03-03,Page experience update for desktop,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2022-03-23,2022-04-06,March 2022 product reviews update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2022-05-25,2022-06-09,May 2022 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2022-08-25,2022-09-09,August 2022 helpful content update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2022-09-12,2022-09-26,September 2022 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2022-11-30,,ChatGPT released,chatbot,global,https://openai.com/index/chatgpt/
 2022-12-05,2023-01-12,December 2022 helpful content update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2023-02-06,2023-09-19,Country pageview dataset missing United States,wikimedia_measurement,US,https://analytics.wikimedia.org/published/datasets/country_project_page/00_README.html
+2023-02-07,,Bing Chat (Copilot) in Bing search,ai_search_competitor,global,https://blogs.microsoft.com/blog/2023/02/07/reinventing-search-with-a-new-ai-powered-microsoft-bing-and-edge-your-copilot-for-the-web/
+2023-03-14,,GPT-4 released,chatbot,global,https://openai.com/index/gpt-4-research/
 2023-03-15,2023-03-28,March 2023 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2023-03-21,,Google Bard opens (US/UK),chatbot,US;GB,https://blog.google/technology/ai/try-bard/
+2023-05-10,,Google SGE in Search Labs (US opt-in),google_ai_search,US,https://blog.google/products/search/generative-ai-search/
 2023-08-22,2023-09-07,August 2023 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2023-09-14,2023-09-27,September 2023 helpful content update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2023-10-05,2023-10-18,October 2023 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2023-11-02,2023-11-27,November 2023 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2024-02-08,,Bard renamed Gemini; Gemini app,chatbot,global,https://blog.google/products/gemini/bard-gemini-advanced-app/
 2024-03-05,2024-04-19,March 2024 core update (helpful content folded in),google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2024-04-16,,Yandex Neuro (AI answers in Yandex search),ai_search_competitor,RU,https://yandex.com/company/news/16-04-2024
+2024-05-14,,AI Overviews launch (US),google_ai_search,US,https://blog.google/products/search/generative-ai-google-search-may-2024/
+2024-08-01,,Clickstream adds 29 more languages (first month 2024-08),wikimedia_measurement,multi,https://dumps.wikimedia.org/other/clickstream/
+2024-08-15,,AI Overviews: UK; IN; JP; ID; MX; BR (signed-in 18+),google_ai_search,GB;IN;JP;ID;MX;BR,https://blog.google/products/search/new-ways-to-connect-to-the-web-with-ai-overviews/
 2024-08-15,2024-09-03,August 2024 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2024-10-28,,AI Overviews: 100+ countries (signed-in 18+); 6 languages anywhere,google_ai_search,multi,https://blog.google/products/search/ai-overviews-search-october-2024/
+2024-10-31,,ChatGPT search launched,ai_search_competitor,global,https://openai.com/index/introducing-chatgpt-search/
 2024-11-11,2024-12-04,November 2024 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2024-12-12,2024-12-18,December 2024 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2025-03-01,2025-08-31,Wikimedia reclassifies Mar–Aug 2025 traffic after bot-detection update (evasive bots; mostly Brazil),wikimedia_measurement,global,https://diff.wikimedia.org/2025/10/17/new-user-trends-on-wikipedia/
+2025-03-05,,AI Mode in Search Labs (US opt-in),google_ai_search,US,https://blog.google/products/search/ai-mode-search/
 2025-03-13,2025-03-26,March 2025 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2025-03-25,,AI Overviews: AT; BE; DE; IE; IT; PL; PT; ES; CH (signed-in 18+),google_ai_search,AT;BE;DE;IE;IT;PL;PT;ES;CH,https://blog.google/feed/were-bringing-the-helpfulness-of-ai-overviews-to-more-countries-in-europe/
+2025-05-20,,AI Mode rolls out to all US users (announced at I/O),google_ai_search,US,https://blog.google/products/search/google-search-ai-mode-update/
+2025-05-20,,AI Overviews: 200+ countries; 40+ languages; AI Mode announced for all US users,google_ai_search,multi,https://blog.google/products/search/ai-overview-expansion-may-2025-update/
 2025-06-30,2025-07-16,June 2025 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
+2025-08-21,,AI Mode: 180+ countries (English),google_ai_search,multi,https://searchengineland.com/google-launches-ai-mode-in-180-countries-and-territories-461040
+2025-09-08,,AI Mode adds Hindi; Indonesian; Japanese; Korean; Brazilian Portuguese (approx. date),google_ai_search,multi,https://searchengineland.com/google-expands-ai-mode-beyond-english-461680
 2025-12-11,2025-12-29,December 2025 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2026-03-27,2026-04-08,March 2026 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
 2026-05-21,2026-06-01,May 2026 core update,google_ranking_update,global,https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history
-2024-08-01,,Clickstream adds 29 more languages (first month 2024-08),wikimedia_measurement,multi,https://dumps.wikimedia.org/other/clickstream/
-2023-02-06,2023-09-19,Country pageview dataset missing United States,wikimedia_measurement,US,https://analytics.wikimedia.org/published/datasets/country_project_page/00_README.html
+2026-07-22,,AI Overviews and AI Mode launch in France,google_ai_search,FR,https://blog.google/intl/fr-fr/nouveautes-produits/explorez-obtenez-des-reponses/recherche-ia-apercus-mode/

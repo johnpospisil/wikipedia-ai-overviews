@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits sample build models figures report test test-network lint
+.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -41,7 +41,7 @@ reference:
 
 # Stages are filled in by later prompts (ingest P04–P10, build P11–P13, models P16–P25,
 # figures P26–P27, report P30).
-ingest: check-env ingest-clickstream ingest-pageviews ingest-features ingest-edits
+ingest: check-env ingest-clickstream ingest-pageviews ingest-features ingest-edits context
 
 # P05: all clickstream files -> Parquet pairs + per-article aggregates (resumable).
 ingest-clickstream: check-env
@@ -68,6 +68,13 @@ ingest-edits: check-env
 	$(PY) -m wao.ingest.editors
 	$(PY) -m wao.build.edits
 	$(PY) -m wao.viz.editors
+
+# P10: search-engine shares by country and edition, ranking-update indicator, Google Trends
+# (context only; StatCounter is fetched in `reference`).
+context: check-env
+	$(PY) -m wao.build.search_context
+	$(PY) -m wao.ingest.trends
+	$(PY) -m wao.viz.search_context
 
 # P06: SQL table dumps + 2023 pageview totals -> frame and stratified sample (resumable).
 sample: check-env

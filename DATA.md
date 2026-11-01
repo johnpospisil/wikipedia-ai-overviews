@@ -285,3 +285,34 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   - fa registered active editors fall to 155 in 2026-04 (about 900 usually). Likely an Iranian internet shutdown; matches the P07 coverage dips.
 - **Blinding:** the series are shown over the full period for data quality only (`report/figures/p09_editors.png`, no launch dates). Treated-vs-control contrasts wait for P15 and P24.
 
+## 17. Search-engine context (P10)
+
+- **Engine shares** (`wao.build.search_context`):
+  - From the P03 StatCounter download (126 countries, 2017-11..2026-09). Engines are grouped into google, bing (incl. MSN), yahoo, yandex (YANDEX + YANDEX RU), baidu, naver, duckduckgo and other.
+  - Junk rows (`--` country, blank engine) and all-zero country-months are dropped, and each country-month is renormalised to 1.
+  - Output: `parquet/search_share.parquet`.
+- **Per edition:** `data/reference/search_share_lang.csv` gives each edition's readers' engine mix. Countries are weighted by the fixed P03 reader shares, renormalised over countries with data (95–100% of weight for the core editions; the hidden `ZZ` bucket has none).
+  - Every engine lands in clickstream's `other-search`.
+- **Non-Google share of `other-search`, pre-period 2023-10..2024-04** (`report/qa/p10_non_google_lang.csv`). Elsewhere it is 3–10% (fa 3%, es and it 5–6%, de, en and fr 9%), mostly Bing. Three editions exceed 10%:
+
+  | Edition | Non-Google | Main other engine |
+  |---|---|---|
+  | ru | 53% | Yandex 50% |
+  | ja | 22% | Yahoo! Japan 12%, Bing 8% |
+  | zh | 12% | Yahoo! in Taiwan and Hong Kong 4%, Baidu 2%, Bing 4% |
+
+  Yahoo! Japan uses Google's index on its own results page, without AI Overviews.
+- **Drift after 2024:**
+  - Google's StatCounter share falls in most markets in 2025–26, mostly towards Bing: DE 90→83% (2023→2026 mean), BR 96→88%, PL 96→89%, IT 95→88%, US 89→85%.
+  - Japan jumps: Bing 8%→36% between 2025-10 and 2026-04, and Google 80%→55% (`p10_google_share_markets.csv`).
+  - StatCounter measures page views on sites carrying its tracker, so a tracker-mix artefact can't be ruled out.
+  - Exposure (P03) uses the fixed pre-period shares, so it is unaffected. But in these markets `other-search` after 2025 is less Google-only than before.
+- **Ranking updates:** `data/reference/ranking_updates_monthly.csv` (month: core_days, core_update, other_update_days), from `events.csv`.
+  - Google's Search Status Dashboard starts 2021-11. Core updates from 2018-03 to 2021-07 were added from trade-press dating (Search Engine Roundtable; Google announced them on X), marked "press-dated". 7 of the 11 have no published end date and are given 14 days.
+  - 35 of the months 2016-01..2026-09 have a core update; spam, helpful-content and reviews updates are counted separately.
+- **Google Trends** (`wao.ingest.trends`; context only, never an outcome): the topic "Wikipedia" (/m/0d07ph) in 15 key countries, monthly, via the unofficial pytrends client.
+  - Output: `parquet/context/google_trends.parquet`.
+  - Each country is pulled for 2016-01..2026-09 and for 2021-01..2026-09. After rescaling, the two pulls differ by a median 0.4–1.4% per month, with the 90th percentile at 1.1–4.6% (highest for low-interest IR, RU and JP; `report/qa/p10_trends_noise.csv`).
+  - Both pulls were on the same day and may share Google's sample, so treat this as a lower bound on the noise.
+  - Trends measures searches about Wikipedia, not traffic to it.
+

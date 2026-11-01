@@ -1,0 +1,12 @@
+wiki,google,non_google,largest_other,its_share,non_google_ge_10pct
+de,0.9046,0.0954,bing,0.0539,False
+en,0.9111,0.0889,bing,0.0525,False
+es,0.944,0.056,bing,0.0378,False
+fa,0.9706,0.0294,bing,0.0195,False
+fr,0.9129,0.0871,bing,0.049,False
+it,0.9467,0.0533,bing,0.0335,False
+ja,0.779,0.221,yahoo,0.1213,True
+pl,0.9557,0.0443,bing,0.0289,False
+pt,0.9506,0.0494,bing,0.0344,False
+ru,0.4658,0.5342,yandex,0.5048,True
+zh,0.884,0.116,yahoo,0.0425,True

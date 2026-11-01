@@ -28,6 +28,7 @@ dependencies = [
     "wildboottest>=0.3.2",
     "pycountry>=26.2.16",
     "mwparserfromhell>=0.6",
+    "pytrends>=4.9.2",
 ]
 
 [dependency-groups]
