@@ -116,6 +116,7 @@ power: check-env
 
 models: check-env
 	$(PY) -m wao.models.its
+	$(PY) -m wao.models.did
 
 figures:
 	@echo "figures: nothing yet (P26–P27)"

@@ -1,0 +1,2 @@
+verdict,primary_pct,ri_p,ci95_pct,full_pct,pretrend_flag,rr_m1_includes_0,pretrend_warning
+Inconclusive,2.6528997908797036,0.582010582010582,"(np.float64(-7.457297560336318), np.float64(13.031912007401104))",-7.9598096758234815,False,True,False

@@ -228,3 +228,10 @@ Any check that flips the H1 conclusion must be reported in the main text.
 - **Clarification:** the section 5.1 ITS (spec A) also includes the nuisance terms of the P14 trend model: COVID dummies for 2020-03..05 and an English clickstream step from 2020-05 (automated class introduced, `data_breaks.csv`). 2025-04 is missing, as in section 2.
 - **Addition (sensitivity, labelled exploratory):** B, no ChatGPT slope change (one trend 2019-04..2024-04 extrapolated); C, A plus a step from 2025-04 (bot reclassification); D, the AIO level and slope replaced by the continuous P03 exposure; E, 2025-04 rescaled instead of missing. Period gaps are mean(actual) − mean(counterfactual), with SEs that include the trend-extrapolation uncertainty (HAC, 6 lags).
 - **When:** written into the code **before the ITS was first fitted**. No post-launch English model had been run.
+
+### 2026-11-01: How P17 implements the section 4 inference (clarification)
+
+- **RI:** the 30,240 permutations of the label pairs are computed as specified. In the primary window, de, it, pl, zh and fr are all unexposed, so they map to **1,512 distinct assignments** (each 20 times). The p-value is identical either way. Sun–Abraham and Borusyak–Jaravel–Spiess, which need one regression per assignment, use the true assignment plus 3,000 random others.
+- **Bootstrap:** the "wild cluster bootstrap" is implemented as the Callaway–Sant'Anna multiplier bootstrap on the per-edition influence functions (Webb six-point weights, 99,999 draws). It is degenerate (SE 0) for a cell with one treated and one control edition (zh in the full window), which is one more reason it doesn't decide.
+- **Rambachan–Roth:** the identified-set version. The largest month-to-month change in the 12 leads before the base (point estimates) bounds each post-period step at M̄ times that, and the 95% RI interval is widened by the implied worst-case average bias. It is not the conditional/hybrid confidence set.
+- **When:** all three were written into the code **before the first P17 run**. The per-edition breakdown (`p17_by_edition.csv`, exploratory) was added **after seeing the results**.

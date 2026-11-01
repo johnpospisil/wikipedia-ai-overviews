@@ -1,0 +1,7 @@
+window,estimator,theta,ri_p,ri_lo95,ri_hi95,ri_lo90,ri_hi90,boot_se,pct
+primary,Callaway-Sant'Anna,0.02618,0.58201,-0.0775,0.1225,-0.0625,0.1025,0.02922,2.6529
+primary,Sun-Abraham,0.02618,0.58201,,,,,,2.6529
+primary,Borusyak-Jaravel-Spiess,-0.03862,0.5377,,,,,,-3.78873
+full,Callaway-Sant'Anna,-0.08294,0.40294,-0.33,0.0975,-0.2875,0.0775,0.0285,-7.95981
+full,Sun-Abraham,-0.07861,0.40387,,,,,,-7.5603
+full,Borusyak-Jaravel-Spiess,-0.14077,0.29657,,,,,,-13.13084
