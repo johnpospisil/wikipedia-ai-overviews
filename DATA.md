@@ -215,7 +215,7 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
 - **File checks** (`report/qa/p07_files.csv`):
   - 0 rows whose daily counts don't sum to the monthly total.
   - 7,593 malformed lines in 53 billion. All are junk like `de.wikipedia \r\n` with no title, 99% of them in 2016–2019.
-- **Defective dump: zh 2022-10.** The monthly `user` and `automated` files are missing about 85% of zh rows for titles sorting after about "塔尔". Only 6,271 sample articles were found, against about 15,000 in the neighbouring months, while AQS shows a normal month (407.7 M views). The daily files for that month are complete, so zh 2022-10 is rebuilt from the 62 daily files (20 GB raw under `pageview_complete/daily/`; `data/reference/pageview_repairs.csv`, `--repair`). After the repair it has 14,972 articles and 8.97 M views, against 9.18 M in 2022-09 and 9.22 M in 2022-11. A rolling-median scan of every edition-month found no other defect.
+- **Defective dump: zh 2022-10.** The monthly `user` and `automated` files are missing about 85% of zh rows for titles sorting after about "塔尔". Only 6,271 sample articles were found, against about 15,000 in the neighbouring months, while AQS shows a normal month (407.7 M views). The daily files for that month are complete, so zh 2022-10 is rebuilt from the 62 daily files (20 GB raw under `pageview_complete/daily/`; `data/reference/pageview_repairs.csv`, `--repair`). After the repair it has 14,972 articles and 8.97 M views, against 9.18 M in 2022-09 and 9.22 M in 2022-11. A rolling-median scan of every edition-month found no other defect, but it could not see an edition-month with no rows at all. **zh 2022-12** is such a month: both monthly dumps contain no zh rows. It was found in P13 and repaired the same way (15,512 articles, 9.25 M views, against about 9.2 M in the neighbouring months). A full scan of edition × month × agent finds no other empty month, and `tests/test_panels.py` now fails on any.
 - **Flags for P11:**
   - The share of views with a null `page_id` almost vanishes in 2020-06 (0.16% vs about 1%), and falls from 2.5% to 0.4% across 2026-03..04. These are methodology changes upstream. Matching by title absorbs both, so totals are unaffected, but they mark possible breaks.
   - fa coverage dips to 81–87% in 2025-12 and 2026-03..04 (99% otherwise). Possibly Iranian internet disruptions. fa is a control language, so check this against AQS fa totals.
@@ -395,4 +395,52 @@ Run with `make qa`. Checks are in `tests/test_data_quality.py`, tables in `repor
   - NQ is English and question-phrased, from 2016–17. It is applied to all editions through language-independent Wikidata types.
   - Within-type variation is ignored.
   - The quick vs long gap is modest (about 10 pp in short-answer rate), so expect H2 contrasts to be attenuated. The continuous NQ rate is the more informative moderator.
+
+## 20. Analysis panels (P13)
+
+`python -m wao.build.panels` (`make panels`; about 25 min). Checks are in `tests/test_panels.py`; CSV copies go to `panels/csv/` (521 MB, with the article panel split by edition). The P11 breaks (`data_breaks.csv`) become flags and alternative columns; no rows are dropped.
+
+- **Flags on every row:**
+  - `cs_usable`: clickstream exists and the month is ≥ 2019-04.
+  - `cs_short`: 2025-04.
+  - `bot_break`: from 2025-04 on.
+  - `month_complete`: every day present (core editions).
+- **`panel_lang_month.parquet`** (4,522 rows: 40 editions; core from 2016-01, others from 2017-11; 1,744 usable clickstream edition-months):
+  - Clickstream arrivals by referrer, with search and link shares.
+  - `search_arr_na` and `total_arr_na`: 2025-04 set to missing. `search_arr_rs` and `total_arr_rs`: 2025-04 ÷ k, the edition's shortfall factor (0.81–0.86 for the core editions; the core median elsewhere).
+  - `search_arr_corr` and `search_arr_corr_upper`: corrected for P11 truncation (core).
+  - AQS user views by access, and automated views (core).
+  - Active editors and edits (P09); exposure (three variants) and cohort (P03); Google share of the edition's readers and core-update days (P10).
+- **`panel_article_month/lang=xx/part.parquet`** (23.1 M rows; 197,453 articles from the later of 2016-01 and their start):
+  - **Start month:** the earlier of the first revision and the first month with views. 2.6% of articles have views before their first surviving revision (deleted and recreated, or a history merge). Starting them at the revision would drop up to 0.4% of fa's views.
+  - Views by access (user) and automated (from 2020-05), zero-filled; edits and editors (zero-filled).
+  - `arr_search` is **null when censored** (<10 search arrivals; `search_censored`), never 0, with the P11 hidden estimate and upper bound. `*_pub` are sums over published pairs.
+  - Static features, the quick-answer label (P12 v4: `qa_tier`, `qa_core`, `qa_nq_rate`) and weights (P06).
+  - **Censored search, share of usable article-months:**
+
+    | Edition | 2023 | 2026 |
+    |---|---|---|
+    | en | 29% | 29% |
+    | ja | 30% | 31% |
+    | ru | 41% | 45% |
+    | es | 39% | 42% |
+    | de | 43% | 46% |
+    | fr | 45% | 47% |
+    | it | 47% | 51% |
+    | pt | 51% | 56% |
+    | zh | 55% | 58% |
+    | pl | 56% | 59% |
+    | fa | 65% | 75% |
+
+  - Article-months with any user view: 91% (fa) to 99% (en, ja, ru).
+- **`panel_item_lang_month.parquet`** (8.3 M rows): the 6,000 concepts present in all 11 core editions (P06), with exposure and cohort.
+  - All 6,000 × 11 concept-editions are present.
+  - The share of concept-months with all 11 editions grows as articles are created: 58% in 2016, 94% in 2022, 98.4% in 2023, 100% from 2024. Unbalanced, as concept × month fixed effects allow.
+- **Reconciliation** (tests):
+  - Edition clickstream search = P05 totals exactly.
+  - Weighted 2023 article views = P11's sample totals (within 0.1%; fa 0.9996).
+  - 2023 search arrivals = the P11 QA table (one pt article-month of 13 arrivals predates the article).
+  - Unique keys in all three panels.
+  - No censored row coded as a number.
+  - Every core edition-month has pageviews.
 

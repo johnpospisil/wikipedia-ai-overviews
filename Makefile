@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference qa quick-answer ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
+.PHONY: all check-env progress reference qa quick-answer panels ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -82,7 +82,12 @@ sample: check-env
 	$(PY) -m wao.ingest.pageview_months
 	$(PY) -m wao.build.sample
 
-build: sample qa quick-answer
+build: sample qa quick-answer panels
+
+# P13: edition x month, article x month (per edition) and concept x edition x month panels (~25 min).
+panels: check-env
+	$(PY) -m wao.build.panels
+	uv run pytest -q tests/test_panels.py
 
 # P12: Natural Questions (column projection over HTTP, ~11 min), type rates, v4 label, figure.
 quick-answer: check-env

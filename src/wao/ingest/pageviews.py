@@ -352,6 +352,7 @@ def main() -> None:
     ap.add_argument("--procs", type=int, default=2)
     ap.add_argument("--rebuild-lookup", action="store_true")
     ap.add_argument("--repair", action="store_true", help="only rerun pageview_repairs.csv")
+    ap.add_argument("--months", nargs="*", help="with --repair: only these months")
     a = ap.parse_args()
     if a.rebuild_lookup or not lookup_path().exists():
         lk = build_lookup(duckdb.connect())
@@ -361,6 +362,8 @@ def main() -> None:
     log.parent.mkdir(exist_ok=True)
     if a.repair:
         for r in repairs().itertuples():
+            if a.months and r.month not in a.months:
+                continue
             res = repair(r.lang, r.agent, r.month, a.procs)
             print(res, flush=True)
             with open(log, "a") as fh:
