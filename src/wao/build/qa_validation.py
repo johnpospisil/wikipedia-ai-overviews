@@ -10,9 +10,14 @@ draw   100 sample articles each from en, de, ja (seed 12), stratified by Wikidat
 metrics  rule vs labels: precision, recall, F1 for quick-answer (unweighted and weighted),
        confusion by type; Claude vs user: Cohen's kappa.
 
+draw2  (rule v3) a fresh set of 60 articles not in the first 300 (seed 14): 10 core-quick and 10
+       core-long per edition, shuffled, tier not shown; labelled blind by the user (and Claude).
+metrics2  purity of the v3 core tiers against the second-round labels, and kappa.
+
 Files: data/reference/quick_answer_labels.csv (all 300, labels filled in by hand)
        data/reference/quick_answer_audit.csv (the 100 audit rows, without Claude's labels)
-Run: python -m wao.build.qa_validation draw | metrics
+       data/reference/quick_answer_labels2.csv, quick_answer_audit2.csv (second round)
+Run: python -m wao.build.qa_validation draw | metrics | draw2 | metrics2
 """
 
 from __future__ import annotations
@@ -29,6 +34,8 @@ LANGS = ("en", "de", "ja")
 N_PER_LANG, SEED, AUDIT_N, AUDIT_SEED = 100, 12, 100, 13
 REF = config.REFERENCE_DIR
 LABELS, AUDIT = REF / "quick_answer_labels.csv", REF / "quick_answer_audit.csv"
+LABELS2, AUDIT2 = REF / "quick_answer_labels2.csv", REF / "quick_answer_audit2.csv"
+N2_PER_TIER, SEED2 = 10, 14
 
 
 def allocate(sizes: pd.Series, n: int, floor: int = 2) -> pd.Series:
@@ -86,6 +93,62 @@ def draw() -> pd.DataFrame:
             "local_description", "url", "val_weight", "in_audit", "claude_label", "claude_conf",
             "claude_reason", "user_label"]  # fmt: skip
     return d[cols]
+
+
+def _describe(d: pd.DataFrame) -> pd.DataFrame:
+    ent = wikidata(sorted(d.qid.dropna().unique()))
+
+    def text(q, kind, lang):
+        return ent.get(q, {}).get(kind, {}).get(lang, {}).get("value", "") if q else ""
+
+    d["en_label"] = [text(q, "labels", "en") for q in d.qid]
+    d["en_description"] = [text(q, "descriptions", "en") for q in d.qid]
+    d["local_description"] = [text(q, "descriptions", lg) if lg != "en" else ""
+                              for q, lg in zip(d.qid, d.lang, strict=True)]  # fmt: skip
+    d["url"] = "https://" + d.lang + ".wikipedia.org/wiki/" + d.title
+    return d
+
+
+def draw2() -> pd.DataFrame:
+    s = pd.read_parquet(config.PANEL_DIR / "sample.parquet", columns=["lang", "page_id", "title",
+                                                                      "qid"])  # fmt: skip
+    tiers = pd.read_parquet(rule_path(), columns=["lang", "page_id", "qa_tier"])
+    used = pd.read_csv(LABELS, usecols=["lang", "page_id"])
+    s = s.merge(tiers, on=["lang", "page_id"]).merge(used, how="left", indicator=True)
+    s = s[s._merge == "left_only"]
+    picks = [s[(s.lang == lg) & (s.qa_tier == t)].sample(N2_PER_TIER, random_state=SEED2)
+             for lg in LANGS for t in ("quick", "long")]  # fmt: skip
+    d = _describe(pd.concat(picks).drop(columns=["qa_tier", "_merge"]))
+    d = d.sample(frac=1, random_state=SEED2).reset_index(drop=True)
+    d.insert(0, "row", range(1, len(d) + 1))
+    for c in ("claude_label", "claude_conf", "user_label"):
+        d[c] = ""
+    return d[["row", "lang", "page_id", "title", "qid", "en_label", "en_description",
+              "local_description", "url", "claude_label", "claude_conf", "user_label"]]  # fmt: skip
+
+
+def metrics2() -> dict[str, pd.DataFrame]:
+    d = pd.read_csv(LABELS2).merge(pd.read_parquet(rule_path()), on=["lang", "page_id"])
+    u = pd.read_csv(AUDIT2)[["row", "user_label"]]
+    d = d.drop(columns="user_label").merge(u, on="row")
+    rows = []
+    for who in ("user_label", "claude_label"):
+        x = d[pd.to_numeric(d[who], errors="coerce").notna()]
+        for scope, g in [("all", x)] + [(lg, x[x.lang == lg]) for lg in LANGS]:
+            q, lo = g[g.qa_tier == "quick"], g[g.qa_tier == "long"]
+            rows.append({"labels": who.removesuffix("_label"), "scope": scope,
+                         "quick_purity": q[who].astype(int).mean(),
+                         "long_purity": 1 - lo[who].astype(int).mean(),
+                         "n_quick": len(q), "n_long": len(lo)})  # fmt: skip
+    res = {"metrics2": pd.DataFrame(rows).round(3)}
+    both = d[pd.to_numeric(d.user_label, errors="coerce").notna()
+             & pd.to_numeric(d.claude_label, errors="coerce").notna()]  # fmt: skip
+    if len(both):
+        res["agreement2"] = pd.DataFrame([{
+            "n": len(both), "agree": (both.claude_label.astype(int)
+                                      == both.user_label.astype(int)).mean(),
+            "kappa": kappa(both.claude_label, both.user_label)}]).round(3)  # fmt: skip
+    return res
 
 
 def write_audit(d: pd.DataFrame) -> None:
@@ -149,7 +212,7 @@ def metrics() -> dict[str, pd.DataFrame]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["draw", "metrics"])
+    ap.add_argument("step", choices=["draw", "metrics", "draw2", "metrics2"])
     a = ap.parse_args()
     if a.step == "draw":
         if LABELS.exists():
@@ -158,8 +221,16 @@ def main() -> None:
         d.to_csv(LABELS, index=False)
         write_audit(d)
         print(d.groupby("lang").size().to_dict(), int(d.in_audit.sum()), "in audit")
+    elif a.step == "draw2":
+        if LABELS2.exists():
+            raise SystemExit(f"{LABELS2} exists: the draw is done once")
+        d = draw2()
+        d.to_csv(LABELS2, index=False)
+        d[["row", "lang", "title", "en_label", "en_description", "local_description", "url",
+           "user_label"]].to_csv(AUDIT2, index=False)  # fmt: skip
+        print(d.groupby("lang").size().to_dict())
     else:
-        for name, df in metrics().items():
+        for name, df in (metrics() if a.step == "metrics" else metrics2()).items():
             df.to_csv(config.REPORT_DIR / "qa" / f"p12_{name}.csv")
             print(name, df, sep="\n")
 

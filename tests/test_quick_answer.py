@@ -18,4 +18,13 @@ def test_rule_types_and_mixed_cases():
     r = rule(f).set_index("page_id")
     assert r.qa_rule.tolist()[:6] == [1, 0, 0, 1, 0, 0]  # median lead is 100
     assert pd.isna(r.loc[6, "qa_rule"]) and r.loc[6, "rule_reason"] == "missing features"
-    assert (r.rule_version == "v1").all()
+    assert r.qa_tier.tolist() == ["quick", "long", "long", "ambiguous", "long", "long",
+                                  "ambiguous"]  # fmt: skip
+    assert r.qa_core.tolist()[:3] == [1, 0, 0] and pd.isna(r.loc[3, "qa_core"])
+
+
+def test_v3_tiers_for_disputed_types():
+    f = pd.DataFrame({"lang": ["en"] * 3, "page_id": range(3),
+                      "coarse_type": ["taxon", "chemical", "settlement"],
+                      "has_infobox": [True] * 3, "lead_chars": [100] * 3})  # fmt: skip
+    assert rule(f).qa_tier.tolist() == ["ambiguous", "ambiguous", "quick"]
