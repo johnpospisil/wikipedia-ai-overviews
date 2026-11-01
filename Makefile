@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference qa quick-answer panels ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
+.PHONY: all check-env progress reference qa quick-answer panels eda power ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -109,6 +109,10 @@ qa: check-env
 eda: check-env
 	$(PY) -m wao.viz.eda
 	uv run jupyter nbconvert --to notebook --execute --inplace notebooks/01_eda.ipynb
+
+# P15 placebo power (pre-period only); the locked plan is PREREGISTRATION.md (tag prereg-v1).
+power: check-env
+	$(PY) -m wao.models.power
 
 models:
 	@echo "models: nothing yet (P16–P25)"

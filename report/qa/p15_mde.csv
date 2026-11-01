@@ -1,0 +1,16 @@
+outcome,description,window,n_starts,size_at_0,placebo_rms,placebo_max_abs,mde_ri_log,mde_ri_pct,mde_sd_pct
+search,H1 log search arrivals (primary),primary,51,0.098,0.0415,0.107,0.105,-9.9675,-10.9767
+search,H1 log search arrivals (primary),full,34,0.0,0.0339,0.0682,0.145,-13.4978,-9.0642
+views,log user web views,primary,51,0.0588,0.0478,0.1142,0.1275,-11.9707,-12.5173
+views,log user web views,full,34,0.1765,0.1011,0.1722,0.185,-16.8896,-24.6522
+share,H5a log search share,primary,51,0.0196,0.0331,0.0695,0.135,-12.6284,-8.8491
+share,H5a log search share,full,34,0.0,0.1012,0.1824,,,-24.68
+mob_desk,H3 log mobile-web minus log desktop views,primary,51,0.0588,0.0634,0.1684,0.2775,-24.2324,-16.262
+mob_desk,H3 log mobile-web minus log desktop views,full,34,0.0,0.1688,0.3024,,,-37.6627
+depth,H5b log internal-link arrivals per external arrival,primary,51,0.0196,0.0901,0.238,0.29,-25.1736,-22.2998
+depth,H5b log internal-link arrivals per external arrival,full,34,0.0,0.0637,0.1461,,,-16.3291
+quick_long,H2 log quick-answer minus log long-read views,primary,51,0.0,0.0633,0.173,0.2625,-23.0874,-16.2436
+quick_long,H2 log quick-answer minus log long-read views,full,34,0.0,0.0705,0.1832,0.2275,-20.3478,-17.9224
+tail_head,H4 log tail (deciles 1-5) minus log head (8-10) views,primary,51,0.0588,0.1038,0.2987,,,-25.2301
+tail_head,H4 log tail (deciles 1-5) minus log head (8-10) views,full,34,0.0,0.093,0.2257,,,-22.9153
+editors,"H6 log active registered editors, event time 6..18",full,34,0.0,0.053,0.1203,,,-13.7863
