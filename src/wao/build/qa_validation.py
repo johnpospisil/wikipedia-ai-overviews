@@ -10,7 +10,8 @@ draw   100 sample articles each from en, de, ja (seed 12), stratified by Wikidat
 metrics  rule vs labels: precision, recall, F1 for quick-answer (unweighted and weighted),
        confusion by type; Claude vs user: Cohen's kappa.
 
-draw2  (rule v3) a fresh set of 60 articles not in the first 300 (seed 14): 10 core-quick and 10
+draw2  (rule v3; drawn and labelled by Claude, but the user declined the round, so unused) a
+       fresh set of 60 articles not in the first 300 (seed 14): 10 core-quick and 10
        core-long per edition, shuffled, tier not shown; labelled blind by the user (and Claude).
 metrics2  purity of the v3 core tiers against the second-round labels, and kappa.
 

@@ -121,14 +121,38 @@ def _log_lines(name: str, pattern: str) -> int:
     return len(re.findall(pattern, log.read_text(), re.M)) if log.exists() else 0
 
 
+def _nq_type_batches() -> tuple[int, int]:
+    """P12 NQ pages: SPARQL P31 batches already cached / needed (the later P279 walk is short)."""
+    import duckdb
+    import requests
+
+    from wao import http
+    from wao.build.quick_answer_nq import map_pages
+    from wao.ingest import wikidata_types as wt
+
+    pages = map_pages(duckdb.connect())
+    old = set(pd.read_parquet(config.PARQUET_DIR / "wikidata" / "p31.parquet").qid)
+    new = sorted(set(pages.qid.dropna()) - old)
+    s = http.session("wdqs", min_interval=1.0)
+    done = 0
+    batches = [new[i : i + wt.BATCH] for i in range(0, len(new), wt.BATCH)]
+    for b in batches:
+        vals = " ".join(f"wd:{q}" for q in sorted(b))
+        q = f"SELECT ?a ?b WHERE {{ VALUES ?a {{ {vals} }} ?a wdt:P31 ?b }}"
+        req = requests.Request("GET", wt.SPARQL, params={"query": q, "format": "json"}).prepare()
+        done += s.cache.contains(request=req)
+    return done, len(batches)
+
+
 # what COUNTS jobs count (default: articles)
-UNITS = {"reparse": "files", "aqs": "editions"}
+UNITS = {"reparse": "files", "aqs": "editions", "nqtypes": "SPARQL batches"}
 
 # name -> (items done, items total): API jobs counted in cached responses
 COUNTS: dict[str, Callable[[], tuple[int, int]]] = {
     "topics": lambda: (_cached("liftwing_"), _sample_size()),
     "revisions": lambda: (_logged_revisions(), _sample_size()),
     "reparse": lambda: (_log_lines("stub_history_reparse.log", r"'revisions'"), 82),
+    "nqtypes": _nq_type_batches,
     "aqs": lambda: (_log_lines("editors.log", r"^\w+: [\d,]+ rows"), len(config.LANGS)),
 }
 

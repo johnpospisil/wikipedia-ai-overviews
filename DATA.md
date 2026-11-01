@@ -366,3 +366,33 @@ Run with `make qa`. Checks are in `tests/test_data_quality.py`, tables in `repor
     ja and en are affected least.
   - **Implication:** edition-level search outcomes are safe. Tail and head-vs-tail results must use pageviews or `parquet/qa/search_imputed.parquet` (per article × month: observed, hidden, upper).
 
+## 19. Quick-answer label (P12)
+
+- **Rubric:** `docs/quick_answer_rubric.md`. An article is quick-answer if a typical search query landing on it is answered by one fact or a short definition.
+- **Human validation** (`data/reference/quick_answer_labels.csv`; 300 articles, 100 each from en, de and ja, stratified by Wikidata type):
+  - Claude labelled all 300 blind to the rule (labels committed before any comparison, b6f1ebb). The user audited 100 at random.
+  - Agreement is 71%, but **Cohen's κ = 0.23**. The disagreement is systematic: the user called species, chemicals, astronomical objects, small places and historical rulers long-read.
+  - Rule v1 (fact types quick; events, health and lists long) against the user's labels: precision 0.75, recall 0.88, F1 0.81 (0.89 weighted). It catches only 39% of the user's long-reads. Against Claude's labels: F1 0.93.
+  - The human labels are too inconsistent to serve as ground truth. A second blind round (`quick_answer_labels2.csv`) was drawn and labelled by Claude, but the user declined it, so it is unused.
+- **External, query-based validation:** Google's Natural Questions (Kwiatkowski et al. 2019, CC BY-SA 3.0); `wao.ingest.natural_questions`, `wao.build.quick_answer_nq`.
+  - 307,373 real 2016–17 Google queries, each with the English Wikipedia page it landed on and annotator-marked long and short answers. Only titles, query text and answer flags were read (Parquet column projection from Hugging Face); no page text.
+  - 152,148 queries are answered on their page, and 99.4% of them were mapped to a current article and a Wikidata coarse type.
+  - Overall, 72.8% of answered queries have a short answer.
+  - By type (`data/reference/nq_type_rates.csv`, figure `p12_quick_answer_types.png`): films 83%, games and music 80%, sports events 79%, TV 78%, structures 76%, organisations 75%; settlements and regions 73%; health, events, written works and people 71%; lists and untyped concepts 69%; species 67%, chemicals 65%, countries 57%.
+  - The user's labels track these type rates better than Claude's: correlation 0.42 vs 0.25.
+- **Final rule v4** (`panels/quick_answer.parquet`): a type is quick if its 95% interval lies above the overall NQ rate, long if below, ambiguous otherwise.
+  - Split-half check (tiers fit on half the NQ pages, scored on the other half), short-answer rate:
+
+    | Rule | Quick | Long | Gap |
+    |---|---|---|---|
+    | v4 | 78–79% | 69% | ≈ 9–10 pts |
+    | v3 | 77–78% | 70% | ≈ 7–8 pts |
+    | v1 | 76% | 70% | ≈ 5–6 pts |
+
+  - Shares per edition: quick 18–29%, long 52–59%, ambiguous 14–28%.
+  - The file also carries `qa_nq_rate` (the continuous type rate, 0.57–0.83) and the earlier `qa_rule` (v1) and `qa_tier_v3`.
+- **Limits:**
+  - NQ is English and question-phrased, from 2016–17. It is applied to all editions through language-independent Wikidata types.
+  - Within-type variation is ignored.
+  - The quick vs long gap is modest (about 10 pp in short-answer rate), so expect H2 contrasts to be attenuated. The continuous NQ rate is the more informative moderator.
+

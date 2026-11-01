@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference qa ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
+.PHONY: all check-env progress reference qa quick-answer ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -26,7 +26,7 @@ check-env:
 
 # Progress bar: `make progress JOB=<name> WATCH=1` (speed + ETA). Downloads: clickstream country sql
 # pageviews2023 pageviews repair stubs; API/log jobs: topics, revisions, reparse (P09 stub
-# re-parse), aqs (P09 AQS editors).
+# re-parse), aqs (P09 AQS editors), nqtypes (P12 Wikidata types for Natural Questions pages).
 progress:
 	@$(PY) -m wao.progress $(or $(JOB),clickstream) $(if $(WATCH),--watch,)
 
@@ -82,7 +82,14 @@ sample: check-env
 	$(PY) -m wao.ingest.pageview_months
 	$(PY) -m wao.build.sample
 
-build: sample qa
+build: sample qa quick-answer
+
+# P12: Natural Questions (column projection over HTTP, ~11 min), type rates, v4 label, figure.
+quick-answer: check-env
+	$(PY) -m wao.ingest.natural_questions
+	$(PY) -m wao.build.quick_answer_nq
+	$(PY) -m wao.build.quick_answer
+	$(PY) -m wao.viz.quick_answer
 
 # P11: AQS reference series (~30 min at 1 request / 7 s), article x month QA table, truncation,
 # reconciliation; checks in tests/test_data_quality.py.
