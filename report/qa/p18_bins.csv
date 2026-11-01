@@ -1,0 +1,10 @@
+method,bin,est,lo,hi,n
+TWFE bins,"(0, 0.25]",-0.31396,-0.58626,-0.04166,25
+TWFE bins,"(0.25, 0.5]",0.06143,-0.1059,0.22875,34
+TWFE bins,"(0.5, 0.75]",-0.07563,-0.21872,0.06745,13
+TWFE bins,"(0.75, 1]",-0.00985,-0.13786,0.11815,132
+imputation bins,"(0, 0.25]",-0.13888,,,8
+imputation bins,"(0.25, 0.5]",-0.0482,,,5
+imputation bins,"(0.5, 0.75]",-0.07154,,,13
+imputation bins,"(0.75, 1]",-0.08816,,,13
+imputation slope (to 2025-04),per unit exposure,-0.11873,,,39
