@@ -118,6 +118,7 @@ models: check-env
 	$(PY) -m wao.models.its
 	$(PY) -m wao.models.did
 	$(PY) -m wao.models.dose
+	$(PY) -m wao.models.concept
 
 figures:
 	@echo "figures: nothing yet (P26–P27)"
