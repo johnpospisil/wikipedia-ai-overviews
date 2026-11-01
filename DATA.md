@@ -253,3 +253,35 @@ At the ~8 MB/s seen on one connection, the pageview dumps take on the order of a
   | Lowest | fa 552, zh 457 | 1 in fa, it, pl | 8.8 (fa) |
   | Highest | de 3,136, en 3,050 | 6 in en | 15.8 (en) |
 
+## 16. Editors and edits (P09)
+
+- **Language level:** AQS `edits/aggregate` and `editors/aggregate`, content pages (article namespace), monthly from 2001 through 2026-09 (`wao.ingest.editors`; 132 requests at one per 7 s because AQS ignores the wiki login).
+  - Raw output: `parquet/editors/aqs_lang_month.parquet`. Wide panel: `panels/editors_lang_month.parquet`, with edits by type plus `active_*` (5+ edits) and `very_active_*` (100+) for registered (`user`) and anonymous editors.
+  - AQS editor types are exclusive: group-bot, then name-bot, then user or anonymous. Bots are therefore excluded from the user and anonymous series.
+  - Gaps: only 9 months, all in 2001–2003 (es, fr, it, pt).
+- **Article level:** `panels/article_edits_month.parquet`, sparse (a missing article-month means 0 edits). Built by `wao.build.edits` from the P08 stub histories, re-parsed with an editor `kind` (user, ip, temp, deleted) and `name_bot`.
+  - Columns: edits, edits_user, edits_anon, edits_bot, edits_minor, editors (distinct non-bot), editors_user, editors_anon, bytes_delta (non-bot net size change).
+  - Bots: the AQS name rule, plus current members of the local `bot` group and the global-bot group (`parquet/editors/bots.parquet`; 33–313 accounts per edition). Former bot-group members with non-bot names are missed.
+  - Bot share of 2023 sample edits: de and pt 5%, en 8%, ru and fa 20%, pl 25%.
+- **Checks** (`report/qa/`):
+  - Per-page: 20 random sample articles' 2023 edits from the stubs equal AQS `edits/per-page` exactly (20/20; 7 with 0 edits, where AQS returns 404).
+  - Weighted sample vs AQS, 2023 (`p09_reconcile_2023.csv`): Horvitz–Thompson estimates of non-bot edits are 88–101% of AQS user+anonymous content edits; bots are 88–101%. Being slightly under is expected, because AQS also counts edits to pages later deleted, redirected or moved out of the article namespace.
+- **Temporary accounts** (`p09_temp_accounts.csv`, `p09_temp_check.csv`). Temporary accounts (`~2025-…`) replace IP editing. The first such edits:
+
+  | Edition | First temp edits |
+  |---|---|
+  | de, fr, ja, zh, pl, fa | 2025-06 |
+  | it | 2025-09 |
+  | en, es | 2025-11 |
+  | ru | 2026-03 |
+  | pt | none (no logged-out editing) |
+
+  - AQS anonymous **edits** continue smoothly across the switch, so AQS counts temporary accounts as anonymous and the edit series are consistent.
+  - Anonymous **editor** counts change meaning, from IPs to accounts. Compare anonymous editors only before the switch, or use edits or registered editors.
+  - An earlier rule treated any user name starting with "~" as temporary. Some old user names also start with "~"; fixed, and the stubs re-parsed.
+- **Policy and outage breaks in the editor series:**
+  - pt stopped logged-out editing in 2020-10, so anonymous edits are 0 from 2020-11 and registered active editors jump.
+  - fa anonymous edits are about 0 from 2021-11 to 2022-03, probably a local IP-editing restriction.
+  - fa registered active editors fall to 155 in 2026-04 (about 900 usually). Likely an Iranian internet shutdown; matches the P07 coverage dips.
+- **Blinding:** the series are shown over the full period for data quality only (`report/figures/p09_editors.png`, no launch dates). Treated-vs-control contrasts wait for P15 and P24.
+

@@ -17,7 +17,7 @@ export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 endif
 
-.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews ingest-features sample build models figures report test test-network lint
+.PHONY: all check-env progress reference ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits sample build models figures report test test-network lint
 
 all: check-env ingest build models figures report
 
@@ -25,7 +25,8 @@ check-env:
 	$(PY) -m wao.check_env
 
 # Progress bar: `make progress JOB=<name> WATCH=1` (speed + ETA). Downloads: clickstream country sql
-# pageviews2023 pageviews repair stubs; API jobs: topics (cached responses), revisions (log).
+# pageviews2023 pageviews repair stubs; API/log jobs: topics, revisions, reparse (P09 stub
+# re-parse), aqs (P09 AQS editors).
 progress:
 	@$(PY) -m wao.progress $(or $(JOB),clickstream) $(if $(WATCH),--watch,)
 
@@ -40,7 +41,7 @@ reference:
 
 # Stages are filled in by later prompts (ingest P04–P10, build P11–P13, models P16–P25,
 # figures P26–P27, report P30).
-ingest: check-env ingest-clickstream ingest-pageviews ingest-features
+ingest: check-env ingest-clickstream ingest-pageviews ingest-features ingest-edits
 
 # P05: all clickstream files -> Parquet pairs + per-article aggregates (resumable).
 ingest-clickstream: check-env
@@ -60,6 +61,13 @@ ingest-features: check-env
 	$(PY) -m wao.build.features
 	$(PY) -m wao.build.infobox_check
 	$(PY) -m wao.viz.article_features
+
+# P09: AQS edits/active editors per edition, bot lists, per-article monthly edits (from the P08
+# stubs), QA + figure. AQS is paced at 1 request / 7 s (~15 min).
+ingest-edits: check-env
+	$(PY) -m wao.ingest.editors
+	$(PY) -m wao.build.edits
+	$(PY) -m wao.viz.editors
 
 # P06: SQL table dumps + 2023 pageview totals -> frame and stratified sample (resumable).
 sample: check-env

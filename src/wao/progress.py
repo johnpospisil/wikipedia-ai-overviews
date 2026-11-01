@@ -116,10 +116,20 @@ def _logged_revisions() -> int:
     return sum(best.values())
 
 
+def _log_lines(name: str, pattern: str) -> int:
+    log = config.DATA_DIR / "logs" / name
+    return len(re.findall(pattern, log.read_text(), re.M)) if log.exists() else 0
+
+
+# what COUNTS jobs count (default: articles)
+UNITS = {"reparse": "files", "aqs": "editions"}
+
 # name -> (items done, items total): API jobs counted in cached responses
 COUNTS: dict[str, Callable[[], tuple[int, int]]] = {
     "topics": lambda: (_cached("liftwing_"), _sample_size()),
     "revisions": lambda: (_logged_revisions(), _sample_size()),
+    "reparse": lambda: (_log_lines("stub_history_reparse.log", r"'revisions'"), 82),
+    "aqs": lambda: (_log_lines("editors.log", r"^\w+: [\d,]+ rows"), len(config.LANGS)),
 }
 
 
@@ -160,7 +170,8 @@ def render(
     eta = f"ETA {fmt_eta((total - done) / rate if rate else 0)}" if rate is not None else ""
     if name in COUNTS:
         speed = f"  {rate * 60:,.0f}/min  {eta}" if rate is not None else ""
-        return f"{name} [{bar}] {100 * frac:5.1f}%  {nf:,}/{nt:,} articles{speed}"
+        unit = UNITS.get(name, "articles")
+        return f"{name} [{bar}] {100 * frac:5.1f}%  {nf:,}/{nt:,} {unit}{speed}"
     size = f"{done / 1e9:5.1f}/{total / 1e9:.1f} GB" if real_sizes else ""
     speed = f"  {rate / 1e6:4.1f} MB/s  {eta}" if rate is not None and real_sizes else ""
     return f"{name} [{bar}] {100 * frac:5.1f}%  {size}  {nf}/{nt} files{speed}"

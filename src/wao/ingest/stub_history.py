@@ -13,8 +13,10 @@ written out.
 
 Output: PARQUET_DIR/stub_history/lang=<xx>/part-<N>.parquet
   page_id, rev_id, ts, editor (int64 hash), registered (False for IPs and temporary
-  accounts), minor, bytes
-Run: python -m wao.ingest.stub_history [--procs 4]
+  accounts), minor, bytes, kind (user | ip | temp | deleted), name_bot (registered user name
+  matching Wikimedia's bot-name rule, as AQS's `name-bot` editor type)
+Run: python -m wao.ingest.stub_history [--procs 4] [--reparse]  (--reparse rebuilds every part
+from the raw files, e.g. after a schema change)
 """
 
 from __future__ import annotations
@@ -39,6 +41,9 @@ NUM = re.compile(rb"<(?:id|ns)>(\d+)<")
 TS = re.compile(rb"<timestamp>([^<]+)<")
 TEXT_BYTES = re.compile(rb'<text bytes="(\d+)"')
 INNER = re.compile(rb">([^<]*)<")
+BOT_NAME = re.compile(rb"(?i)^.*bot([^a-z].*$|$)")  # mediawiki-history's isBotByName
+TEMP_NAME = re.compile(rb"^~2\d{3}-")  # temporary accounts (2024-): ~2025-12345-6; older user
+# names can also start with "~"
 SCHEMA = pa.schema(
     [
         ("page_id", pa.int64()),
@@ -48,6 +53,8 @@ SCHEMA = pa.schema(
         ("registered", pa.bool_()),
         ("minor", pa.bool_()),
         ("bytes", pa.int64()),
+        ("kind", pa.string()),
+        ("name_bot", pa.bool_()),
     ]
 )
 
@@ -57,7 +64,8 @@ def editor_hash(key: bytes) -> int:
 
 
 def parse(lines, page_ids: set[int]):
-    """Yield (page_id, rev_id, ts, editor, registered, minor, bytes) for pages in `page_ids`."""
+    """Yield (page_id, rev_id, ts, editor, registered, minor, bytes, kind, name_bot) for pages in
+    `page_ids`."""
     state = "out"  # out | page_head | skip | rev
     page = ns = None
     rev: dict = {}
@@ -96,8 +104,11 @@ def parse(lines, page_ids: set[int]):
                 rev["bytes"] = int(m.group(1)) if m else None
             elif s == b"</revision>":
                 who = rev["who"] or (b"a" + rev["name"] if "name" in rev else b"")
-                if rev.get("name", b"").startswith(b"~"):  # temporary account (2025-)
-                    rev["reg"] = False
+                name = rev.get("name", b"")
+                if TEMP_NAME.match(name):
+                    kind, rev["reg"] = "temp", False
+                else:
+                    kind = "user" if rev["reg"] else "ip" if who else "deleted"
                 yield (
                     page,
                     rev["id"],
@@ -106,6 +117,8 @@ def parse(lines, page_ids: set[int]):
                     rev["reg"],
                     rev["minor"],
                     rev["bytes"],
+                    kind,
+                    kind == "user" and bool(BOT_NAME.match(name)),
                 )
                 state = "page_rev"
         elif state == "page_rev":
@@ -171,8 +184,9 @@ def file_list(langs=config.LANGS) -> list[dict]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--procs", type=int, default=4)
+    ap.add_argument("--reparse", action="store_true", help="rebuild parts that already exist")
     a = ap.parse_args()
-    todo = [r for r in file_list() if not out_path(r["lang"], r["n"]).exists()]
+    todo = [r for r in file_list() if a.reparse or not out_path(r["lang"], r["n"]).exists()]
     # smallest first, so early files are processed while big ones download
     todo.sort(key=lambda r: r["bytes"])
     print(f"{len(todo)} files, {sum(r['bytes'] for r in todo) / 1e9:.0f} GB", flush=True)

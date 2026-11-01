@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from wao.ingest.stub_history import editor_hash, parse
+from wao.ingest.stub_history import BOT_NAME, TEMP_NAME, editor_hash, parse
 
 STUB = b"""<mediawiki>
   <page>
@@ -82,8 +82,21 @@ def test_parse_keeps_sample_ns0_pages_only():
         (11, 102, "2025-06-01T00:00:00Z"),
         (11, 103, "2025-07-01T00:00:00Z"),
     ]
-    _, _, _, ed, reg, minor, size = rows[0]
+    _, _, _, ed, reg, minor, size, kind, bot = rows[0]
     assert (ed, reg, minor, size) == (editor_hash(b"u7"), True, True, 1234)
-    assert rows[1][3:] == (editor_hash(b"a192.0.2.1"), False, False, 1300)
-    assert rows[2][4] is False  # temporary account counts as logged-out
-    assert rows[3][3] is None and rows[3][6] is None  # suppressed contributor and text
+    assert (kind, bot) == ("user", False)
+    assert rows[1][3:] == (editor_hash(b"a192.0.2.1"), False, False, 1300, "ip", False)
+    assert rows[2][4] is False and rows[2][7] == "temp"  # temporary account counts as logged-out
+    assert rows[3][3] is None and rows[3][6] is None and rows[3][7] == "deleted"
+
+
+def test_bot_name_rule():
+    names = {b"Cewbot": True, b"InternetArchiveBot": True, b"Bot1058": True, b"Botany fan": False,
+             b"Abbott": False, b"SieBot": True, b"Robert": False, b"Lsjbot": True}  # fmt: skip
+    for n, want in names.items():
+        assert bool(BOT_NAME.match(n)) is want, n
+
+
+def test_temp_account_rule():
+    assert TEMP_NAME.match(b"~2025-12345-6") and TEMP_NAME.match(b"~2024-1-0")
+    assert not TEMP_NAME.match(b"~Alice") and not TEMP_NAME.match(b"~1984")
