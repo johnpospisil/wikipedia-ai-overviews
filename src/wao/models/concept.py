@@ -44,8 +44,8 @@ OUTCOMES = {"views": "log(1 + user web views)", "search": "log(1 + search arriva
             "search_head": "log(1 + search arrivals), never censored in 2023"}  # fmt: skip
 REPS, RI_REPS, SEED = 9_999, 999, 19
 GRID = np.round(np.arange(-0.6, 0.6001, 0.0025), 4)
-RI_SPECS = [("views", "11 editions (pre-registered)"), ("views", "10 editions, no fa"),
-            ("search", "11 editions (pre-registered)"), ("search", "10 editions, no fa")]  # fmt: skip
+RI_SPECS = [(o, e) for o in ("views", "search")
+            for e in ("11 editions (pre-registered)", "10 editions, no fa")]
 
 
 def load() -> pd.DataFrame:
@@ -189,7 +189,8 @@ def figure(est: pd.DataFrame, gaps: pd.DataFrame) -> plt.Figure:
     a.axhline(0, color="#999999", lw=0.6)
     a.xaxis.set_major_locator(mdates.YearLocator())
     a.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
-    a.set_ylabel("Treated editions vs fr + ru, same concept and month, %\n(seasonality removed; 2023-05..2024-04 = 0)")
+    a.set_ylabel("Treated editions vs fr + ru, same concept and month, %\n"
+                 "(seasonality removed; 2023-05..2024-04 = 0)")
     a.legend(frameon=False, fontsize=8, loc="lower left")
     a.set_title("Within-concept gap by month (descriptive; fa excluded)", loc="left", fontsize=10)
     e = est[est.weights == "weighted"]
