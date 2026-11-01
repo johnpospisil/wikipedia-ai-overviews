@@ -96,7 +96,7 @@ Project plan: [05-wikipedia-ai-overviews.md](05-wikipedia-ai-overviews.md). Data
 
 - [ ] **P23: Referral mix and reader behaviour.** Did search's share fall while internal navigation held up? Per-arrival depth: outgoing internal clicks ÷ arrivals per article, before and after, treated vs control. Are the readers who still arrive from search more engaged (a selection story)? **Findings:** the stacked-area referral mix (chart 3), the change in depth, and how to interpret it.
 
-- [ ] **P24: Editors vs readers.** Do active editors and edits follow readership? Use a language-level DiD on editors with lags of 6–18 months, plus article-level edits on the panel. Be explicit that there is less power and longer lags here. **Findings:** chart 6, the estimates, and what can and can't be said.
+- [ ] **P24: Editors vs readers (trimmed 2026-11-01).** Run only the pre-registered H6 test (PREREGISTRATION.md §6: log active registered editors, full window, event times 6..18, exact RI) and chart 6 (active editors alongside views, descriptive). Skip the article-level edits analysis: P15 showed H6 cannot reach 80% power even for a 26% drop, so report the result as uninformative unless it is decisive. **Findings:** chart 6, the H6 estimate with its interval, and what can and can't be said.
 
 - [ ] **P25: AI Overviews vs chatbots.** Separate the ChatGPT-era decline (global, absorbed by month FE in DiD; visible in ITS) from AI Overviews (staggered). Decompose the total English search decline since 2022-11 into the pre-trend, the ChatGPT era, and post-AIO components, with intervals. Note what `other-external` growth shows about chatbot referrals and what it can't show. Present the pre-registered P16 ITS gap (−36%) as an upper bound only: it extrapolates the 2023 English surge (decided after P16). **Findings:** the decomposition chart and the honest share attributable to AI Overviews.
 
@@ -114,7 +114,7 @@ Project plan: [05-wikipedia-ai-overviews.md](05-wikipedia-ai-overviews.md). Data
 
 - [ ] **P30: Quarto article.** Write `report/index.qmd`: the headline finding first, then the method in plain English, results, the "what we won't claim" section (lost clicks ≠ harmed readers), and robustness. Read every number from the pipeline outputs, never type it in by hand. Cite Wikimedia's 2025 traffic statement and the relevant zero-click/AI-search literature, and link Project 4. Render to self-contained HTML. **Findings:** the article link, word count, and claims that are still weak.
 
-- [ ] **P31: Article lookup app.** A static `app/index.html` with precomputed JSON: type an article title (sample articles only; say so) and see its monthly traffic, its counterfactual from the within-concept model, its referral mix over time, and the same concept in other languages. Keep the bundle small (lazy-load by language). **Findings:** the app, bundle size, coverage, and any caveats shown to users.
+- [ ] **P31: Article lookup app (deferred 2026-11-01; moved to out of scope).** Skipped to save effort after P17–P18; can be restored later from the out-of-scope list. When the run reaches P31, mark it skipped and go on to P32.
 
 - [ ] **P32: Published dataset.** `make release`: the language × month and article × month panels plus the exposure table (Parquet + CSV), a column dictionary, checksums, and a Hugging Face data card (CC0 for derived counts; attribute Wikimedia; list the known limitations: truncation, bot reclassification, sample design). Nothing is uploaded without the user. **Findings:** files, sizes, and the draft data card.
 
@@ -122,4 +122,4 @@ Project plan: [05-wikipedia-ai-overviews.md](05-wikipedia-ai-overviews.md). Data
 
 - [ ] **P34: Launch kit.** Drafts for an HN title and first comment, r/wikipedia and r/dataisbeautiful, the Wikimedia Research mailing list (wiki-research-l) and a Research Showcase pitch, a pitch to Press Gazette / Nieman Lab / Search Engine Land, and a LinkedIn/Bluesky/X thread. Add the likely reviewer questions with answers, and a launch checklist (make the repo public, GitHub Pages for the article and app). Nothing is posted without the user. **Findings:** the drafts and the checklist.
 
-Out of scope (can be added later): the joint Stack Overflow + Wikipedia "knowledge commons" post, logging AI Overviews citations, and a monthly-updating tracker.
+Out of scope (can be added later): the joint Stack Overflow + Wikipedia "knowledge commons" post, logging AI Overviews citations, and a monthly-updating tracker, and the article lookup app (P31, deferred 2026-11-01: a static `app/index.html` with precomputed JSON, sample articles only, monthly traffic, within-concept counterfactual, referral mix and the same concept in other languages).
