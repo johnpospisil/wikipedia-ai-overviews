@@ -67,7 +67,7 @@ def panel() -> pd.DataFrame:
         select lang, month, search_arr_na, search_arr_rs, search_arr_corr, google_share,
                views_desktop + views_mobile_web + views_app as views,
                views_desktop + views_mobile_web as views_web, views_desktop, views_mobile_web,
-               views_app
+               views_app, total_arr_na, link_arr
         from '{config.PANEL_DIR}/panel_lang_month.parquet'
         where core and month >= '{did.START}' order by lang, month""").df()
 
@@ -93,6 +93,10 @@ def _series(d: pd.DataFrame, outcome: str) -> pd.Series:
         return np.log(d.search_arr_rs)
     if outcome == "corr":
         return np.log(d.search_arr_corr).where(d.month != "2025-04")
+    if outcome == "share":
+        return np.log(d.search_arr_na / d.total_arr_na)
+    if outcome == "depth":
+        return np.log(d.link_arr / (d.total_arr_na - d.link_arr))
     if outcome == "mob_desk":
         return np.log(d.views_mobile_web) - np.log(d.views_desktop)
     if outcome == "google_net":

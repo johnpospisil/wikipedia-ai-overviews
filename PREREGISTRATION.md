@@ -277,3 +277,9 @@ Any check that flips the H1 conclusion must be reported in the main text.
 - **H4:** the P21 batched estimator with q = tail indicator (2023 deciles 1–5 = 1, 8–10 = 0, 6–7 excluded), so the q × month slopes become tail × month effects. The secondary search version uses the P11 imputation for censored months.
 - **Exploratory:** without fa, and the exposure effect by 2023 decile relative to decile 10 (CRV1 by edition).
 - **When:** all decided **before** any P22 estimate was seen.
+
+### 2026-11-02: P23 (H5a, H5b) implementation details (clarification and addition)
+
+- **H5a and H5b:** the P17 estimator (primary window, exact RI; full window alongside), with the 2025-04 short month missing as for search arrivals. H5b's denominator is all arrivals minus internal-link arrivals ("external entries").
+- **Exploratory (E3, selection):** at article level, 2023 deciles 8–10 and usable clickstream months: log((outgoing internal clicks + 1) / (published arrivals + 1)) on (article's standardised 2023 search share) × exposure, with article FE, edition × month FE and a share × month slope. This is the P21 batched estimator with a WCB by edition, run with and without fa. Chart 3 pools the 8 treated editions and shows fr beside them.
+- **When:** decided **before** any P23 estimate was seen.

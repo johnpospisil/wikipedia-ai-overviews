@@ -122,6 +122,7 @@ models: check-env
 	$(PY) -m wao.models.robust
 	$(PY) -m wao.models.quick
 	$(PY) -m wao.models.access_pop
+	$(PY) -m wao.models.referral
 
 figures:
 	@echo "figures: nothing yet (P26–P27)"
