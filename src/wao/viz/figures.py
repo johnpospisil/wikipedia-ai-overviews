@@ -177,7 +177,11 @@ def _adjusted(d: pd.DataFrame) -> pd.DataFrame:
 def chart4(a: pd.DataFrame, mode: str) -> None:
     last = a[a.month > "2025-09"].groupby("lang").idx.mean()
     tr = last[TREATED]
-    title = "Search traffic fell almost everywhere, including where AI Overviews never launched"
+    # P29: only ru is never treated; fr has AI Overviews from 2026-07, inside the latest 12 months
+    title = (
+        "Search traffic fell almost everywhere, including in Russian, "
+        "where AI Overviews never launched"
+    )
     sub = (
         f"Seasonally adjusted search arrivals, Aug 2023-Jul 2024 = 100. Latest 12 months: "
         f"treated editions {tr.min():.0f} to {tr.max():.0f}, French {last['fr']:.0f}, "
