@@ -1,0 +1,6 @@
+label,pct,lo,hi,status
+"Staggered DiD, first 6 months (primary)",2.653,-7.457,13.032,pre-registered
+"Staggered DiD, to 2026-07",-7.959,-28.108,10.241,pre-registered
+"Dose-response, full exposure",-13.475,-23.279,5.654,exploratory
+Same topic across languages,-10.035,-19.144,0.25,exploratory
+"55 robustness variants, both windows (range)",,-11.398,19.408,range

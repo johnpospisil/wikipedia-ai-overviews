@@ -102,7 +102,7 @@ Project plan: [05-wikipedia-ai-overviews.md](05-wikipedia-ai-overviews.md). Data
 
 ### Phase 5: Figures and reproducibility
 
-- [ ] **P26: Visual theme and hero chart.** Port Project 4's `viz/theme.py` (validated light/dark, colour-blind safe) into `src/wao/viz/theme.py`. Hero chart: search-referred traffic indexed to the launch month, treated vs not-yet-treated, event-study style with a confidence band. Export SVG + PNG in light and dark. **Findings:** the chart, plus 2–3 alternatives for the user to choose from.
+- [x] ✅ DONE! **P26: Visual theme and hero chart.** _Done 2026-11-02: theme ported from Project 4 (Okabe-Ito roles, palette validated light and dark); three hero options in light/dark PNG + SVG: A event study (treated vs not-yet-treated counterfactual with band, fr-only months shaded), B calendar index treated vs fr, C every estimate against the ±5% band; user to choose._ Port Project 4's `viz/theme.py` (validated light/dark, colour-blind safe) into `src/wao/viz/theme.py`. Hero chart: search-referred traffic indexed to the launch month, treated vs not-yet-treated, event-study style with a confidence band. Export SVG + PNG in light and dark. **Findings:** the chart, plus 2–3 alternatives for the user to choose from.
 
 - [ ] **P27: Remaining figures.** Charts 2–6 from the plan plus the small multiples (chart 4: one language per panel with its launch marked) and the robustness forest plot. Each comes with the one-sentence takeaway it supports. **Findings:** all the charts with their takeaways.
 

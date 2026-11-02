@@ -126,8 +126,8 @@ models: check-env
 	$(PY) -m wao.models.editors
 	$(PY) -m wao.models.decompose
 
-figures:
-	@echo "figures: nothing yet (P26–P27)"
+figures: check-env
+	$(PY) -m wao.viz.hero
 
 report:
 	@echo "report: nothing yet (P30)"
