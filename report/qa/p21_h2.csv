@@ -1,0 +1,7 @@
+spec,status,beta,crv1_se,wcb_p,wcb_lo,wcb_hi,pct,pct_lo,pct_hi
+"H2 primary: q x exposure, views, 11 editions",pre-registered,0.00538,0.01549,0.73627,-0.035,0.0425,0.53938,-3.43946,4.34161
+"binary v4: quick vs long x exposure, views",secondary,0.03093,0.03042,0.35574,-0.0325,0.1275,3.14131,-3.19776,13.59849
+"search arrivals, deciles 8-10 (imputed censored)",secondary,0.02319,0.02099,0.33913,-0.025,0.0675,2.34625,-2.46901,6.98303
+type x month FE instead of q slopes,robustness,0.01644,0.01603,0.34443,-0.0175,0.0625,1.65783,-1.73478,6.44945
+without fa,exploratory,-0.00277,0.01426,0.85629,-0.0375,0.0275,-0.27629,-3.68056,2.78816
+"binary v4, without fa",exploratory,0.00957,0.02164,0.69107,-0.04,0.0775,0.96175,-3.92106,8.05822

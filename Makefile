@@ -120,6 +120,7 @@ models: check-env
 	$(PY) -m wao.models.dose
 	$(PY) -m wao.models.concept
 	$(PY) -m wao.models.robust
+	$(PY) -m wao.models.quick
 
 figures:
 	@echo "figures: nothing yet (P26–P27)"

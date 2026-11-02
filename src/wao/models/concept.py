@@ -51,8 +51,8 @@ RI_SPECS = [(o, e) for o in ("views", "search")
 def load() -> pd.DataFrame:
     d = duckdb.connect().execute(f"""
         select qid, lang, month, w_concept, coarse_type, qa_tier, coalesce(exposure, 0) exposure,
-               log(1 + views_web) as views,
-               case when cs_usable then log(1 + coalesce(arr_search, search_hidden_est)) end
+               ln(1 + views_web) as views,
+               case when cs_usable then ln(1 + coalesce(arr_search, search_hidden_est)) end
                  as search,
                bool_or(search_censored) filter (where month like '2023-%')
                  over (partition by qid, lang) as cens2023

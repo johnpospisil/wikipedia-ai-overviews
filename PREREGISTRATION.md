@@ -256,3 +256,17 @@ Any check that flips the H1 conclusion must be reported in the main text.
 - **RI:** exact for up to 9 editions; with ru and fa added (11 editions), 5,000 random permutations. For the negative controls (2–3 editions) the RI interval is uninformative, and only the point estimate is read.
 - **"exposure all users" in the primary window:** not estimable, because no edition reaches 0.5 all-user exposure before 2025-03.
 - **When:** all decided **before** the full P20 run. Only the two P17 baselines had been reproduced.
+
+### 2026-11-01: P21 (H2) implementation details (clarification and addition)
+
+- **Clarification:** q is standardised over sample articles with P06 weights. The q × month slopes are 87 columns (one month dropped, absorbed by the article FE), partialled out by FWL in batches. On a 3,000-article subsample this reproduces pyfixest's `views ~ qx + i(month, q) | article + edition^month` exactly.
+- **Secondary (as pre-registered):** the binary v4 contrast uses qa_core × month FE in place of slopes. The search-arrival version keeps 2023 deciles 8–10 and usable clickstream months without 2025-04.
+- **Addition (robustness):** coarse type × month FE in place of the q slopes. q is a function of the coarse type (22 values), so this nests the pre-registered slopes.
+- **Exploratory:** without fa (as in P18 and P19). Per-type and per-topic effects relative to `human` and `Geography` (E2) are partially pooled by **empirical-Bayes normal shrinkage** of the CRV1 estimates instead of bambi, because a Bayesian model on 10.9 M rows is impractical. Chart 2 compares 2023-08..2024-07 with 2025-08..2026-07.
+- **When:** all decided **before** any P21 estimate was seen.
+
+### 2026-11-01: Base-10 logs in P19 and P21 corrected (error fix, found after seeing results)
+
+- **What:** DuckDB's `log()` is base 10. The P19 and P21 outcomes were built with it (`log(1 + views)`, `log(1 + search)`), so every coefficient and interval was too small by a factor of ln 10 ≈ 2.30. The p-values are unaffected (t-statistics and RI are invariant to rescaling the outcome). Both modules now use `ln()`, both were re-run in full, and a test (`tests/test_sql_logs.py`) blocks base-10 logs in SQL. All other models take logs in numpy and were not affected.
+- **Effect on P19:** the corrected estimates are about 2.3 times larger (e.g. search without fa: −10.0%, not −4.5%). They agree with P17–P18 rather than being smaller, and the P19 conclusion in CLAUDE.md has been corrected.
+- **When:** found during P21, after both P19 and P21 results had been seen. Nothing about the specifications changed.
