@@ -128,6 +128,7 @@ models: check-env
 
 figures: check-env
 	$(PY) -m wao.viz.hero
+	$(PY) -m wao.viz.figures
 
 report:
 	@echo "report: nothing yet (P30)"
