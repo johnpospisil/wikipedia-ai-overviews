@@ -1,0 +1,109 @@
+trend,lang,component,log,lo,hi
+no pre-trend,en,total change,-0.09104,-0.09104,-0.09104
+no pre-trend,en,own pre-trend,0.0,0.0,0.0
+no pre-trend,en,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,en,AI Overviews,-0.07989,-0.28966,0.12771
+no pre-trend,en,bot reclassification,-0.03549,-0.06256,-0.0086
+no pre-trend,en,edition-specific residual,0.19732,0.12235,0.27501
+no pre-trend,ja,total change,-0.15857,-0.15857,-0.15857
+no pre-trend,ja,own pre-trend,0.0,0.0,0.0
+no pre-trend,ja,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,ja,AI Overviews,-0.07164,-0.25972,0.11451
+no pre-trend,ja,bot reclassification,0.0,0.0,0.0
+no pre-trend,ja,edition-specific residual,0.08509,0.01709,0.16183
+no pre-trend,pt,total change,-0.33788,-0.33788,-0.33788
+no pre-trend,pt,own pre-trend,0.0,0.0,0.0
+no pre-trend,pt,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,pt,AI Overviews,-0.0873,-0.31651,0.13955
+no pre-trend,pt,bot reclassification,0.0,0.0,0.0
+no pre-trend,pt,edition-specific residual,-0.07695,-0.15369,-0.00159
+no pre-trend,es,total change,-0.47209,-0.47209,-0.47209
+no pre-trend,es,own pre-trend,0.0,0.0,0.0
+no pre-trend,es,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,es,AI Overviews,-0.08305,-0.30111,0.13276
+no pre-trend,es,bot reclassification,0.0,0.0,0.0
+no pre-trend,es,edition-specific residual,-0.21593,-0.28814,-0.14239
+no pre-trend,de,total change,-0.19407,-0.19407,-0.19407
+no pre-trend,de,own pre-trend,0.0,0.0,0.0
+no pre-trend,de,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,de,AI Overviews,-0.08267,-0.29974,0.13215
+no pre-trend,de,bot reclassification,0.0,0.0,0.0
+no pre-trend,de,edition-specific residual,0.06173,-0.01027,0.13504
+no pre-trend,it,total change,-0.27647,-0.27647,-0.27647
+no pre-trend,it,own pre-trend,0.0,0.0,0.0
+no pre-trend,it,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,it,AI Overviews,-0.08656,-0.31382,0.13836
+no pre-trend,it,bot reclassification,0.0,0.0,0.0
+no pre-trend,it,edition-specific residual,-0.01648,-0.09246,0.05839
+no pre-trend,pl,total change,-0.30117,-0.30117,-0.30117
+no pre-trend,pl,own pre-trend,0.0,0.0,0.0
+no pre-trend,pl,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,pl,AI Overviews,-0.08743,-0.317,0.13976
+no pre-trend,pl,bot reclassification,0.0,0.0,0.0
+no pre-trend,pl,edition-specific residual,-0.04011,-0.11685,0.03535
+no pre-trend,zh,total change,-0.30861,-0.30861,-0.30861
+no pre-trend,zh,own pre-trend,0.0,0.0,0.0
+no pre-trend,zh,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,zh,AI Overviews,-0.08118,-0.29432,0.12976
+no pre-trend,zh,bot reclassification,0.0,0.0,0.0
+no pre-trend,zh,edition-specific residual,-0.05437,-0.12551,0.01903
+no pre-trend,fr,total change,-0.11439,-0.11439,-0.11439
+no pre-trend,fr,own pre-trend,0.0,0.0,0.0
+no pre-trend,fr,common to all editions (ChatGPT era etc.),-0.17124,-0.39017,0.03842
+no pre-trend,fr,AI Overviews,-0.03696,-0.134,0.05908
+no pre-trend,fr,bot reclassification,0.0,0.0,0.0
+no pre-trend,fr,edition-specific residual,0.0939,-0.02736,0.22686
+2019-04..2022-11 trend,en,total change,-0.09104,-0.09104,-0.09104
+2019-04..2022-11 trend,en,own pre-trend,-0.28192,-0.35123,-0.21219
+2019-04..2022-11 trend,en,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,en,AI Overviews,-0.07989,-0.28966,0.12771
+2019-04..2022-11 trend,en,bot reclassification,-0.03549,-0.06256,-0.0086
+2019-04..2022-11 trend,en,edition-specific residual,0.22132,0.07158,0.38886
+2019-04..2022-11 trend,ja,total change,-0.15857,-0.15857,-0.15857
+2019-04..2022-11 trend,ja,own pre-trend,-0.16021,-0.27082,-0.05014
+2019-04..2022-11 trend,ja,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,ja,AI Overviews,-0.07164,-0.25972,0.11451
+2019-04..2022-11 trend,ja,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,ja,edition-specific residual,-0.01014,-0.18151,0.17175
+2019-04..2022-11 trend,pt,total change,-0.33788,-0.33788,-0.33788
+2019-04..2022-11 trend,pt,own pre-trend,-0.67996,-0.80161,-0.5583
+2019-04..2022-11 trend,pt,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,pt,AI Overviews,-0.0873,-0.31651,0.13955
+2019-04..2022-11 trend,pt,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,pt,edition-specific residual,0.34348,0.17455,0.53808
+2019-04..2022-11 trend,es,total change,-0.47209,-0.47209,-0.47209
+2019-04..2022-11 trend,es,own pre-trend,-0.50488,-0.63351,-0.37434
+2019-04..2022-11 trend,es,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,es,AI Overviews,-0.08305,-0.30111,0.13276
+2019-04..2022-11 trend,es,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,es,edition-specific residual,0.03219,-0.14704,0.2235
+2019-04..2022-11 trend,de,total change,-0.19407,-0.19407,-0.19407
+2019-04..2022-11 trend,de,own pre-trend,-0.21035,-0.31947,-0.09956
+2019-04..2022-11 trend,de,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,de,AI Overviews,-0.08267,-0.29974,0.13215
+2019-04..2022-11 trend,de,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,de,edition-specific residual,0.01428,-0.15512,0.19537
+2019-04..2022-11 trend,it,total change,-0.27647,-0.27647,-0.27647
+2019-04..2022-11 trend,it,own pre-trend,-0.19159,-0.32776,-0.05416
+2019-04..2022-11 trend,it,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,it,AI Overviews,-0.08656,-0.31382,0.13836
+2019-04..2022-11 trend,it,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,it,edition-specific residual,-0.08077,-0.26975,0.11268
+2019-04..2022-11 trend,pl,total change,-0.30117,-0.30117,-0.30117
+2019-04..2022-11 trend,pl,own pre-trend,-0.27648,-0.43964,-0.11179
+2019-04..2022-11 trend,pl,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,pl,AI Overviews,-0.08743,-0.317,0.13976
+2019-04..2022-11 trend,pl,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,pl,edition-specific residual,-0.02034,-0.22419,0.18868
+2019-04..2022-11 trend,zh,total change,-0.30861,-0.30861,-0.30861
+2019-04..2022-11 trend,zh,own pre-trend,0.15144,0.10954,0.193
+2019-04..2022-11 trend,zh,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,zh,AI Overviews,-0.08118,-0.29432,0.12976
+2019-04..2022-11 trend,zh,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,zh,edition-specific residual,-0.46281,-0.60579,-0.30908
+2019-04..2022-11 trend,fr,total change,-0.11439,-0.11439,-0.11439
+2019-04..2022-11 trend,fr,own pre-trend,-0.14952,-0.26201,-0.03535
+2019-04..2022-11 trend,fr,common to all editions (ChatGPT era etc.),0.08308,-0.16722,0.33155
+2019-04..2022-11 trend,fr,AI Overviews,-0.03696,-0.134,0.05908
+2019-04..2022-11 trend,fr,bot reclassification,0.0,0.0,0.0
+2019-04..2022-11 trend,fr,edition-specific residual,-0.01225,-0.21517,0.19745

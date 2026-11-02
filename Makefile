@@ -124,6 +124,7 @@ models: check-env
 	$(PY) -m wao.models.access_pop
 	$(PY) -m wao.models.referral
 	$(PY) -m wao.models.editors
+	$(PY) -m wao.models.decompose
 
 figures:
 	@echo "figures: nothing yet (P26–P27)"

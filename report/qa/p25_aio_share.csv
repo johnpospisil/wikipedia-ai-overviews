@@ -1,0 +1,11 @@
+estimate,unit,total_pct,aio_pct,share_of_decline,share_lo,share_hi
+P17 primary window (first 6 months),en,-8.7021,2.5688,-0.2786,,
+P17 primary window (first 6 months),8 treated pooled,-15.008,2.6526,-0.161,,
+P17 full window,en,-8.7021,-7.7209,0.8826,,
+P17 full window,8 treated pooled,-15.008,-7.9594,0.51,,
+"P18 TWFE, 9 editions (x mean exposure)",en,-8.7021,-11.751,1.3731,,
+"P18 TWFE, 9 editions (x mean exposure)",8 treated pooled,-15.008,-12.1055,0.7935,,
+"P19 within-concept, no fa (x mean exposure)",en,-8.7021,-8.7286,1.0032,,
+"P19 within-concept, no fa (x mean exposure)",8 treated pooled,-15.008,-8.9967,0.5797,,
+"P17 full window, RI 95% bounds",8 treated pooled,-15.008,,,-0.8044,1.8245
+P16 ITS pre-registered (upper bound only),en,-8.7021,-35.6,4.8335,,
