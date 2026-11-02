@@ -232,7 +232,7 @@ def chart5(mode: str) -> None:
     t["psd"] = np.sqrt(tau2 * t.se**2 / (tau2 + t.se**2))  # normal-normal posterior SD
     t = pd.concat([t, pd.DataFrame([dict(coarse_type="human", eb=0.0, psd=np.nan)])])
     t = t.sort_values("eb").reset_index(drop=True)
-    top = t.iloc[-1]
+    top = t[t.coarse_type != "human"].iloc[-1]
     title = "Kinds of article differ little; sports events and species held up best"
     sub = (
         f"Effect of full AI Overviews exposure on user views, relative to biographies "
@@ -321,17 +321,19 @@ def forest(mode: str) -> None:
     r = pd.read_csv(QA / "p20_robustness.csv")
     r = r[r.pct.notna() & ~r.spec.str.startswith("+ ru, fa; fa")]
     order = list(dict.fromkeys(r.spec))
-    sig = r[(r.ri_p < 0.05) & ~r.group.isin(["placebo"])]
-    title = "No robustness check finds a significant loss"
+    loss = r[(r.ri_p < 0.05) & (r.pct < 0) & ~r.group.isin(["placebo", "negative control"])]
+    title = ("No robustness check finds a significant loss" if loss.empty else
+             f"{len(loss)} of {len(r)} robustness checks find a significant loss")  # fmt: skip
     sub = (
         f"{len(r)} estimates from the P20 variants of the staggered DiD, effect on search "
         f"arrivals, 95% RI interval. Placebo and negative controls in grey"
     )
+    full = r[r.window == "full"].set_index("spec").pct
     TAKEAWAYS["forest_robustness"] = (
-        title + "; the full-window loss of about 8% vanishes "
-        "without French or with a bot-reclassification step"
+        f"{title}; full window {full['baseline (P17)']:+.0f}%, without French "
+        f"{full['leave out fr']:+.0f}%, with a bot-reclassification step "
+        f"{full['edition x post-2025-04 bot step']:+.0f}%"
     )
-    assert sig.empty or (sig.pct > 0).all()
     with theme.use(mode) as p:
         fig, axes = plt.subplots(1, 2, figsize=(11, 11.5), sharey=True)
         fig.subplots_adjust(left=0.30, right=0.97, top=0.91, bottom=0.07, wspace=0.08)

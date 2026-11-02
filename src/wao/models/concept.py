@@ -43,6 +43,8 @@ EDSETS = {"11 editions (pre-registered)": did.EDS + ["ru", "fa"],
 OUTCOMES = {"views": "log(1 + user web views)", "search": "log(1 + search arrivals), imputed",
             "search_head": "log(1 + search arrivals), never censored in 2023"}  # fmt: skip
 REPS, RI_REPS, SEED = 9_999, 999, 19
+if config.SAMPLE:  # make all SAMPLE=1 / CI: fewer draws
+    REPS, RI_REPS = 999, 199
 GRID = np.round(np.arange(-0.6, 0.6001, 0.0025), 4)
 RI_SPECS = [(o, e) for o in ("views", "search")
             for e in ("11 editions (pre-registered)", "10 editions, no fa")]

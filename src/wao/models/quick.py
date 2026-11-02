@@ -39,6 +39,8 @@ from wao.models import concept, did
 QA, FIG = config.REPORT_DIR / "qa", config.REPORT_DIR / "figures"
 START, END, SHORT = "2019-04", "2026-07", "2025-04"
 REPS, SEED, BATCH = 9_999, 21, 12
+if config.SAMPLE:  # make all SAMPLE=1 / CI: fewer draws
+    REPS = 999
 HIGH = ["en", "ja", "pt", "es", "de", "it", "pl", "zh"]
 LOWC = ["fr", "ru"]
 

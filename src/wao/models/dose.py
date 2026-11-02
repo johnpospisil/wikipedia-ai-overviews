@@ -42,6 +42,8 @@ EDS11 = did.EDS + ["ru", "fa"]
 END, SHORT = "2026-07", "2025-04"
 BINS = [0, 0.25, 0.5, 0.75, 1.0]
 REPS, SEED = 9_999, 18
+if config.SAMPLE:  # make all SAMPLE=1 / CI: fewer draws
+    REPS = 999
 GRID = np.round(np.arange(-0.8, 1.001, 0.005), 3)
 HIGH, LOW = 0.85, 0.5
 

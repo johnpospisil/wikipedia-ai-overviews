@@ -44,6 +44,8 @@ EDS = ["en", "ja", "pt", "es", "de", "it", "pl", "zh", "fr"]
 BASE, LATEST = ("2021-12", "2022-11"), ("2025-10", "2026-09")
 YEARS = (pd.Period("2026-04", "M") - pd.Period("2022-06", "M")).n / 12  # window midpoints
 DRAWS, SEED = 20_000, 25
+if config.SAMPLE:  # make all SAMPLE=1 / CI: fewer draws
+    DRAWS = 2_000
 
 
 def _lse(lo_pct, hi_pct):

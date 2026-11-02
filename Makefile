@@ -15,11 +15,25 @@ export WAO_RAW_DIR := $(SAMPLE_DIR)/raw
 export WAO_DATA_DIR := $(SAMPLE_DIR)/data
 export WAO_REFERENCE_DIR := $(SAMPLE_DIR)/reference
 export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
+# No request is made on the sample path; the ingest code still wants a User-Agent contact.
+export WAO_CONTACT ?= sample-run-no-requests
 endif
 
-.PHONY: all check-env progress reference qa quick-answer panels eda power ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
+.PHONY: all synthetic check-env progress reference qa quick-answer panels eda power ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
 
+ifeq ($(SAMPLE),1)
+all: check-env synthetic models figures report
+else
 all: check-env ingest build models figures report
+endif
+
+# P28: synthetic mini-dump (known effect, see src/wao/build/synthetic.py) -> the real clickstream
+# ingest -> panels. Sample path only; a few minutes end to end with `make all SAMPLE=1`.
+synthetic: check-env
+	@test "$(SAMPLE)" = 1 || (echo "synthetic runs only with SAMPLE=1"; exit 1)
+	$(PY) -m wao.build.synthetic raw
+	$(PY) -m wao.ingest.clickstream_ingest
+	$(PY) -m wao.build.synthetic panels
 
 check-env:
 	$(PY) -m wao.check_env

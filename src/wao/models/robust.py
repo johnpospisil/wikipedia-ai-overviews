@@ -35,6 +35,8 @@ from wao.viz import eda
 QA, FIG = config.REPORT_DIR / "qa", config.REPORT_DIR / "figures"
 EDS9 = did.EDS
 SAMPLE, SEED = 5_000, 20
+if config.SAMPLE:  # make all SAMPLE=1 / CI: fewer draws
+    SAMPLE = 500
 ENDS = {"primary": ("2025-02", "exposure"), "full": ("2026-07", "treatment")}
 BASES = {"2024-04", "2024-07", "2025-02", "2025-03"}
 BOT = ("2025-03", "2025-08")
@@ -172,7 +174,7 @@ def matrix(d: pd.DataFrame, s: Spec):
 
 def _assign(G, E):
     if len(G) <= 9:
-        return assignments(G, E)
+        return did.thin(*assignments(G, E), G, E)
     rng = np.random.default_rng(SEED)
     P = np.array([rng.permutation(len(G)) for _ in range(SAMPLE)])
     return np.vstack([G, G[P]]), np.vstack([E, E[P]])

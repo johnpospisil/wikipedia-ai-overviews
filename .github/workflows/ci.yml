@@ -1,0 +1,37 @@
+# P28: CI on the sample path. No real data and no network calls to Wikimedia: tests that need the
+# external drive skip, and `make all SAMPLE=1` runs the whole analysis on the synthetic mini-dump
+# (src/wao/build/synthetic.py), then checks that it recovers the planted effect.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  sample-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      WAO_RAW_DIR: ${{ github.workspace }}/.ci/raw
+      WAO_DATA_DIR: ${{ github.workspace }}/.ci/data
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Lint
+        run: uv run ruff check src tests
+      - name: Unit tests and pinned headline values
+        run: uv run pytest -q
+      - name: make all SAMPLE=1
+        run: make all SAMPLE=1
+      - name: Sample pipeline recovers the planted effect
+        run: uv run pytest -q tests/test_sample_pipeline.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sample-report
+          path: .sample/report
+          retention-days: 7

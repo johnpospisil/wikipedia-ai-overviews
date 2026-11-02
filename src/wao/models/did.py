@@ -42,6 +42,9 @@ WINDOWS = {"primary": ("2025-02", "exposure"), "full": ("2026-07", "treatment")}
 SESOI = np.log(0.95)
 LEADS = 12
 BOOT, SEED, RI_SUB = 99_999, 17, 3_000
+RI_MAX = None  # exact RI: every assignment
+if config.SAMPLE:  # make all SAMPLE=1 / CI: fewer draws
+    BOOT, RI_SUB, RI_MAX = 999, 300, 400
 DELTAS = np.round(np.arange(-0.60, 0.301, 0.0025), 4)
 
 
@@ -49,12 +52,16 @@ DELTAS = np.round(np.arange(-0.60, 0.301, 0.0025), 4)
 
 
 def panel() -> pd.DataFrame:
-    return duckdb.connect().execute(f"""
+    return (
+        duckdb.connect()
+        .execute(f"""
         select l.lang, l.month, l.search_arr_na, c.cohort, c.first_exposed
         from '{config.PANEL_DIR}/panel_lang_month.parquet' l
         join read_csv('{config.REFERENCE_DIR}/language_cohorts.csv') c on c.wiki = l.lang
         where l.lang in ({",".join(f"'{e}'" for e in EDS)}) and l.month >= '{START}'
-        order by l.lang, l.month""").df()
+        order by l.lang, l.month""")
+        .df()
+    )
 
 
 def seasonal(d: pd.DataFrame) -> pd.DataFrame:
@@ -192,7 +199,7 @@ def sun_abraham(Y, G, E, miss, T=None) -> float:
             if it in pos:
                 X_in[pos[it], c] = 1
     X = np.hstack([X_fe, X_in])
-    beta = np.linalg.lstsq(X, np.array(ys), rcond=None)[0][X_fe.shape[1]:]
+    beta = np.linalg.lstsq(X, np.array(ys), rcond=None)[0][X_fe.shape[1] :]
     tot = sum(((G == g) & (E == e)).sum() for g, e in groups)
     th = 0.0
     for k, (g, e) in enumerate(groups):
@@ -230,10 +237,20 @@ def bjs(Y, G, E, miss, rule) -> float:
 # ---------------------------------------------------------------------------- inference
 
 
+def thin(Gp: np.ndarray, Ep: np.ndarray, G: np.ndarray, E: np.ndarray):
+    """Sample mode only: the observed assignment plus RI_MAX random others (exact otherwise)."""
+    if RI_MAX is None or len(Gp) <= RI_MAX + 1:
+        return Gp, Ep
+    true = np.flatnonzero((Gp == G).all(1) & (Ep == E).all(1))[0]
+    rest = np.delete(np.arange(len(Gp)), true)
+    keep = np.r_[true, np.random.default_rng(SEED).choice(rest, RI_MAX, replace=False)]
+    return Gp[keep], Ep[keep]
+
+
 def ri(Y, G, E, miss, rule):
     """theta for every assignment, theta of the treatment indicator (for test inversion)."""
     T = Y.shape[1]
-    Gp, Ep = assignments(G, E)
+    Gp, Ep = thin(*assignments(G, E), G, E)
     W = np.stack([att_weights(g, T, miss, E=e, control=rule) for g, e in zip(Gp, Ep, strict=True)])
     Y0 = np.nan_to_num(Y)
     A = np.einsum("pij,ij->p", W, Y0)
@@ -318,14 +335,32 @@ def run_window(d: pd.DataFrame, name: str) -> dict:
               .reset_index())  # fmt: skip
     groups["se"] = [boot_se(np.mean([cells[i]["psi"] for i in post.index[post.group == g]], axis=0),
                             V) for g in groups.group]  # fmt: skip
-    att = [dict(window=name, estimator="Callaway-Sant'Anna", theta=th, ri_p=p, ri_lo95=lo95,
-                ri_hi95=hi95, ri_lo90=lo90, ri_hi90=hi90, boot_se=se),
-           dict(window=name, estimator="Sun-Abraham", theta=th_sa, ri_p=p_sa),
-           dict(window=name, estimator="Borusyak-Jaravel-Spiess", theta=th_bjs, ri_p=p_bjs)]
+    att = [
+        dict(
+            window=name,
+            estimator="Callaway-Sant'Anna",
+            theta=th,
+            ri_p=p,
+            ri_lo95=lo95,
+            ri_hi95=hi95,
+            ri_lo90=lo90,
+            ri_hi90=hi90,
+            boot_se=se,
+        ),
+        dict(window=name, estimator="Sun-Abraham", theta=th_sa, ri_p=p_sa),
+        dict(window=name, estimator="Borusyak-Jaravel-Spiess", theta=th_bjs, ri_p=p_bjs),
+    ]
     pre = dict(window=name, stat_mean_abs_lead=pre_vals[true], ri_p=pre_p, flagged=pre_p < 0.10)
     rr = [dict(window=name, **r) for r in rambachan_roth(es, lo95, hi95, post_k)]
-    return dict(att=att, es=es.assign(window=name), gt=gt.assign(window=name),
-                groups=groups.assign(window=name), pre=pre, rr=rr, months=months)
+    return dict(
+        att=att,
+        es=es.assign(window=name),
+        gt=gt.assign(window=name),
+        groups=groups.assign(window=name),
+        pre=pre,
+        rr=rr,
+        months=months,
+    )
 
 
 def by_edition(d: pd.DataFrame) -> pd.DataFrame:
@@ -372,8 +407,11 @@ def figure(res: dict) -> plt.Figure:
     for ax, name in zip(axes[:2], ("primary", "full"), strict=True):
         es = res[name]["es"]
         es = es[es.event >= -24]
-        cls = np.where(es.kind.str.contains("post"), "post",
-                       np.where(es.kind.str.contains("partial"), "partial", "lead"))
+        cls = np.where(
+            es.kind.str.contains("post"),
+            "post",
+            np.where(es.kind.str.contains("partial"), "partial", "lead"),
+        )
         for kind, c in (("lead", "#8fa9cf"), ("partial", "#e6b85c"), ("post", "#1f4e8c")):
             k = es[cls == kind]
             ax.errorbar(k.event, pct(k.att), yerr=[pct(k.att) - pct(k.att - 1.96 * k.se),
