@@ -144,8 +144,21 @@ figures: check-env
 	$(PY) -m wao.viz.hero
 	$(PY) -m wao.viz.figures
 
+# P30: the article (report/index.html, self-contained). Numbers come from report/qa via wao.article.
+# JUPYTER_PATH makes Quarto use this project's kernel, not a user-level `python3` kernelspec.
+# With SAMPLE=1 the article is rendered from a copy in .sample/report (sample numbers and figures),
+# so the real report/index.html is never overwritten.
+QUARTO ?= quarto
+RENDER = JUPYTER_PATH=$(CURDIR)/.venv/share/jupyter QUARTO_PYTHON=$(CURDIR)/.venv/bin/python \
+	uv run $(QUARTO) render
 report:
-	@echo "report: nothing yet (P30)"
+ifeq ($(SAMPLE),1)
+	cp report/index.qmd report/references.bib report/article.css "$(WAO_REPORT_DIR)/"
+	$(RENDER) "$(WAO_REPORT_DIR)/index.qmd" --execute-daemon-restart
+else
+	$(RENDER) report/index.qmd --execute-daemon-restart
+	uv run pytest -q tests/test_article.py
+endif
 
 test:
 	uv run pytest -q

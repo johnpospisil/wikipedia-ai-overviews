@@ -47,6 +47,7 @@ TYPES = {"admin_region": "administrative regions", "astronomical": "astronomical
          "tv": "TV", "video_game": "video games", "written_work": "books and written works"}  # fmt: skip  # noqa: E501
 pct = lambda v: 100 * (np.exp(v) - 1)  # noqa: E731
 TAKEAWAYS: dict[str, str] = {}
+NUMBERS: dict[str, float] = {}  # P30: the numbers behind the takeaways, for the article
 
 
 def _panel() -> pd.DataFrame:
@@ -130,6 +131,8 @@ def chart3(d: pd.DataFrame, mode: str) -> None:
         f"in the latest 12 months; article links {100 * a.links:.0f}% to {100 * b.links:.0f}%"
     )
     TAKEAWAYS["chart3_referral_mix"] = f"{title} ({sub.split('. ', 1)[1]})"
+    NUMBERS.update(en_search_before=a.search_arr, en_search_latest=b.search_arr,
+                   en_links_before=a.links, en_links_latest=b.links)
     with theme.use(mode) as p:
         fig, ax = plt.subplots(figsize=(10, 5.6))
         fig.subplots_adjust(left=0.07, right=0.70, top=0.74, bottom=0.10)
@@ -188,6 +191,7 @@ def chart4(a: pd.DataFrame, mode: str) -> None:
         f"Russian {last['ru']:.0f}"
     )
     TAKEAWAYS["chart4_editions"] = f"{title} ({sub.split('. ', 1)[1]})"
+    NUMBERS.update({f"idx_latest_{lang}": v for lang, v in last.items()})
     fr = a[a.lang == "fr"].set_index("t").idx
     with theme.use(mode) as p:
         fig, axes = plt.subplots(3, 4, figsize=(12, 8.4), sharex=True, sharey=True)
@@ -289,6 +293,7 @@ def chart6(d: pd.DataFrame, mode: str) -> None:
         f"{slower} of 11 editions (descriptive; the H6 test found no AI Overviews effect)"
     )
     TAKEAWAYS["chart6_editors"] = f"{title} ({sub.split('. ', 1)[1]})"
+    NUMBERS["editors_above_views"] = slower
     with theme.use(mode) as p:
         fig, axes = plt.subplots(3, 4, figsize=(12, 8.4), sharex=True, sharey=True)
         fig.subplots_adjust(left=0.06, right=0.98, top=0.86, bottom=0.09, hspace=0.32, wspace=0.1)
@@ -377,9 +382,21 @@ def forest(mode: str) -> None:
         theme.save(fig, "forest_robustness")
 
 
+def levels(d: pd.DataFrame) -> None:
+    """P30: all-traffic context for chart 4: total views and search share, Aug 2023-Jul 2024 vs
+    the latest 12 months (whole years, so seasonality cancels)."""
+    for lang, g in d.groupby("lang"):
+        before = g[(g.month >= "2023-08") & (g.month <= "2024-07")]
+        latest = g[g.month > "2025-09"]
+        NUMBERS[f"views_chg_{lang}"] = 100 * (latest.views.sum() / before.views.sum() - 1)
+        NUMBERS[f"search_share_before_{lang}"] = before.search_arr.sum() / before.total_arr.sum()
+        NUMBERS[f"search_share_latest_{lang}"] = latest.search_arr.sum() / latest.total_arr.sum()
+
+
 def main() -> None:
     d = _panel()
     a = _adjusted(d)
+    levels(d)
     for mode in ("light", "dark"):
         chart2(mode)
         chart3(d, mode)
@@ -388,6 +405,7 @@ def main() -> None:
         chart6(d, mode)
         forest(mode)
     pd.Series(TAKEAWAYS, name="takeaway").rename_axis("figure").to_csv(QA / "p27_takeaways.csv")
+    pd.Series(NUMBERS, name="value").rename_axis("key").to_csv(QA / "p27_numbers.csv")
     for k, v in TAKEAWAYS.items():
         print(f"{k}: {v}")
 

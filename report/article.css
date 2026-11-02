@@ -1,0 +1,4 @@
+/* Article layout: readable measure, charts can run a little wider. */
+main.content img { width: 100%; height: auto; }
+.callout { font-size: 1.02rem; }
+table { font-variant-numeric: tabular-nums; }

@@ -18,7 +18,7 @@ An independent review of P03–P27 before the article is written (2026-11-02). I
   - en +10 pp, es +5 pp, pt +20 pp, zh +12 pp
   - fr: fell by 12 pp
   - (recomputed from `p11_bot_window.csv`)
-- For de, it and pl, the AI Overviews effect and the bot break start in the same month, so the data cannot separate them. The P20 bot-step variant removes the break from every *other* edition and gives −1.3% in the full window (RI 95% −12% to +17%), against −8.0% for the baseline. de, it and pl keep their own break either way.
+- For de, it and pl, the AI Overviews effect and the bot break start in the same month, so the data cannot separate them. The P20 bot-step variant removes the break from every *other* edition and gives −1.2% in the full window (RI 95% −12% to +17%), against −8.0% for the baseline. de, it and pl keep their own break either way.
 - **Consequence:** the full-window −8% is an upper bound on the AI Overviews effect, with a bot artefact of unknown size included. The primary window ends 2025-02 and is not affected.
 - **Action (P30):** say this wherever the full-window number appears.
 
@@ -68,10 +68,10 @@ An independent review of P03–P27 before the article is written (2026-11-02). I
 - Latest 12 months against Aug 2023–Jul 2024 (seasonally adjusted search arrivals):
   - es 56, pt 66, zh 70, ru 66 (never treated), fr 84, ja 96
 - es is a clear case:
-  - Web views fell about 40% from 2023 to 2026, and search arrivals 44%.
-  - The search share stayed at 63–67% throughout.
+  - Against Aug 2023–Jul 2024, all views fell 37% and search arrivals 44%. The search share moved only from 68% to 63% (`p27_numbers.csv`; corrected in P30 from "flat", which came from calendar-year averages).
+  - ru, which never had AI Overviews, looks the same: views −28%, search share 57% → 54%.
   - The pt and es falls come in early 2025, during Wikimedia's reclassification of evasive bots (mostly Brazil).
-- When every referrer falls together, the cause is unlikely to be specific to search. Candidates are bot reclassification (not retroactive, P11), undetected automated traffic in the base period, and general readership trends.
+- When most of the fall is shared by every referrer, most of the cause is unlikely to be specific to search. Candidates are bot reclassification (not retroactive, P11), undetected automated traffic in the base period, and general readership trends.
 - **Action (P30):** keep descriptive levels (charts 3 and 4, P25) clearly separate from causal estimates. Do not write "Spanish Wikipedia lost 44% of its search traffic to AI".
 
 ### B5. P25's attribution share is uninformative

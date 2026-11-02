@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.10.19
       - run: uv sync --frozen
       - name: Lint
         run: uv run ruff check src tests
