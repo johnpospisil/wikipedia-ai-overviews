@@ -44,7 +44,7 @@ TYPES = {"admin_region": "administrative regions", "astronomical": "astronomical
          "no_p31": "no Wikidata type", "no_qid": "no Wikidata item", "organization":
          "organisations", "other": "other", "settlement": "cities and towns", "sports_event":
          "sports events", "structure": "buildings and structures", "taxon": "species (taxa)",
-         "tv": "TV", "video_game": "video games", "written_work": "books and written works"}  # fmt: skip  # noqa: E501
+         "tv": "TV", "video_game": "video games", "written_work": "works (books, software, laws, ...)"}  # fmt: skip  # noqa: E501
 pct = lambda v: 100 * (np.exp(v) - 1)  # noqa: E731
 TAKEAWAYS: dict[str, str] = {}
 NUMBERS: dict[str, float] = {}  # P30: the numbers behind the takeaways, for the article

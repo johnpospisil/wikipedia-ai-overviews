@@ -19,7 +19,7 @@ export WAO_REPORT_DIR := $(SAMPLE_DIR)/report
 export WAO_CONTACT ?= sample-run-no-requests
 endif
 
-.PHONY: all synthetic check-env progress reference qa quick-answer panels eda power ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
+.PHONY: all release synthetic check-env progress reference qa quick-answer panels eda power ingest ingest-clickstream ingest-pageviews ingest-features ingest-edits context sample build models figures report test test-network lint
 
 ifeq ($(SAMPLE),1)
 all: check-env synthetic models figures report
@@ -159,6 +159,14 @@ else
 	$(RENDER) report/index.qmd --execute-daemon-restart
 	uv run pytest -q tests/test_article.py
 endif
+
+# P32: dataset for Hugging Face in $(WAO_DATA_DIR)/release (not uploaded; the card is copied to
+# docs/dataset-card.md for review).
+release: check-env
+	$(PY) -m wao.release
+	mkdir -p docs
+	cp "$(or $(WAO_DATA_DIR),/Volumes/Drive3/wao)/release/wikipedia-ai-overviews-panels-2026-09/README.md" docs/dataset-card.md
+	uv run pytest -q tests/test_release.py
 
 test:
 	uv run pytest -q

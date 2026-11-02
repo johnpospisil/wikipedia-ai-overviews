@@ -1,0 +1,73 @@
+{
+  "dir": "/Volumes/Drive3/wao/release/wikipedia-ai-overviews-panels-2026-09",
+  "files": {
+    "edition_month": {
+      "rows": 4522,
+      "columns": 42,
+      "months": [
+        "2016-01",
+        "2026-09"
+      ]
+    },
+    "articles": {
+      "rows": 197453,
+      "columns": 23,
+      "months": null
+    },
+    "article_month": {
+      "rows": 23128204,
+      "columns": 23,
+      "months": [
+        "2016-01",
+        "2026-09"
+      ]
+    },
+    "exposure": {
+      "rows": 4280,
+      "columns": 7,
+      "months": [
+        "2017-11",
+        "2026-09"
+      ]
+    },
+    "cohorts": {
+      "rows": 40,
+      "columns": 7,
+      "months": null
+    },
+    "data_breaks": {
+      "rows": 18,
+      "columns": 7,
+      "months": null
+    }
+  },
+  "sizes_mb": {
+    "LICENSE.md": 0.0,
+    "README.md": 0.0,
+    "SHA256SUMS": 0.0,
+    "columns.csv": 0.0,
+    "data/article_month.parquet": 225.1,
+    "data/article_month_csv/article_month_de.csv.gz": 34.8,
+    "data/article_month_csv/article_month_en.csv.gz": 40.4,
+    "data/article_month_csv/article_month_es.csv.gz": 31.7,
+    "data/article_month_csv/article_month_fa.csv.gz": 27.7,
+    "data/article_month_csv/article_month_fr.csv.gz": 33.0,
+    "data/article_month_csv/article_month_it.csv.gz": 32.6,
+    "data/article_month_csv/article_month_ja.csv.gz": 32.9,
+    "data/article_month_csv/article_month_pl.csv.gz": 31.0,
+    "data/article_month_csv/article_month_pt.csv.gz": 31.2,
+    "data/article_month_csv/article_month_ru.csv.gz": 34.7,
+    "data/article_month_csv/article_month_zh.csv.gz": 31.9,
+    "data/articles.csv": 36.0,
+    "data/articles.parquet": 6.6,
+    "data/cohorts.csv": 0.0,
+    "data/cohorts.parquet": 0.0,
+    "data/data_breaks.csv": 0.0,
+    "data/data_breaks.parquet": 0.0,
+    "data/edition_month.csv": 1.0,
+    "data/edition_month.parquet": 0.2,
+    "data/exposure.csv": 0.2,
+    "data/exposure.parquet": 0.0
+  },
+  "total_mb": 631.0
+}
