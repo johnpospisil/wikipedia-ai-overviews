@@ -35,6 +35,8 @@ from wao.viz import eda
 QA, FIG = config.REPORT_DIR / "qa", config.REPORT_DIR / "figures"
 EDS9 = did.EDS
 SAMPLE, SEED = 5_000, 20
+FEW_RI = "RI over 2-3 editions is uninformative"
+
 if config.SAMPLE:  # make all SAMPLE=1 / CI: fewer draws
     SAMPLE = 500
 ENDS = {"primary": ("2025-02", "exposure"), "full": ("2026-07", "treatment")}
@@ -245,9 +247,9 @@ def specs() -> list[Spec]:
         replace(f, name="negative control: ru, fa from 2025-05 vs fr", group="negative control",
                 eds=("ru", "fa", "fr"),
                 treated_override={"ru": ("2025-05", "2025-05"), "fa": ("2025-05", "2025-05")},
-                note="expected about dose x effect: ru 0.45, fa 0.17-0.19"),
+                note="expected about dose x effect: ru 0.45, fa 0.17-0.19; " + FEW_RI),
         replace(f, name="negative control: ru alone vs fr", group="negative control",
-                eds=("ru", "fr"), treated_override={"ru": ("2025-05", "2025-05")}),
+                eds=("ru", "fr"), treated_override={"ru": ("2025-05", "2025-05")}, note=FEW_RI),
     ]
     return out
 

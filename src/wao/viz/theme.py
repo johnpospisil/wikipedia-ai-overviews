@@ -144,6 +144,8 @@ def save(fig, name: str, mode: str | None = None) -> list:
     config.FIGURE_DIR.mkdir(parents=True, exist_ok=True)
     paths = [config.FIGURE_DIR / f"{stem}.png", config.FIGURE_DIR / f"{stem}.svg"]
     fig.savefig(paths[0], dpi=200)
-    fig.savefig(paths[1])
+    # P28: no date and fixed element ids, so a rerun with unchanged numbers leaves the SVG as is
+    with plt.rc_context({"svg.hashsalt": stem}):
+        fig.savefig(paths[1], metadata={"Date": None})
     plt.close(fig)
     return paths

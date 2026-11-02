@@ -4,4 +4,4 @@ chart3_referral_mix,"English Wikipedia: search still brings almost half of all a
 chart4_editions,"Search traffic fell almost everywhere, including where AI Overviews never launched (Latest 12 months: treated editions 56 to 96, French 84, Russian 66)"
 chart5_types,Kinds of article differ little; sports events and species held up best (Sports events +14% (exploratory) vs biographies)
 chart6_editors,Editors have held up better than readers in most editions (By early 2026 editors are above views in 8 of 11 editions (descriptive; the H6 test found no AI Overviews effect))
-forest_robustness,No robustness check finds a significant loss; the full-window loss of about 8% vanishes without French or with a bot-reclassification step
+forest_robustness,"No robustness check finds a significant loss; full window -8%, without French +0%, with a bot-reclassification step -1%"

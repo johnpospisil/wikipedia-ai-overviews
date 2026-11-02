@@ -444,3 +444,15 @@ Run with `make qa`. Checks are in `tests/test_data_quality.py`, tables in `repor
   - No censored row coded as a number.
   - Every core edition-month has pageviews.
 
+
+## 21. Reproducibility (P28)
+
+- **`make all`** runs the stages in order: `check-env ingest build models figures report`.
+  - The ingest stages were each run and checked in P04–P13 and are resumable. A cold rerun from raw dumps is about 2–3 days of mostly I/O plus rate-limited API calls (pageviews ~10 h, stub histories + revisions ~1 day, AQS checks ~45 min).
+  - `make models figures` on the real panels: 67 min on 2026-11-02 (M-series MacBook Pro; P19 within-concept and P20 robustness RI take most of it). It reproduced every committed number in `report/qa/` exactly.
+  - One hand edit was found and moved into code: the "RI over 2-3 editions is uninformative" note on the P20 negative controls.
+- **`make all SAMPLE=1`**: a synthetic mini-dump (`src/wao/build/synthetic.py`: 11 editions × 120 articles, real clickstream file format, real cohorts and exposure, a planted −10% effect on search arrivals at full exposure and no other effect) goes through the real clickstream ingest, panels, every model and every figure in about 75 s. It writes only to `.sample/` and makes no network calls. RI and bootstrap draws are reduced in sample mode only.
+  - `tests/test_sample_pipeline.py` checks that the effect is recovered: CS ATT −14% to −4% with an RI interval below zero, and the dose and within-concept intervals bracket −10%. It also checks that the planted nulls (quick answer, editors) are not rejected and that every figure is written.
+- **Pinned headline values** (`tests/test_headline.py`, read from `report/qa/`): P17 CS ATT primary +2.65% (RI p 0.582) and full window −7.96% (p 0.403); P18 TWFE at full exposure +5.98% / −13.48% / −12.65%; P19 within-concept search −2.74% / −10.04%; P21 H2 +0.54% (WCB p 0.736); Holm minimum p 0.42 with nothing supported; no robustness variant with a significant loss. Tolerance is ±0.5 pp on estimates and ±0.02–0.03 on p-values. A pin moves only with a Deviations entry or a dated note here.
+- **CI** (`.github/workflows/ci.yml`, every push): lint, unit tests and pins, `make all SAMPLE=1`, then the sample-recovery tests. Tests that need Drive3 skip.
+- Figure SVGs are written without a date and with fixed element ids, so a rerun with unchanged numbers leaves them byte-identical.

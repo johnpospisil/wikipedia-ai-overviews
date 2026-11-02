@@ -58,6 +58,6 @@ bot months 2025-03..08 dropped,bot,full,9.0,-0.0824,-7.9115,-30.2324,14.1679,0.4
 edition x post-2025-04 bot step,bot,full,9.0,-0.0126,-1.2492,-11.9707,16.7658,0.8129,30240.0,
 2025-04 rescaled,bot,full,9.0,-0.0799,-7.6748,-24.7986,9.1442,0.3957,30240.0,
 "negative control: ru, fa from 2025-05 vs fr",negative control,full,3.0,-0.4448,-35.904,-45.1188,34.9859,0.6667,3.0,"expected about dose x effect: ru 0.45, fa 0.17-0.19; RI over 2-3 editions is uninformative"
-negative control: ru alone vs fr,negative control,full,2.0,-0.1466,-13.6353,-45.1188,34.9859,1.0,2.0,; RI over 2-3 editions is uninformative
+negative control: ru alone vs fr,negative control,full,2.0,-0.1466,-13.6353,-45.1188,34.9859,1.0,2.0,RI over 2-3 editions is uninformative
 Rambachan-Roth M = 1 (P17),trend,primary,,0.0262,2.6526,-24.885,39.2569,,,interval widened by worst-case bias
 Rambachan-Roth M = 1 (P17),trend,full,,-0.0829,-7.9594,-51.9155,64.8243,,,interval widened by worst-case bias

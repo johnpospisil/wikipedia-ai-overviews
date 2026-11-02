@@ -56,10 +56,11 @@ def test_true_nulls_are_not_rejected():
 
 
 def test_all_figures_written():
+    decomposition = _csv("p25_decomposition.csv")  # skips before the sample is built
     figs = config.REPO_ROOT / ".sample" / "report" / "figures"
     names = ["hero_estimates", "chart2_quick_long", "chart3_referral_mix", "chart4_editions",
              "chart5_types", "chart6_editors", "forest_robustness"]  # fmt: skip
     for n in names:
         for suffix in ("", "_dark"):
             assert (figs / f"{n}{suffix}.png").exists(), n
-    assert np.isfinite(_csv("p25_decomposition.csv").select_dtypes("number")).any().any()
+    assert np.isfinite(decomposition.select_dtypes("number")).any().any()
