@@ -60,6 +60,8 @@ class Spec:
     start: str = did.START
     treated_override: dict | None = None  # lang -> (cohort, first exposure)
     note: str = ""
+    e_min: int = 0  # event-time range for the aggregation (H6: 6..18)
+    e_max: int | None = None
 
 
 def panel() -> pd.DataFrame:
@@ -67,7 +69,7 @@ def panel() -> pd.DataFrame:
         select lang, month, search_arr_na, search_arr_rs, search_arr_corr, google_share,
                views_desktop + views_mobile_web + views_app as views,
                views_desktop + views_mobile_web as views_web, views_desktop, views_mobile_web,
-               views_app, total_arr_na, link_arr
+               views_app, total_arr_na, link_arr, active_user
         from '{config.PANEL_DIR}/panel_lang_month.parquet'
         where core and month >= '{did.START}' order by lang, month""").df()
 
@@ -184,7 +186,8 @@ def estimate(d: pd.DataFrame, s: Spec) -> dict:
                     note="not estimable: no edition reaches the cohort threshold in this window")
     Gp, Ep = _assign(G, E)
     true = 0 if len(G) > 9 else np.flatnonzero((Gp == G).all(1) & (Ep == E).all(1))[0]
-    W = np.stack([att_weights(g, T, miss, E=e, control=rule) for g, e in zip(Gp, Ep, strict=True)])
+    W = np.stack([att_weights(g, T, miss, s.e_min, s.e_max, E=e, control=rule)
+                  for g, e in zip(Gp, Ep, strict=True)])  # fmt: skip
     Y0 = np.nan_to_num(Y)
     A = np.einsum("pij,ij->p", W, Y0)
     D = (np.arange(T)[None, :] >= G[:, None]).astype(float)

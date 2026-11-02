@@ -283,3 +283,9 @@ Any check that flips the H1 conclusion must be reported in the main text.
 - **H5a and H5b:** the P17 estimator (primary window, exact RI; full window alongside), with the 2025-04 short month missing as for search arrivals. H5b's denominator is all arrivals minus internal-link arrivals ("external entries").
 - **Exploratory (E3, selection):** at article level, 2023 deciles 8–10 and usable clickstream months: log((outgoing internal clicks + 1) / (published arrivals + 1)) on (article's standardised 2023 search share) × exposure, with article FE, edition × month FE and a share × month slope. This is the P21 batched estimator with a WCB by edition, run with and without fa. Chart 3 pools the 8 treated editions and shows fr beside them.
 - **When:** decided **before** any P23 estimate was seen.
+
+### 2026-11-02: H6 implementation and the Holm decision p-values (clarification)
+
+- **H6:** the P17 estimator in the full window (not-yet-treated controls, base = month before first exposure) on log AQS active registered editors (5+), deseasonalised like section 3. The cohort aggregation uses only event times 6..18. The all-event-time ATT is shown for context only.
+- **Holm family p-values:** the confirmatory p of each hypothesis as pre-registered. H2 and H4 are the article-level WCB p of the pre-registered specification. H3, H5a and H5b are the exact RI p in the primary window. H6 is the exact RI p in the full window, event times 6..18. Full-window, secondary and exploratory variants do not enter the family. The table is `report/qa/holm.csv`.
+- **When:** decided **after** the H2–H5 results were known (P21–P23) and **before** H6 was run. The rule just applies section 6 as written. No alternative choice of p-values would change the result: the smallest pre-registered family p is 0.42.

@@ -1,0 +1,3 @@
+spec,group,window,editions,theta,pct,lo_pct,hi_pct,ri_p,assignments,note
+"H6: registered editors, event times 6..18",H6,full,9,0.0149,1.5019,-6.0587,8.8717,0.7093,30240,
+"registered editors, all event times (context)",context,full,9,0.0172,1.739,-4.8771,8.0582,0.6119,30240,

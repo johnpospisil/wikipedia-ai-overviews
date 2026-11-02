@@ -1,0 +1,7 @@
+hypothesis,test,p,holm_p,threshold,supported
+H2,quick-answer x exposure (views),0.7363,1.0,0.025,False
+H3,mobile web - desktop (primary),0.5238,1.0,0.0125,False
+H4,tail vs head (views),0.4245,1.0,0.0083,False
+H5a,search share (primary),0.8889,1.0,0.05,False
+H5b,depth (primary),0.5013,1.0,0.01,False
+H6,"registered editors, e 6..18 (full)",0.7093,1.0,0.0167,False
