@@ -138,17 +138,17 @@ def h2(d: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def by_group(d: pd.DataFrame, col: str, ref: str) -> pd.DataFrame:
+def by_group(d: pd.DataFrame, col: str, ref, y: str = "views") -> pd.DataFrame:
     """Exposure effect for each level of col, relative to ref (article, edition x month and
     col x month FE); CRV1 by edition; empirical-Bayes shrinkage toward the precision-weighted
     mean."""
     lv = [v for v in sorted(d[col].dropna().unique()) if v != ref]
-    s = d[d[col].notna()]
+    s = d[d[col].notna() & d[y].notna()]
     f = np.column_stack([s.art.values, s.lm.values,
                          pd.factorize(s[col].astype(str) + s.month)[0]]).astype(np.uint64)
     X = np.column_stack([(s[col].values == v) * s.x.values for v in lv])
     w = s.weight.values
-    r = _dm(np.column_stack([s.views.values, X]), f, w)
+    r = _dm(np.column_stack([s[y].values, X]), f, w)
     yt, Xt = r[:, 0], r[:, 1:]
     XtW = Xt * w[:, None]
     A = np.linalg.inv(XtW.T @ Xt)

@@ -270,3 +270,10 @@ Any check that flips the H1 conclusion must be reported in the main text.
 - **What:** DuckDB's `log()` is base 10. The P19 and P21 outcomes were built with it (`log(1 + views)`, `log(1 + search)`), so every coefficient and interval was too small by a factor of ln 10 ≈ 2.30. The p-values are unaffected (t-statistics and RI are invariant to rescaling the outcome). Both modules now use `ln()`, both were re-run in full, and a test (`tests/test_sql_logs.py`) blocks base-10 logs in SQL. All other models take logs in numpy and were not affected.
 - **Effect on P19:** the corrected estimates are about 2.3 times larger (e.g. search without fa: −10.0%, not −4.5%). They agree with P17–P18 rather than being smaller, and the P19 conclusion in CLAUDE.md has been corrected.
 - **When:** found during P21, after both P19 and P21 results had been seen. Nothing about the specifications changed.
+
+### 2026-11-02: P22 (H3, H4) implementation details (clarification and addition)
+
+- **H3:** the P17 estimator (primary window, exact RI) on log(mobile-web views) − log(desktop views), deseasonalised like section 3. The full window and each access type alone (desktop, mobile web, app) are reported alongside. The full window is the section 7 item-1 check, not the H3 decision.
+- **H4:** the P21 batched estimator with q = tail indicator (2023 deciles 1–5 = 1, 8–10 = 0, 6–7 excluded), so the q × month slopes become tail × month effects. The secondary search version uses the P11 imputation for censored months.
+- **Exploratory:** without fa, and the exposure effect by 2023 decile relative to decile 10 (CRV1 by edition).
+- **When:** all decided **before** any P22 estimate was seen.

@@ -1,0 +1,9 @@
+spec,group,window,editions,theta,pct,lo_pct,hi_pct,ri_p,assignments,note
+H3: mobile web - desktop,H3,primary,9,-0.0276,-2.7196,-12.4097,6.4494,0.5238,1512,
+desktop,by access,primary,9,0.0399,4.0676,-4.639,13.8828,0.3122,1512,
+mobile web,by access,primary,9,0.0123,1.2374,-7.6884,10.5171,0.7639,1512,
+app,by access,primary,9,0.0117,1.1781,-3.4395,4.6028,0.4934,1512,
+H3: mobile web - desktop,H3,full,9,-0.1397,-13.0401,-25.9182,-2.2249,0.0084,30240,
+desktop,by access,full,9,0.0855,8.9297,-4.639,23.3678,0.1451,30240,
+mobile web,by access,full,9,-0.0542,-5.2749,-21.1403,9.4174,0.4028,30240,
+app,by access,full,9,-0.0481,-4.6981,-14.1441,5.9185,0.5208,30240,

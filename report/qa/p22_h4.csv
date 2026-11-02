@@ -1,0 +1,5 @@
+spec,status,beta,crv1_se,wcb_p,wcb_lo,wcb_hi,pct,pct_lo,pct_hi
+"H4: tail x exposure, views, 11 editions",pre-registered,0.13824,0.14746,0.42454,-0.215,0.52,14.82517,-19.34586,68.20276
+"tail x exposure, truncation-corrected search",secondary,0.08833,0.0951,0.37964,-0.195,0.3075,9.23514,-17.71653,36.00208
+"without fa, views",exploratory,0.20058,0.16053,0.25033,-0.19,0.6,22.21062,-17.30409,82.21188
+"without fa, truncation-corrected search",exploratory,0.15351,0.07768,0.09761,-0.065,0.39,16.5919,-6.29325,47.69808

@@ -121,6 +121,7 @@ models: check-env
 	$(PY) -m wao.models.concept
 	$(PY) -m wao.models.robust
 	$(PY) -m wao.models.quick
+	$(PY) -m wao.models.access_pop
 
 figures:
 	@echo "figures: nothing yet (P26–P27)"
