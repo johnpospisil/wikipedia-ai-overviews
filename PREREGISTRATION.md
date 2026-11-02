@@ -246,3 +246,13 @@ Any check that flips the H1 conclusion must be reported in the main text.
 - **Clarification:** the section 5.4 model also has **edition × month-of-year FE** (edition-specific seasonality, P14; agreed after P14) and drops 2025-04 for every edition, as in P18. Outcomes: `log(1 + user web views)`, and `log(1 + search arrivals)` with censored (<10) months set to the P11 imputed value; a second search version keeps only concept-editions never censored in 2023 (selected on the pre-period). Weighted = the P06 concept weights. Inference: the restricted wild cluster bootstrap of P18, computed in closed form on the FWL-demeaned data, and RI permuting whole exposure paths across editions (999 draws, main specifications only).
 - **Addition (exploratory):** the specification without fa (P18) and P17's 9 editions, both labelled exploratory, plus a descriptive month-by-month within-concept gap (treated editions vs fr + ru).
 - **When:** written into the code **before** any P19 estimate was seen, and after the P18 results.
+
+### 2026-11-01: How P20 implements section 7 (clarification)
+
+- **Placebo 12 months earlier:** cohort and first-exposure dates moved back 12 months, with the window capped at 2024-04 so that no real post-launch month enters a placebo post cell.
+- **Edition × post-2025-04 bot step:** for every edition not newly treated in 2025-04 (all but de, it and pl), the step is the mean of 2025-05..07 minus the mean of 2025-01..03 (deseasonalised) and is subtracted from 2025-04 onward. This also removes any genuine change in those months, so it is conservative.
+- **Core-update months:** core-update months from 2024-05 on are set missing, except the groups' base months.
+- **Edition trends:** a linear trend per edition, fitted on 2022-12..2024-04, is removed from all months.
+- **RI:** exact for up to 9 editions; with ru and fa added (11 editions), 5,000 random permutations. For the negative controls (2–3 editions) the RI interval is uninformative, and only the point estimate is read.
+- **"exposure all users" in the primary window:** not estimable, because no edition reaches 0.5 all-user exposure before 2025-03.
+- **When:** all decided **before** the full P20 run. Only the two P17 baselines had been reproduced.

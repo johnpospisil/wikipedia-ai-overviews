@@ -15,7 +15,7 @@ net of Google search share,confound,primary,9.0,-0.0013,-0.1258,-9.7422,9.1442,0
 total user views (all access),outcome,primary,9.0,0.0264,2.6782,-5.1146,11.0711,0.4583,1512.0,
 user web views,outcome,primary,9.0,0.0262,2.651,-5.1146,11.0711,0.4683,1512.0,
 truncation-corrected search,outcome,primary,9.0,0.0262,2.6555,-7.4573,12.7497,0.5787,1512.0,
-exposure all users (cohorts),exposure,primary,,,,,,,,no treated
+exposure all users (cohorts),exposure,primary,,,,,,,,not estimable: no edition reaches the cohort threshold in this window
 exposure as listed (cohorts),exposure,primary,9.0,0.0262,2.6529,-7.4573,13.0319,0.582,1512.0,
 leave out en,leave-one-out,primary,8.0,0.0543,5.5819,-8.3781,18.2345,0.3571,168.0,
 leave out ja,leave-one-out,primary,8.0,-0.0119,-1.1858,-11.5294,10.5171,0.744,336.0,
@@ -57,7 +57,7 @@ not-yet-treated controls,design,primary,9.0,0.0294,2.9878,-6.5272,13.0319,0.5231
 bot months 2025-03..08 dropped,bot,full,9.0,-0.0824,-7.9115,-30.2324,14.1679,0.4327,30240.0,
 edition x post-2025-04 bot step,bot,full,9.0,-0.0126,-1.2492,-11.9707,16.7658,0.8129,30240.0,
 2025-04 rescaled,bot,full,9.0,-0.0799,-7.6748,-24.7986,9.1442,0.3957,30240.0,
-"negative control: ru, fa from 2025-05 vs fr",negative control,full,3.0,-0.4448,-35.904,-45.1188,34.9859,0.6667,3.0,"expected about dose x effect: ru 0.45, fa 0.17-0.19"
-negative control: ru alone vs fr,negative control,full,2.0,-0.1466,-13.6353,-45.1188,34.9859,1.0,2.0,
+"negative control: ru, fa from 2025-05 vs fr",negative control,full,3.0,-0.4448,-35.904,-45.1188,34.9859,0.6667,3.0,"expected about dose x effect: ru 0.45, fa 0.17-0.19; RI over 2-3 editions is uninformative"
+negative control: ru alone vs fr,negative control,full,2.0,-0.1466,-13.6353,-45.1188,34.9859,1.0,2.0,; RI over 2-3 editions is uninformative
 Rambachan-Roth M = 1 (P17),trend,primary,,0.0262,2.6526,-24.885,39.2569,,,interval widened by worst-case bias
 Rambachan-Roth M = 1 (P17),trend,full,,-0.0829,-7.9594,-51.9155,64.8243,,,interval widened by worst-case bias
