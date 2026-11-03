@@ -20,7 +20,7 @@
 | | |
 |---|---|
 | **Article** | [johnpospisil.github.io/wikipedia-ai-overviews](https://johnpospisil.github.io/wikipedia-ai-overviews/): the full write-up, with methods, robustness and limits. Source: [report/index.qmd](report/index.qmd). |
-| **Dataset** | Edition × month and article × month panels plus the exposure measure, built with `make release`. Data card: [docs/dataset-card.md](docs/dataset-card.md). |
+| **Dataset** | [huggingface.co/datasets/audiofreak7/wikipedia-ai-overviews-panels-2026-09](https://huggingface.co/datasets/audiofreak7/wikipedia-ai-overviews-panels-2026-09): edition × month and article × month panels plus the exposure measure (CC0; StatCounter-derived columns CC BY-SA 3.0), built with `make release`. Data card: [docs/dataset-card.md](docs/dataset-card.md). |
 | **Pre-registration** | [PREREGISTRATION.md](PREREGISTRATION.md): hypotheses and decision rules locked at tag `prereg-v1`, with every later change logged and dated. |
 | **Validation** | [report/validation.md](report/validation.md): an independent-reviewer pass, listing the issues found and how each was handled. |
 | **Data sources** | [DATA.md](DATA.md): every source, its licence, coverage and known methodology changes. The AI Overviews rollout dates, with a source for each, are in [data/reference/aio_rollout.csv](data/reference/aio_rollout.csv). |

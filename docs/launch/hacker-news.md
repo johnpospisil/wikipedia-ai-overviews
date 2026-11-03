@@ -26,4 +26,4 @@ Avoid "AI is killing Wikipedia" or "AI Overviews didn't hurt Wikipedia". The fir
 >
 > Everything was pre-registered before any post-launch comparison. The article lists every choice I made after seeing results, and an independent-review pass (validation.md) lists the weaknesses, starting with the bot-reclassification problem.
 >
-> Code (runs on a synthetic sample with a planted effect in about 2 minutes), pre-registration, data card: https://github.com/johnpospisil/wikipedia-ai-overviews. Happy to answer questions.
+> Code (runs on a synthetic sample with a planted effect in about 2 minutes) and pre-registration: https://github.com/johnpospisil/wikipedia-ai-overviews. The monthly edition and article panels are on Hugging Face: https://huggingface.co/datasets/audiofreak7/wikipedia-ai-overviews-panels-2026-09. Happy to answer questions.

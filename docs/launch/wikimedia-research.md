@@ -38,7 +38,7 @@ The analysis leans on Wikimedia's 2025 bot reclassification and its traffic stat
 >
 > Data issues others may run into: the 2019-04 clickstream method change; the 2025-04 clickstream file being about 5 days short; the 2025 bot reclassification as a level break in both pageviews and clickstream, of different size per edition; and the <10 truncation, which makes article-level long-tail declines look much larger than they are. They're documented in `data/reference/data_breaks.csv`.
 >
-> The edition and article panels (197,453 sampled articles, monthly, 2016–2026) are released with a data card. Code: https://github.com/johnpospisil/wikipedia-ai-overviews
+> The edition and article panels (197,453 sampled articles, monthly, 2016–2026) are released on Hugging Face: https://huggingface.co/datasets/audiofreak7/wikipedia-ai-overviews-panels-2026-09. Code: https://github.com/johnpospisil/wikipedia-ai-overviews
 >
 > Comments and corrections are very welcome.
 >
@@ -58,7 +58,7 @@ The monthly Wikimedia Research Showcase (https://www.mediawiki.org/wiki/Wikimedi
 >
 > **Summary:** Google launched AI Overviews country by country, so Wikipedia's language editions were exposed at different times. Using public clickstream and pageview data for 11 editions (2019–2026), a pre-registered staggered difference-in-differences finds search traffic falling almost everywhere, including in never-exposed Russian, but no loss attributable to AI Overviews: +2.7% in the first six months, with a minimum detectable effect of about 10%. The talk would cover the exposure measure, what the 2025 bot reclassification and clickstream truncation do to this kind of analysis, and what the data can and can't say about AI and Wikipedia's readers.
 >
-> **Materials:** article, code, pre-registration and released panels at https://github.com/johnpospisil/wikipedia-ai-overviews
+> **Materials:** article, code and pre-registration at https://github.com/johnpospisil/wikipedia-ai-overviews; panels at https://huggingface.co/datasets/audiofreak7/wikipedia-ai-overviews-panels-2026-09
 >
 > Thanks for considering it,
 > John Pospisil

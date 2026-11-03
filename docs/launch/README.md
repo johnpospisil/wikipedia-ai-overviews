@@ -18,7 +18,7 @@ Drafts for the launch. **Nothing is posted, sent, uploaded or made public withou
 **A week before**
 1. Read the article, the README and these drafts once more, in a browser.
 2. Optional: send the advance note to Wikimedia Research ([wikimedia-research.md](wikimedia-research.md)) and allow a few days for corrections.
-3. Decide on the dataset: upload `make release` output to Hugging Face (needs your account; the card is [docs/dataset-card.md](../dataset-card.md)), or leave the README pointing at the card. If you upload, add the dataset URL to the README's "Dataset" row.
+3. ~~Upload the dataset to Hugging Face~~ Done 2026-11-03: https://huggingface.co/datasets/audiofreak7/wikipedia-ai-overviews-panels-2026-09 (public; 26 files match the local SHA256SUMS; linked from the README).
 
 **Launch day**
 4. Check the repository for anything that shouldn't be public (`git log` and a scan for credentials: `WAO_BOT_USER`/`WAO_BOT_PASS` live only in your shell, never in the repo).

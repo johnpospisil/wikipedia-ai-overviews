@@ -47,7 +47,7 @@
     "SHA256SUMS": 0.0,
     "columns.csv": 0.0,
     "data/article_month.parquet": 225.1,
-    "data/article_month_csv/article_month_de.csv.gz": 34.8,
+    "data/article_month_csv/article_month_de.csv.gz": 34.7,
     "data/article_month_csv/article_month_en.csv.gz": 40.4,
     "data/article_month_csv/article_month_es.csv.gz": 31.7,
     "data/article_month_csv/article_month_fa.csv.gz": 27.7,
