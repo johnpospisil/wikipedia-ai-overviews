@@ -42,7 +42,7 @@ def test_bluesky_posts_fit():
 
 def test_x_posts_fit():
     posts = _posts("## X thread", r"^X\d/ .+$")
-    assert len(posts) == 6
+    assert len(posts) == 3
     for p in posts:
         assert len(p) - 1 <= 280, (len(p), p[:40])  # the "X" prefix is not posted
 

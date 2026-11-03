@@ -8,7 +8,7 @@ Drafts for the launch. **Nothing is posted, sent, uploaded or made public withou
 | [reddit.md](reddit.md) | r/dataisbeautiful (small multiples, [OC]) and r/wikipedia |
 | [wikimedia-research.md](wikimedia-research.md) | Optional advance note to Wikimedia Research, the wiki-research-l post, and a Research Showcase pitch |
 | [press.md](press.md) | Pitches to Press Gazette, Nieman Lab and Search Engine Land |
-| [social.md](social.md) | LinkedIn post, a 6-post Bluesky thread and a 6-post X thread |
+| [social.md](social.md) | LinkedIn post, a 6-post Bluesky thread and a 3-post X thread with two charts |
 | [reviewer-questions.md](reviewer-questions.md) | 15 likely questions with short answers |
 
 `tests/test_launch.py` checks the platform length limits and that every number in the drafts matches the pipeline.

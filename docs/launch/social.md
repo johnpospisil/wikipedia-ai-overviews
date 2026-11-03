@@ -1,7 +1,7 @@
 # LinkedIn, Bluesky and X
 
 **Status:** drafts. Nothing is posted without John.
-**When:** Bluesky and X the same day as Hacker News; LinkedIn on a weekday morning. Attach the hero chart (`report/figures/hero_estimates.png`) to LinkedIn and to post 1 of each thread, and the small multiples (`report/figures/chart4_editions.png`) to post 2.
+**When:** Bluesky and X the same day as Hacker News; LinkedIn on a weekday morning. Attach the hero chart (`report/figures/hero_estimates.png`) to LinkedIn and to Bluesky post 1, and the small multiples (`report/figures/chart4_editions.png`) to Bluesky post 2. The X thread lists its own images.
 
 ## LinkedIn (one post)
 
@@ -34,18 +34,16 @@
 
 6/ Article, code, pre-registration and data: https://johnpospisil.github.io/wikipedia-ai-overviews/
 
-## X thread (each post 280 characters or fewer; `tests/test_launch.py` checks)
+## X thread (3 posts, each 280 characters or fewer; `tests/test_launch.py` checks)
 
-The link goes in the last post, because X shows posts with links less widely.
+Images do the work on X, so the first two posts each carry one chart and the text only frames it. The link goes in the last post, without an image: X shows posts with links less widely, and an image there would compete with the link card.
 
-X1/ Did Google's AI Overviews take Wikipedia's search traffic? Google launched them country by country, so Wikipedia's editions got them at different times. I compared 11 editions. Short answer: no loss that can be pinned on AI Overviews. 🧵
+**Image for X1:** the small multiples, `report/figures/chart4_editions.png`. They show the whole story at a glance: every panel falls, including Russian, which never had AI Overviews. Alt text: "Search traffic to 11 Wikipedia language editions, 2021–2026, indexed to the year before AI Overviews. Nearly every edition falls, including Russian, where AI Overviews never launched."
 
-X2/ Search traffic fell almost everywhere: the treated editions are at 56–96 on an index where the year before AI Overviews = 100. Russian Wikipedia, where AI Overviews never launched, is at 66.
+X1/ Did Google's AI Overviews take Wikipedia's search traffic? Google launched them country by country, so Wikipedia's language editions got them at different times. Search fell almost everywhere: 56–96 in treated editions, 66 in Russian, which never had them. 🧵
 
-X3/ Against editions without it yet: +2.7% in the first six months (95% interval −7% to +13%), −8.0% to July 2026 (−28% to +10%). The longer window rests on French alone.
+**Image for X2:** the hero chart, `report/figures/hero_estimates.png`. Every interval crosses zero, which makes the point better than the numbers alone. Alt text: "Five estimates of the effect of AI Overviews on Wikipedia search arrivals, each with a 95% interval; every interval crosses zero."
 
-X4/ Not a clean bill of health: the design detects about a 10% loss. English alone is −6%, close to the 5% another study found. A small effect is plausible but unconfirmed.
+X2/ Comparing editions with and without AI Overviews in the same month: +2.7% in the first six months (95% interval −7% to +13%). No loss can be pinned on it. But the design only detects about 10%, and English alone is −6%, so a small effect is plausible.
 
-X5/ Quick-answer pages fell more than long reads, but also where AI Overviews hardly reached. Mobile, the long tail and editors show nothing either. All pre-registered.
-
-X6/ Article, code, pre-registration and data: https://johnpospisil.github.io/wikipedia-ai-overviews/
+X3/ Pre-registered, with open code and data. Article: https://johnpospisil.github.io/wikipedia-ai-overviews/
